@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import { toast } from "sonner";
 import { api, type Node, type ApplicabilityValue, type ConformityValue } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { ApplicabilitySelect } from "./applicability-select";
 import { ConformitySelect } from "./conformity-select";
+import { DescriptionCell } from "./description-cell";
 
 interface NodeTableProps {
   documentId: string;
@@ -14,6 +16,7 @@ interface NodeTableProps {
 
 export function NodeTable({ documentId }: NodeTableProps) {
   const queryClient = useQueryClient();
+  const [expandAll, setExpandAll] = useState(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["nodes", documentId],
@@ -97,7 +100,20 @@ export function NodeTable({ documentId }: NodeTableProps) {
               Title
             </th>
             <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground w-48 hidden lg:table-cell">
-              Description
+              <div className="flex items-center gap-1.5">
+                <span>Description</span>
+                <button
+                  type="button"
+                  onClick={() => setExpandAll((v) => !v)}
+                  className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
+                  aria-label={expandAll ? "Collapse all descriptions" : "Expand all descriptions"}
+                  title={expandAll ? "Collapse all" : "Expand all"}
+                >
+                  {expandAll
+                    ? <><ChevronsDownUp className="h-3 w-3" aria-hidden="true" /><span>Collapse all</span></>
+                    : <><ChevronsUpDown className="h-3 w-3" aria-hidden="true" /><span>Expand all</span></>}
+                </button>
+              </div>
             </th>
             <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground w-28">
               Applicability
@@ -137,8 +153,8 @@ export function NodeTable({ documentId }: NodeTableProps) {
                   {node.title}
                 </span>
               </td>
-              <td className="px-3 py-2 hidden lg:table-cell">
-                <p className="line-clamp-2 text-xs text-muted-foreground">{node.description}</p>
+              <td className="px-3 py-2 hidden lg:table-cell max-w-xs">
+                <DescriptionCell text={node.description} expandAll={expandAll} />
               </td>
               <td className="px-3 py-2">
                 <ApplicabilitySelect
