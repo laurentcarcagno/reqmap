@@ -1,0 +1,841 @@
+{
+  "source": "AD01_OGM-SOW-ADSF-21001104007_2_OGM_HAR_SOW_clean.md",
+  "node_count": 119,
+  "title_count": 58,
+  "requirement_count": 61,
+  "nodes": [
+    {
+      "order": 1,
+      "type": "title",
+      "section": "1",
+      "title": "Introduction",
+      "description": "This Contractor’s Statement of Work (SOW) defines work to be performed by the Contractor under the contractual authority of the OGM Customer Contractor, Airbus Defence and Space.\n\nThe OGM Implementation Phase will be conducted in three major phases:\n\n- Phase B2: Preliminary Definition\n\n- Phase C/D: Detailed Definition and Qualification/Acceptance\n\n- Phase E: Utilisation\n\n- Phase F: Disposal\n\nThis Statement of Work (SOW) is applicable in conjunction with the _Generic SOW (GSOW) [AD-02],_ which defines the equipment generic requirements. In case of conflict, this specific statement of work shall have precedence."
+    },
+    {
+      "order": 2,
+      "type": "title",
+      "section": "1.1",
+      "title": "Scope of the Document",
+      "description": "The equipment subject of this Statement of Work (SOW) is the DC harness (hereinafter referred to only as “harness”) for the OGM Project, which is defined by the Harness Requirements Specification [AD-03]. This Harness SOW defines the tasks of the harness supplier for:\n\n- The design, development, qualification, manufacturing, integration, test and delivery of the equipment,\n\n- The provision of tooling, test and support equipment, support services and transportation services to support instrument and spacecraft assembly, integration, test and launch, associated with the harness operation and handling.\n\n- The preparation and delivery of documentation.\n\nIn addition, tasks and deliverables are categorized into baseline tasks and optional tasks. Both kinds of tasks may occur in this SOW. Unless not specifically identified to the contrary, all task and deliverables specified hereafter shall belong to the baseline tasks. Options are collected at §4.4 Options.\n\nThe requirements of this SSOW shall also be made applicable to the contractually specified Lower Level Subcontractors/Suppliers, as pertinent to their work shares. Therefore the word \"Supplier\" shall be interpreted as “Supplier and Lower Level Subcontractors/Suppliers”, if not specifically restricted. Hardware from other sources, such as OTS items, shall be procured according to the equivalent technical, quality and safety related requirements."
+    },
+    {
+      "order": 3,
+      "type": "title",
+      "section": "2",
+      "title": "Documents",
+      "description": "The work carried out by the Contractor and possibly its lower-level Subcontractors shall be performed in accordance with the following applicable documents which form an integral part of the Contractor’s SOW. Unless a specific issue of a document is mentioned, the current issue shall apply. When a specific issue is referenced, only that issue applies.\n\nIn case technological limitations lead to non-compliances these non-compliances shall be justified and identified as risks by the Contractor for assessment on system level by the Customer. To support this assessment the Contractor shall define the best achievable value/ solution.\n\nThe Contractor is requested to issue a Statement of Compliance according to [AD-00] CADL (OGM-LIADSO-21001108453) with the following meaning:\n\n- “D” means Detailed SoC, i.e. for each requirement inside the document,\n\n- “G” means General SoC, i.e. at document level,\n\n- “AM” means SoC for each requirement, which is applicable through the corresponding Applicability Matrix.\n\nIn case of evolution, the new issues will be subject to the change process and listed in addition to the SSOW, if not up to date, or the SSOW updated in each specific procurement contract.\n\n."
+    },
+    {
+      "order": 4,
+      "type": "title",
+      "section": "2.1",
+      "title": "Applicable Documents",
+      "description": "See CADL, OGM-LI-ADSO-21001108453 [AD-00]"
+    },
+    {
+      "order": 5,
+      "type": "title",
+      "section": "2.2",
+      "title": "Reference Documents",
+      "description": "See CADL, OGM-LI-ADSO-21001108453 [AD-00]"
+    },
+    {
+      "order": 6,
+      "type": "title",
+      "section": "2.3",
+      "title": "Normative Documents (Standards)",
+      "description": "See CADL, OGM-LI-ADSO-21001108453 [AD-00]"
+    },
+    {
+      "order": 7,
+      "type": "title",
+      "section": "2.3.1",
+      "title": "Document updates",
+      "description": "The contractor shall be prepared to receive updates of the applicable documents for Equipment Kick/Off. Updates are aimed to:\n\n- Resolve TBD, TBI and TBC.\n\n- Ensure precision of requirements and interfaces in order to avoid misunderstandings.\n\n- Include rewording and relaxation of requirements to avoid the need for RFDs\n\nIncorporation of these updates in the project are to be considered as part of the baseline, provided that no cost-relevant changes in equipment design or verification result from them."
+    },
+    {
+      "order": 8,
+      "type": "title",
+      "section": "2.4",
+      "title": "Acronyms and Glossary",
+      "description": "Acronym Description** Abk. Abkürzung PF Platform PL Payload IEM Instrument Electrical Module IOM Instrument Optical Module I/F Interface CBKT Connector Bracket MFG; Mfg. Manufacturing"
+    },
+    {
+      "order": 9,
+      "type": "title",
+      "section": "2.5",
+      "title": "Terms and Definitions",
+      "description": "The use of “shall”, “should”, “must”, “will”, “may” and “could”:\n\n- The word “shall” in the text denotes a mandatory requirement. Deviation from such a requirement is not permissible without the formal agreement of Airbus Defence and Space.\n\n- The word “should” in the text denotes a recommendation or advice on implementing a requirement. Such recommendation or advice is expected to be followed unless good reasons are stated for not doing so.\n\n- The words “must” or “will” in the text denotes a provision, a service or an intention in connection with a requirement.\n\n- The words “may” or “could” in the text denote a permissible practice or action and do not express a requirement."
+    },
+    {
+      "order": 10,
+      "type": "title",
+      "section": "3",
+      "title": "Equipment Development",
+      "description": ""
+    },
+    {
+      "order": 11,
+      "type": "title",
+      "section": "3.1",
+      "title": "Equipment TRL reporting",
+      "description": "The minimum TRL requirement for the harness is that the solution offered is already greater than TRL 5. The Contractor shall reach TRL 6 at PDR."
+    },
+    {
+      "order": 12,
+      "type": "title",
+      "section": "3.2",
+      "title": "Definition and Context of the Equipment",
+      "description": "As defined in the DC Harness Specification [AD-03] and Harness Definition [RDs]"
+    },
+    {
+      "order": 13,
+      "type": "title",
+      "section": "3.3",
+      "title": "Development Logic and Model Philosophy",
+      "description": "It is not expected to have specific Harness Development and Qualification Models.\n\nIn case of specific harness Development Logic and Development and Qualification Model Philosophy are needed, the programme is to be proposed and justified by the supplier according to GSOW. It is the supplier’s responsibility to ensure that the Model Philosophy that is proposed is sufficient to meet the requirements set out in GSOW.\n\nWhere specific deliveries of harness models are requested by the customer, these will be detailed in section § 5.1 Deliverable Hardware, of this document."
+    },
+    {
+      "order": 14,
+      "type": "title",
+      "section": "3.4",
+      "title": "Customer Furnished Item (CFI)",
+      "description": "None."
+    },
+    {
+      "order": 15,
+      "type": "title",
+      "section": "3.5",
+      "title": "Equipment Development Flow",
+      "description": "The Equipment Development Flow considering TRL>5 and equipment category D, is the following:\n\nKick-Off<br>As design<br>Equipment<br>Qualification Status<br>Review<br>New equipment<br>PCB<br>Preliminary<br>Design Review<br>Modified equipment<br>Critical Design<br>Review<br>ERCB<br>Full recurring<br>Asbuilt<br>Manufacturing<br>Readiness Review<br>Key/Mandatory<br>Non-conformance<br>PCB<br>Inspection Points<br>Review Board<br>Manufacturing<br>Control Reviews<br>Test Readiness &<br>Review<br>Test Review Board<br>ＥＲCＢ<br>Delivery Review Board<br>Delivery Qualification Review<br>**----- End of picture text -----**<br>\n\nFigure 3.5-1: Equipment Development Flow"
+    },
+    {
+      "order": 16,
+      "type": "title",
+      "section": "4",
+      "title": "Scope of Work",
+      "description": ""
+    },
+    {
+      "order": 17,
+      "type": "title",
+      "section": "4.1",
+      "title": "Customer undertakings",
+      "description": ""
+    },
+    {
+      "order": 18,
+      "type": "requirement",
+      "req_id": "HAR SSOW-1",
+      "title": "Inputs",
+      "description": "The Customer is committed to deliver the following inputs:\n\n1. Harness specification.\n\n2. Harness Interface Definition Document from system perspective (Architecture Design)\n\n- _a. Concept and preliminary design\n\n- _b. Electrical ICD (including electronic data files in *.xls)\n\n3. Instrument CAD models and definition of the routing boundaries."
+    },
+    {
+      "order": 19,
+      "type": "requirement",
+      "req_id": "HAR SSOW-2",
+      "title": "Input-events",
+      "description": "The input-events from Prime/Customer to Subco, are associated to the different maturity level of the harness design. The formal input-events shall be, as a maximum, the following:\n\n- _Input to Baseline Design at Kick-Off\n\n- _Input to Baseline Design for PDR and EM manufacturing, pending system design maturity.\n\n- _Input to Flight Design after PDR and EM manufacturing (in case late system design maturity)\n\n- _Input to Flight Design for CDR and FM manufacturing."
+    },
+    {
+      "order": 20,
+      "type": "title",
+      "section": "4.2",
+      "title": "Contractor responsibilities",
+      "description": "The requirements hereinafter are applicable to the activities of the Supplier and its lower tier SubCos."
+    },
+    {
+      "order": 21,
+      "type": "requirement",
+      "req_id": "HAR SSOW-3",
+      "title": "Subcontractor responsibilities",
+      "description": "The Supplier shall be responsible for:\n\n1. Detailed engineering of the harness.\n\n2. Definition of the harness detailed design for manufacturing (Manufacturing Design)\n\n3. Parts procurement for harness manufacturing and integration, incl. restrain system.\n\n4. Manufacturing of the harness and all its subassemblies.\n\n5. Option 2: Integration of the harness and all its subassemblies (refer to section 4.4)"
+    },
+    {
+      "order": 22,
+      "type": "requirement",
+      "req_id": "HAR SSOW-4",
+      "title": "Changes until PDR",
+      "description": "Neither the detailing nor the adaptation of the design until PDR shall cause Class A contract change by the Supplier or any of its lower tier SubCos, unless related to material or manufacturing workload costs.\n\nPhase B2, from Kick-Off until PDR, is envisaged as continuous co-engineering activity. Additional related clause is in §4.5 Schedule, HAR SSOW-54 / Co-engineering ."
+    },
+    {
+      "order": 23,
+      "type": "title",
+      "section": "4.3",
+      "title": "Engineering",
+      "description": ""
+    },
+    {
+      "order": 24,
+      "type": "requirement",
+      "req_id": "HAR SSOW-5",
+      "title": "Detail engineering responsibility",
+      "description": "The Supplier shall be responsible for the detail engineering of the harness.\n\nThe detail engineering shall consist on:\n\n- _Electrical detail design for manufacturing and integration of the harness.\n\n- _Mechanical detail design of the harness and all mechanical elements of the restrain system.\n\n- _All necessary analysis to perform theoretical or empirical evaluations"
+    },
+    {
+      "order": 25,
+      "type": "requirement",
+      "req_id": "HAR SSOW-6",
+      "title": "Inconsistencies and improvement",
+      "description": "The Supplier shall point out all non-compliances, inconsistencies and all unfeasibility items found out in the specification and CAD/ICDs provided by the Prime/Customer, and propose feasible solutions and solutions for improvement, to be discussed and agreed with the Prime/Customer."
+    },
+    {
+      "order": 26,
+      "type": "title",
+      "section": "4.3.1",
+      "title": "Design",
+      "description": ""
+    },
+    {
+      "order": 27,
+      "type": "requirement",
+      "req_id": "HAR SSOW-7",
+      "title": "Electrical detail design",
+      "description": "The Prime/Customer shall provide the Supplier with a harness EICD containing:\n\n- _Signal types, defining all type of interfaces and cable used.\n\n- _Unit list, units with interfaces to be connected\n\n- _Harness connector list, defined all connector types as generic P/N, eg. DAMA 15S.\n\n- _Signal list, containing all signals wired in the EICD\n\n- _For non-dissipative lines and lines not subject of Vd and resistance analysis, the gauge is also defined in the Pin2Pin, eg. TP24\n\n- _Dissipative lines and lines subject of Vd and resistance analysis, the gauge is either not defined, eg. TPxx, or provisionally defined but to be confirmed with the analysis.\n\nThe Supplier shall then be responsible for the electrical detail design of the harness for manufacturing and integration.\n\nThe electrical detail design shall consist on:\n\n- _Harness connector list, with P/N selection for all connectors including backshells, screwlocks screengrills and any other accessory.\n\n- _Wiring Diagrams, introducing all necessary modifications for manufacturing and integration of the harness, eg. all splices, whilst fulfilling the electrical connectivity defined by the Prime/Customer.\n\n- _Wiring list (aka. Manufacturing LinkList) comprising the manufacturing configuration of the harness, with P/N’s and all modifications introduced in the schematics for manufacturing and integration of the harness.\n\n- _P/N selection of all cable types and unique identification for each cable in the harness.\n\n- _Bundle/branch definition (bundle naming, etc) for each cable, including all segregation information, that is EMC, Main/Red, TCS/Crimp-AIT.\n\n- _P/N selection of all electrical parts of the HW eg, splices, terminals, etc."
+    },
+    {
+      "order": 28,
+      "type": "requirement",
+      "req_id": "HAR SSOW-8",
+      "title": "Computer media for exchanging electrical design",
+      "description": "The Prime/Customer shall provide the Supplier with a harness EICD in electronic Excel file.\n\nThe Supplier shall provide on a computer media, in Excel or Access."
+    },
+    {
+      "order": 29,
+      "type": "requirement",
+      "req_id": "HAR SSOW-9",
+      "title": "Mechanical detail design",
+      "description": "The routing boundary conditions (stay-out areas, preliminary path definition and integration sequence) of the harness are to be primarily defined by the Prime/Customer. Prime/Customer will provide the Supplier with the routing boundary conditions and shall then be revisited together with the harness Supplier for feasibility and improvement in mutual agreement.\n\nThe Supplier shall be responsible for the mechanical detail design of the harness for manufacturing and integration.\n\nThe mechanical detail design shall consist on:\n\n- _Detailed routing design in CATIA of the bundles defined in the electrical detail design.\n\n- _Definition and location of all harness fixation points.\n\n- _Definition of all harness connector brackets and all its support secondary-structures in CATIA incl. stress analysis of the restrain system components. (input to prime/customer as need for inserts on the structural panels)\n\n- _Definition of all mechanical drawings (harness layout, fixation points location with items identification and location)\n\n- _Definition of the manufacturing mockup.\n\n- _P/N selection of all mechanical parts and materials of the HW (eg.backshells and its accessories, screw locks and jackposts, tie-raps, foils, tapes, sleeves, etc.)."
+    },
+    {
+      "order": 30,
+      "type": "requirement",
+      "req_id": "HAR SSOW-10",
+      "title": "Routing drawings",
+      "description": "The supplier shall be responsible for the definition of all routing drawings and associated part lists:\n\n- _Showing the configuration of the harness routing as it is on-board and on the representative manufacturing mockup\n\n- _Identifying the different bundles according to Main/Redundant lines, EMC class and thermal control segregation.\n\n- _Uniquely identifying each fixation attachment point –tie-base, stand off, etc-.\n\n- _Temporary attachments, if any, for proper transfer of the harness onto the structure."
+    },
+    {
+      "order": 31,
+      "type": "requirement",
+      "req_id": "HAR SSOW-11",
+      "title": "CAD models",
+      "description": "The harness Supplier shall implement in the CAD model of the S/C, which is provided by the Prime/Customer, the complete CAD model of the real harness, comprising\n\n- _all bundles incl. routing up to each thermal control item.\n\n- _connectors with backshell and any mounting accessory,\n\n _attachment points (eg. tie-bases, stand-offs)\n\n- _all connector brackets\n\nand return the harness CAD model in regular stages to the Prime/Customer. The Supplier shall envisage this activity as an iterative process, especially until PDR. The data file format is CATIA 3DExperience 2018x (tbc)"
+    },
+    {
+      "order": 32,
+      "type": "title",
+      "section": "4.3.2",
+      "title": "Analyses",
+      "description": ""
+    },
+    {
+      "order": 33,
+      "type": "requirement",
+      "req_id": "HAR SSOW-12",
+      "title": "Design ä analysis",
+      "description": "The Supplier shall be responsible for all necessary analysis to perform theoretical or empirical evaluations, in particular following major analysis:\n\n- _FMCA (A)\n\n- _Reliability (A)\n\n- _WCA (A)\n\n- _mass budget (A)\n\n- _Option 3: voltage drop, current derating and thermal dissipation analysis (B) (refer to section 4.4)\n\n- _Option 4: thermal analysis of the bundle (overshielded bundles) (A) (refer to section 4.4)\n\n- _strength/stress analysis of the restrain system components, etc (A)\n\nAnalysis categorized (A) shall be provided for the respective reviews.\n\nAnalysis categorized (B) shall be provided for the respective reviews and as requested by the Customer to iterate on the latest HW implementation."
+    },
+    {
+      "order": 34,
+      "type": "title",
+      "section": "4.4",
+      "title": "Manufacturing",
+      "description": ""
+    },
+    {
+      "order": 35,
+      "type": "requirement",
+      "req_id": "HAR SSOW-13",
+      "title": "Manufacturing documentation",
+      "description": "Upon the harness manufacturing baselines established by detail engineering, the Supplier shall be responsible for establishing all required manufacturing and QA/PA related documents in conformance with ECSS standards,\n\n- _All manufacturing documents, incl. procedures, logsheets for manufacturing, parts, materials, and samples control, associated to the detail design and the choosen technological solutions.\n\n- _All QA/PA related documents, incl. inspection logsheets, CIDL, ABCL, NCR lists."
+    },
+    {
+      "order": 36,
+      "type": "requirement",
+      "req_id": "HAR SSOW-14",
+      "title": "Harness manufacturing mockup i inspection report",
+      "description": "The contractor shall perform and issue to the customer, the mockup inspection report including photo documentation of the manufacturing-jig, with the 1:1 drawings of the harness bundles with EMC classes in different colours, anchor attachments to structure, unit dummies and location of the splice fixation zones.\n\nThis inspection shall acknowledge for compliance with the requirements on the manufacturing mockup specified in the Harness Specification.\n\nNote: This requirement is input to KIP/MIP#1 in § 5 Milestones, Meetings and Reviews"
+    },
+    {
+      "order": 37,
+      "type": "requirement",
+      "req_id": "HAR SSOW-15",
+      "title": "Final routing inspection report after manufacturing",
+      "description": "The contractor shall perform and issue to the customer, a photo documentation of the manufacturing-jig, with harness bundles routed on the manufacturing-jig and attached to anchor attachments.\n\nThe dismounting activity shall be photo reported to server as input to the integration procedure.\n\nNote: This requirement is input to KIP/MIP#5 in § 5 Milestones, Meetings and Reviews"
+    },
+    {
+      "order": 38,
+      "type": "requirement",
+      "req_id": "HAR SSOW-16",
+      "title": "DC and Lot/Batch No. in ABCL",
+      "description": "The Supplier shall include in the ABCL, the DC and Lot/Batch No. of all parts used in the manufacturing and integration of the harness."
+    },
+    {
+      "order": 39,
+      "type": "requirement",
+      "req_id": "HAR SSOW-17",
+      "title": "( / QA control",
+      "description": "The harness supplier shall provide a list of the QA personnel with personal stamp number.\n\nThe harness supplier shall provide manufacturing and integration log sheets and as-built documents with QA personal stamp numbers."
+    },
+    {
+      "order": 40,
+      "type": "requirement",
+      "req_id": "HAR SSOW-18",
+      "title": "Failure e reporting",
+      "description": "The supplier is responsible for reporting all failures using an in house system and subsequent rectification and retest"
+    },
+    {
+      "order": 41,
+      "type": "requirement",
+      "req_id": "HAR SSOW-19",
+      "title": "Parts procurement for harness manufacturing and integration",
+      "description": "The Supplier shall be responsible for the procurement of all parts and materials needed for manufacturing and integration of the harness, including the manufacturing mockup and all components of the on-board harness restrain system (Bracket fixation screws to structural inserts excluded –provided by Prime/Customer-)"
+    },
+    {
+      "order": 42,
+      "type": "requirement",
+      "req_id": "HAR SSOW-20",
+      "title": "Procurement of harness subassemblies",
+      "description": "The Supplier shall be responsible for establishing the procurement specifications of all procured harness subassemblies, as it is the case of the MIL-STD-1553 and SpaceWire CAN-bus."
+    },
+    {
+      "order": 43,
+      "type": "requirement",
+      "req_id": "HAR SSOW-21",
+      "title": "1 / S manufacturing Harness I",
+      "description": "The Supplier shall be responsible for the manufacturing of the complete harness S/S, incl.:\n\n- _Harness bundles manufacturing and electrical manufacturing tests,\n\n- _Manufacturing of the harness connector brackets and secondary structures,\n\n- _ISO5 cleaning of the PL IOM harness, consisting of bake-out with TQCM and particulate cleaning <100ppm\n\n- _ISO8 cleaning of the PF IEM harness, consisting of bake-out 72h."
+    },
+    {
+      "order": 44,
+      "type": "requirement",
+      "req_id": "HAR SSOW-22",
+      "title": "Approval of the manufacturing processes",
+      "description": "The selection of all manufacturing procedures, crimp interconnections and combinations (eg. splice, terminals) shall be submitted to Prime Contractor approval.\n\nManufacturing procedures shall be reviewed by Prime/Customer at Supplier site.\n\nCrimping shall be carried out in accordance with ECSS-Q-ST-70-26C , ‘Crimping of High Reliability Electrical Connections’.\n\nSoldering shall be carried out in accordance with ECSS-Q-ST-70-08C , ‘Manual Soldering of High Reliability Electrical Connections’.\n\nAll manufacturing personnel shall be certified to the above mentioned specifications.\n\nNew manufacturing methods / processes shall be investigated and verified on sample basis, the implementation on FM hardware shall be performed after authorization by the customer."
+    },
+    {
+      "order": 45,
+      "type": "requirement",
+      "req_id": "HAR SSOW-23",
+      "title": "Class and QPL",
+      "description": "Flight harness electrical parts shall be in conformance with ESA Class 1 (hi-rel) ESCC Quality and shall be selected from ESCC QPL.\n\nEM harness electrical parts shall be Class 2 components MIL. EM connectors shall be gold plated."
+    },
+    {
+      "order": 46,
+      "type": "requirement",
+      "req_id": "HAR SSOW-24",
+      "title": "Declared part list",
+      "description": "The selection of all connectors and connector accessories shall be submitted to Prime Contractor approval.\n\nThe selection of all cables shall be submitted to Prime Contractor approval."
+    },
+    {
+      "order": 47,
+      "type": "requirement",
+      "req_id": "HAR SSOW-25",
+      "title": "Declared material lists",
+      "description": "Materials shall be submitted to Customer for approval (DML)\n\nFor all materials following parameters shall be provided. Test references shall not be older than 10 years. Materials shall be tested if data is not available.\n\n- _identification list of the materials,\n\n- _dynamic outgassing parameters,\n\n- _location of critical components w.r.t. the sensitive surfaces (eg. PF or PL)\n\n- _mass of the critical components,"
+    },
+    {
+      "order": 48,
+      "type": "requirement",
+      "req_id": "HAR SSOW-26",
+      "title": "Cleanliness and Contamination Control Plan (CccP)",
+      "description": "A Cleanliness & Contamination Control (CCCP) plan shall be established by the harness supplier. Main results of the harness contamination analysis (outgassing) shall be included. Consideration shall be given to cleanability as a design feature of parts, i.e. the possibility of accidental contamination shall be taken into account."
+    },
+    {
+      "order": 49,
+      "type": "requirement",
+      "req_id": "HAR SSOW-27",
+      "title": "Harness cleaning procedure",
+      "description": "Harness cleaning procedure shall be established by the harness supplier. Dedicated section shall be included to describe how cleaning could be performed in case of accidental contamination"
+    },
+    {
+      "order": 50,
+      "type": "title",
+      "section": "4.5",
+      "title": "Integration",
+      "description": ""
+    },
+    {
+      "order": 51,
+      "type": "requirement",
+      "req_id": "HAR SSOW-28",
+      "title": "Integration activities",
+      "description": "All Harness hardware installed on instrument/satellite structures by the harness Contractor at customer facilities shall be witnessed and monitored by harness Contractor authorized QA. Any harness integration work shall be documented in procedures, as-runs and reports by the harness supplier and provided to the Customer. Inspections shall be identified (MIP), as a minimum.\n\n- _Prior to integration onto the FM structure, the harness shall have successfully passed the manufacturing tests and the bake-out.\n\n- _After any harness / wiring installation, the interconnections shall pass an isolation, continuity & resistance test and inspections documented in the integration procedure.\n\n- _All crimped items interconnected during integration shall be successfully tested in isolation, continuity and resistance. The results shall be recorded and submitted to the customer.\n\nThe Supplier shall be responsible for the integration of the harness at Customer premises, incl.:\n\n- _installation of the harness bundles at Prime/Customer premises,PL IOM harness in ISO5 and the PF IEM harness in ISO8, both in Ottobrunn,,\n\n- _connection of all harness flying leads as part of the harness integration activities (mostly thermal control)\n\n- _electrical integration tests as part of the harness integration activities, incl. Grounding, Isolation, Continuity and Resistance measurements, before and after connection of the item."
+    },
+    {
+      "order": 52,
+      "type": "requirement",
+      "req_id": "HAR SSOW-29",
+      "title": "Integration and post-integration documents",
+      "description": "The Supplier shall establish all documents for integration of the harness and post integration maintenance by the Prime/Customer, incl. integration and test procedures, handling, maintenance, repairing, cleaning and storage procedures."
+    },
+    {
+      "order": 53,
+      "type": "requirement",
+      "req_id": "HAR SSOW-30",
+      "title": "Final routing inspection report after integration",
+      "description": "After integration on the instrument/satellite panels, the routing of the harness shall be positively checked with respect to the CAD routing design.\n\nThe contractor shall perform and issue to the customer, a photo documentation of all bundles integrated on FM structures fixed to the anchor attachment and the interconnection of the crimped end-items.\n\nNote: Input to final DRB in § 5 Milestones, Meetings and Reviews"
+    },
+    {
+      "order": 54,
+      "type": "title",
+      "section": "4.6",
+      "title": "Verification",
+      "description": ""
+    },
+    {
+      "order": 55,
+      "type": "title",
+      "section": "4.6.1",
+      "title": "Verification Control Document (VCD)",
+      "description": ""
+    },
+    {
+      "order": 56,
+      "type": "requirement",
+      "req_id": "HAR SSOW-31",
+      "title": "Documents Subject to Verification Control",
+      "description": "The following documents shall be subject to Verification Control and shall be traced by the Contractor in accordance with the existing requirements:\n\n| unclassified |  |  |  |\n| --- | --- | --- | --- |\n| OGM-SOW-ADSF-21001104007 |  |  |  |\n| AIRBUS | **Harness SOW** | Version: 2 Date: 10.12.2025 |  |\n| Page 20 |  |  |  |\n| Airbus Amber |  |  |  |\n| **Document title** | **Document reference** |  | **AD ref** |\n| Harness Requirements Specification | OGM-SP-ADSF-21001104008 |  | [AD03] |\n| Any harness procurement specification |  |  |  |\n| defined by the Contractor for third party | Contractor’s reference |  | n/a |\n| Suppliers. |  |  |  |\n\nTable 4-1 : Documents subject of Verification Control."
+    },
+    {
+      "order": 57,
+      "type": "requirement",
+      "req_id": "HAR SSOW-32",
+      "title": "Verification Control [ Data",
+      "description": "The Supplier shall provide the Verification Control Document of the requirements in the document list Table 3-1. The exact exchange format as well as the exchange of working copies of the VCD will be identified and agreed between Customer and Contractor."
+    },
+    {
+      "order": 58,
+      "type": "title",
+      "section": "4.6.2",
+      "title": "Inspection and Test",
+      "description": ""
+    },
+    {
+      "order": 59,
+      "type": "requirement",
+      "req_id": "HAR SSOW-33",
+      "title": "Inspections",
+      "description": "The harness supplier shall perform all inspections during the harness manufacturing and integration in order to check compliance with the requirement."
+    },
+    {
+      "order": 60,
+      "type": "requirement",
+      "req_id": "HAR SSOW-34",
+      "title": "Tests",
+      "description": "The Supplier shall foresee, plan and execute all tests necessary to demonstrate complete close-out of requirements.\n\nIn case of procured busses, eg. MIL-STD-1553, the assemblies shall undergo the tests specified in the harness specification or the bus standard.\n\nDC Harness acceptance tests to be performed by the Supplier are manufacturing and integration tests (marked with X in table). The following harness acceptance test matrix applies:\n\n| **Tests** | **Category D** | **Category D** | **Category D** | **Category D** | **Category D** |\n| --- | --- | --- | --- | --- | --- |\n| **Qualification** | **Bus** | **EM** | **First FM** | **Other FM's** |  |\n| Physical properties | To be proposed by supplier | None so far As per harness specification or bus standard | X (mass) / on system level (*) | X (mass) / on system level (*) | X (mass) / on system level (*) |\n| Isolation, grounding, continuity and resistance/low-resistance tests |  |  | X | X | X |\n| Performance tests |  |  | on system level | on system level | on system level |\n| Sine |  |  | -- | on system level | on system level / -- |\n| QSL |  |  | -- | -- | -- |\n| Shock (3) |  |  | -- | -- | -- |\n| (Random) Acoustic |  |  | -- | on system level | on system level |\n| TV |  |  | -- | on system level | on system level |\n| ESD |  |  | on system level | -- | -- |\n| CE |  |  | on system level | on system level |  |\n| CS |  |  | on system level | on system level | on system level |\n\nIts use, total or partial reproduction, as well as its communication to third parties, is prohibited without written authorisation. © Airbus Defence and Space GmbH 2025 – All rights reserved!\n\n| --- | --- | --- | --- | --- | --- |\n| **Tests** | **Category D** |  |  |  |  |\n| **Qualification** | **Bus** | **EM** | **First FM** | **Other FM's** |  |\n| RE |  |  | -- | on system level | -- |\n| RS |  |  | -- | on system level | -- |\n| EMC Transient |  |  | -- | -- | -- |\n| Remarks: --  No test required (*) = includes CoG / MoI System level tests are not responsibility of the harness supplier. |  |  |  |  |  |\n\nTable 4.6-2: Harness Test Matrix"
+    },
+    {
+      "order": 61,
+      "type": "requirement",
+      "req_id": "HAR SSOW-35",
+      "title": "Specific tests",
+      "description": "Qualification and acceptance tests shall be identified at QR."
+    },
+    {
+      "order": 62,
+      "type": "requirement",
+      "req_id": "HAR SSOW-36",
+      "title": "Mass measurement",
+      "description": "Mass of bundles:\n\nOn completion of the manufacturing, the assemblies shall be weighed and this figure reported in the Mass Report at PTR.\n\nMass added during AIT:\n\nThe integration procedure shall reflect the measurement of all masses not weighed so far but introduced during AIT (\"kit mass\") as follows:\n\n1. Measure complete kit mass before integration.\n\n2. Integrate kit parts.\n\n3. Weigh surplus masses not integrated (like cut part of tie-raps, cut flying leads, etc).\n\n4. The integrated mass is to be obtained by difference between complete kit mass minus surplus kit mass.\n\nThe integrated mass shall be reported in the updated Mass Report for final DRB.\n\nMass of restrain system components:\n\nThe tie-bases, cable ties, harness supports, connector brackets and any other on-board ancillary part shall be weighed separately and the total reported in the Mass Reports.\n\nThis mass of the brackets shall be reported in the Mass Report at PTR. The mass of the elements integrated (tie-bases and tie-raps, protective foil) shall be reported in the Mass Report for final DRB)"
+    },
+    {
+      "order": 63,
+      "type": "title",
+      "section": "4.6.3",
+      "title": "Verification analysis",
+      "description": ""
+    },
+    {
+      "order": 64,
+      "type": "requirement",
+      "req_id": "HAR SSOW-37",
+      "title": "1 /Analysis",
+      "description": "The Supplier shall foresee, plan and execute all analysis necessary to demonstrate complete close-out of requirements."
+    },
+    {
+      "order": 65,
+      "type": "requirement",
+      "req_id": "HAR SSOW-38",
+      "title": "Specific analysis",
+      "description": "Any specific analysis in addition to those specified shall be identified at PDR."
+    },
+    {
+      "order": 66,
+      "type": "requirement",
+      "req_id": "HAR SSOW-39",
+      "title": "/ Voltage drop verification r report",
+      "description": "Upon completion of the low-resistance measurements during manufacturing and integration, the Supplier shall confirm the results of the voltage drop analysis by replacing the calculated resistance values at ambient temperature with the real measured ones."
+    },
+    {
+      "order": 67,
+      "type": "title",
+      "section": "4.7",
+      "title": "Workload for quotation",
+      "description": "The workload for the harness is given in terms of termination “points”.\n\nFor the purpose of the present project, manufacturing termination **points** correspond to the amount of cable and shield terminations to be crimped or soldered.\n\nSince parallel connections corresponds to Thermal Control Items to be crimped during AIT, there is no point reduction considered for “multi-terminators”.\n\nThis means,\n\n- On each wire there are two (2) manufacturing points (left and right side)\n\n- On each TP there are therefore four (4) manufacturing points (2 per wire)\n\n- On each STP there are eight (8) manufacturing points (see figure below) `o` 2 per wire\n\n- 2 per shield connection (left and right side)\n\nPin 1 3Pin<br>Wires<br>Pin2 4Pin<br>Shield Shield<br>**----- End of picture text -----**<br>\n\nFigure 4.7-1: Harness manufacturing workload definition, 4 termination points.\n\nCrimp joint<br>Harnessflying leads Itemflyingleads<br>Crimpjoint<br>**----- End of picture text -----**<br>\n\nFigure 4.7-2: Harness AIT workload definition, 4 termination points (w/o reduction coefficient for terminations crimped together 1 with 3 and 2 with 4)\n\n## Crimp joint\n\nFigure 4.7-3: Harness multi-terminator points, 3 termination points (w/o reduction coefficient for terminations crimped together 1 and 2 together with 3)\n\nCable wire- and shield- terminations per model are defined in the Inputs Design Document / Harness Definition provided by the Customer.\n\nRegarding integration measurement effort, the Contractor shall account for the following amount of measurements with DMM on continuity in [Ohm] and [mOhm] and isolation (OOL):\n\n| **TCS item** | **Integration of TCS item implies:** |\n| --- | --- |\n| 2-wire thermistor | 3 measurementsbeforeconnection. 3 measurementsafterconnection. |\n| 4-wire thermistors | 10 measurementsbeforeconnection. 10 measurementsafterconnection. ~~二~~ |\n| Single circuit Heaters | 3 measurementsper heater mat beforeconnection. 3 measurementsper circuit(over the total heater chain)afterconnection. |\n| Double circuit Heaters | 10 measurementsper heater mat beforeconnection. 10 measurementsper circuit(over the total heater chain)afterconnection. ~~一~~ |\n\nTable 4-3 : Workload associated to integration measurements of thermal control items.\n\nADS assesses the time per measurement between 15s to 20s.\n\nAn overview of the workload is next provided in Table 3.7-4: harness workload.\n\nl ifi d\n\n| **Qty** | **Model** | **Type** | **Points** | **Description/Use** | **Class** | **Clean-** **room** | **Bake out** | **Specific Tests** |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| EM |  |  |  |  |  |  |  |  |\n| EM PF IEM harness(PF Module) (Full redundant flight capable) |  |  |  |  |  |  |  |  |\n| 1 | EM | DC | 4000 | PF IEM harness | Class 2 components MIL/OPTION 6 | ISO 8 | Bake out 72 h | Standard manufacturingtests. |\n| 1 | EM | DC (AIT) | 500 | PF IEM harness AIT | Class 2 components MIL /OPTION 6 | ISO 8 | Bake out 72 h | Tests: 1200 measurements for heaters and thermistors. |\n| 1 | EM | MIL1553 | (entire bus) | MIL-1553 single bus with 3 long stubs (3 couplers main). 2 terminations(1+1) | MIL-1553 single bus with 3 long stubs (3 couplers Class 2 components MIL / OPTION 6 | ISO 8 | Bake out 72 h | As per MIL std. |\n| EM PL IOM harness(Instrument Module)--> THIS HARNESS IS FLAT SAT(=TEST EXTENSIONS BASED ON LENGTH) |  |  |  |  |  |  |  |  |\n| 1 | EM | DC | 1200 | PL IOM Harness | Class 2 components MIL | ISO 5 | Bake out with TQCM | Standard manufacturingtests. |\n| 1 | EM | DC AIT | 740 | PL IOM Harness AIT | Class 2 components MIL | ISO 5 | Bake out with TQCM | Tests: 2400 measurements for heaters and thermistors. |\n| 1 | EM | MIL1553 | (entire bus) | MIL-1553 single bus with 4 long stubs (4 couplers main). 2 terminations(1+1) | MIL-1553 single bus with 4 long stubs (4 couplers Class 2 components MIL | ISO 5 | Bake out with TQCM | As per MIL std. |\n| PFM and FM |  |  |  |  |  |  |  |  |\n| (P)FM PF IEM harness(PF Module) |  |  |  |  |  |  |  |  |\n| 1 | FM | DC | 4000 | PF IEM harness | Class 1 components ESCC | ISO 8 | Bake out 72 h | Standard manufacturingtests. |\n| 1 | FM | DC (AIT) | 500 | PF IEM harness AIT | Class 1 components ESCC | ISO 8 | Bake out 72 h | Tests: 1400 measurements for heaters and thermistors. |\n| 1 | FM | MIL1553 | (entire bus) | MIL-1553 dual bus with 3 long stubs (3 couplers main/red). 4 terminations(2+2) | MIL-1553 dual bus with 3 long stubs (3 couplers Class 1 components ESCC | ISO 8 | Bake out 72 h | As per MIL std. |\n| (P)FM PL IOM harness(Instrument Module) |  |  |  |  |  |  |  |  |\n| 1 | FM | DC | 2000 | PL IOM Harness | Class 1 components ESCC | ISO 5 | Bake out with TQCM | Standard manufacturingtests. |\n| 1 | FM | DC AIT | 1000 | PL IOM Harness AIT | Class 1 components ESCC | ISO 5 | Bake out with TQCM | Tests: 2800 measurements for heaters and thermistors. |\n| 1 | FM | MIL1553 | (entire bus) | MIL-1553 dual bus with 4 long stubs (4 couplers main/red). 4 terminations(2+2) | MIL-1553 dual bus with 4 long stubs (4 couplers | ISO 5 | Bake out with TQCM | As per MIL std. |\n\nTable 4.7-4: harness workload. The Contractor shall account for 15% additional workload.\n\nOption 6 (§ 5.6.6 Option 6: EM PF IEM harness “flight-able”): EM PF IEM harness built with Class 1 components ESCC wrt connectors and accessories (cables and workmanship standards are anyway flight qualified)\n\nIn all cases, the characteristics of the harness are:\n\n- Entirely overshielded with aluminium foil.\n\n- External Kapton tape applied over the aluminum overall shield of the power bundles in PF IEM harness ISO8.\n\n- 3D harness (even at some locations routed in “stack” configuration one on top of the other)\n\n- Harness split into assemblies, no separate bundles; each assembly contains several connector ends, all as a block.\n\n- Bundles and branches segregated according to (EMC, main/redundant, Crimp TCS)\n\n- Harness average bundle length in the order of 2m."
+    },
+    {
+      "order": 68,
+      "type": "title",
+      "section": "4.8",
+      "title": "Components list for quotation",
+      "description": "For quotation purposes the bill of connectors and cables to be considered per model are next included: Connector List (40% in the Instr., 60% in the PF)\n\n| Model | Con | Qty |\n| --- | --- | --- |\n| (P)FM | DAMA 15P | 15 |\n| (P)FM | DAMA 15S | 13 |\n| (P)FM | DAMA 26P | 7 |\n| (P)FM | DAMA 26S | 20 |\n| (P)FM | DBMA 25P | 11 |\n| (P)FM | DBMA 25S | 7 |\n| (P)FM | DBMA 44P | 11 |\n| (P)FM | DBMA 44S | 6 |\n| (P)FM | DBMA 5W5P | 1 |\n| (P)FM | DBMA 5W5S | 5 |\n| (P)FM | DCMA 37P | 6 |\n| (P)FM | DCMA 37S | 8 |\n| (P)FM | DCMA 62P | 3 |\n| (P)FM | DCMA 62S | 4 |\n| (P)FM | DDMA 50P | 2 |\n| (P)FM | DDMA 50S | 4 |\n| (P)FM | DDMA 78P | 2 |\n| (P)FM | DDMA 78S | 3 |\n| (P)FM | DEMA 09P | 25 |\n| (P)FM | DEMA 09S | 14 |\n| (P)FM | DEMA 15P | 8 |\n| (P)FM | DEMA 15S | 7 |\n| (P)FM | DFMA 104P | 2 |\n| (P)FM | DFMA 104S | 6 |\n| (P)FM | MDM 100P | 4 |\n| (P)FM | MDM 15P | 6 |\n\n| Model | Con | Qty |\n| --- | --- | --- |\n| (P)FM | MDM 15S | 5 |\n| (P)FM | MDM 21P | 4 |\n| (P)FM | MDM 25P | 4 |\n| (P)FM | MDM 25S | 4 |\n| (P)FM | MDM 31S | 4 |\n| (P)FM | MDM 37P | 6 |\n| (P)FM | Total | 227 |\n\nTable 4.8-1: (P)FM harness connector list. The Contractor shall account for 15% additional connectors.\n\nCable List (40% in the Instr., 60% in the PF)\n\n| Model | Cable | Length[m] |\n| --- | --- | --- |\n| (P)FM | SBL26_100 | 32 |\n| (P)FM | SBL26_120 | 25,6 |\n| (P)FM | SBL28_100 | 51,2 |\n| (P)FM | SPW26_100 | 6,4 |\n| (P)FM | STP22 | 19,2 |\n| (P)FM | STP24 | 22,4 |\n| (P)FM | STP26 | 235,2 |\n| (P)FM | TP20 | 297,6 |\n| (P)FM | TP22 | 118,4 |\n| (P)FM | TP24 | 64 |\n| (P)FM | TP26 | 131,2 |\n| (P)FM | TP28 | 212,8 |\n| (P)FM | ST4C26 | 3,2 |\n| (P)FM | ST5C26 | 16 |\n| (P)FM | Total | 1235,2 |\n\nTable 4.8-2: (P)FM harness cable list. The Contractor shall account for 25% additional length.\n\nIn addition, it shall be included 8 MIL-1553 terminations and 4 CAN bus terminations (120Ohm)\n\nAll connectors shall be fitted with backshells. Preferred single shell types backshells are POLAMCO or similar and, in case of no availability (eg. lead times not compatible with project schedule), preferred 2- halves type backshells are DW300 from Sommer or similar. Consider single shell types backshells from POLAMCO or similar for unit connectors with limited space. Mixed of both type of backshells is possible."
+    },
+    {
+      "order": 69,
+      "type": "title",
+      "section": "4.9",
+      "title": "Mechanical Parts list for quotation",
+      "description": "Apart from standard mechanical parts like stand-offs and pylons, the following project specific brackets are to be taken into account for quotation:\n\nList of brackets:\n\n- PF/PL coupling CBKTs: 5 bkts with 6 connectors each.\n\n- internal PL (Instr.) dismountability CBKTs: 4 bkts with 4 connectors each.\n\n- internal PF dismountability CBKTs: 4 bkts with 2 connectors each\n\n- Skin CBKTs in PL (Instr.): 2 bkts with 6 connectors each.\n\n- Skin CBKT’s in PF: 2 bkts with 6 connectors each."
+    },
+    {
+      "order": 70,
+      "type": "title",
+      "section": "4.10",
+      "title": "Travel Plan for quotation",
+      "description": "Travel plan: 1 travel for the PF harness (ISO8) and 3 travels for the Instrument harness (ISO5).\n\n- PF IEM harness, per model:\n\n- ISO8 integration in Airbus Ottobrunn.\n\n- 1 integration time-slot of 2 weeks with 2 people.\n\n- PL IOM harness, per flight model:\n\n- ISO5 integration in Airbus Ottobrunn.\n\n- 3 integration time-slots of 2 weeks each with 2 people.\n\n- Working over weekends can be made available upon request."
+    },
+    {
+      "order": 71,
+      "type": "title",
+      "section": "5",
+      "title": "Deliverables",
+      "description": "The following sections provide a list of the items to be delivered together with the date and place of delivery."
+    },
+    {
+      "order": 72,
+      "type": "title",
+      "section": "5.1",
+      "title": "Deliverable Hardware",
+      "description": ""
+    },
+    {
+      "order": 73,
+      "type": "requirement",
+      "req_id": "HAR SSOW-40",
+      "title": "Deliverable Harness Hardware",
+      "description": "The Supplier shall deliver all the bundles and connectors constituting the harness, with all needed accessories mounted on harness or separate delivered:\n\n- _all connectors, wires strain relief clamp and EMC backshells, shields connection grids, metallic closing shells, and associated fixing devices,\n\n- _connectors locking devices (separate delivered, not mounted)\n\n- _cables and overshields,\n\n- _bundles fixation devices: fasteners, cable clamps, ty-bases, ty-raps, ty-bases supports, glued or riveted cables supports, adhesive tapes…\n\n- _all connector brackets and support structures part of the harness subsystem,\n\n- _SAFE/ARM plugs,\n\n- _connector savers for receptacle connectors on connector brackets,\n\n- _connector protective covers (ESD qualified for electrostatic discharge), against dust and mechanical damage, mounted on connectors,\n\n- _identification parts for bundles, connectors, plugs, mechanical parts,\n\n- _edges protections,\n\n- _all needed accessories and harness consumables."
+    },
+    {
+      "order": 74,
+      "type": "requirement",
+      "req_id": "HAR SSOW-41",
+      "title": "Connector Savers",
+      "description": "Receptacle connectors on connector brackets shall be equipped with connector savers mated at plug side.\n\nNote: This requirement is confirmed for coupling brackets between PF/PL. For internal dismountability brackets PL IOM / PF IEM it shall be considered as baseline, although it can later be relaxed by certain amount of savers as loose items for AIT instead of for all dismountability connectors."
+    },
+    {
+      "order": 75,
+      "type": "requirement",
+      "req_id": "HAR SSOW-42",
+      "title": "Harness fixations",
+      "description": "All harness fixation and attachment HW inclusive bolts, washers, nuts and spacers and shims shall be procured by the harness Supplier and shipped to Prime/Customer AIT facilities at delivery of the harnss. Note: This does not apply to screws for bracket fixation to structural inserts."
+    },
+    {
+      "order": 76,
+      "type": "title",
+      "section": "5.2",
+      "title": "Harness Models",
+      "description": ""
+    },
+    {
+      "order": 77,
+      "type": "requirement",
+      "req_id": "HAR SSOW-43",
+      "title": "Deliverable harness models",
+      "description": "The Contractor is requested to provide in line with the requirements in GSOW [AD-02], models and quantities of equipment as given in the table below:\n\n| **Model** | **Qty** | **IRR Date** | **AIT Location** |\n| --- | --- | --- | --- |\n| EM PL IOM harness | 1 | Mar.27(flat) | As in§5.3 |\n| PFM PL IOM harness | 1 | Nov.27 | As in§5.3 |\n| FM2 PL IOM harness | 1 | Mai.28 | As in§5.3 |\n| EM PF IEM harness | 1 | Oct.27 | As in§5.3 |\n| PFM PF IEM harness | 1 | Jul.28 | As in§5.3 |\n| FM2 PF IEM harness | 1 | Dec.28 | As in §5.3 |\n\nTable 5-1 : Harness Models and Need Dates.\n\nThe EM harness will be used for electrical performance, electromagnetic compatibility, functional testing and debug of test scripts of the EM Instrument and PF modules.\n\n- The EM PF IEM harness shall be electrically and electromagnetically flight representative; manufacturing processes, routing, shielding, overshielding, backshells and grounding shall be therefore flight representative.\n\n- The EM PL IOM harness is a flat-sat made of test extension harness.\n\nWith respect to deliverables, the EM PF IEM harness shall include all corresponding ancillary parts and restrain system components, including spare kit and savers as well."
+    },
+    {
+      "order": 78,
+      "type": "requirement",
+      "req_id": "HAR SSOW-44",
+      "title": "Delivery time",
+      "description": "Physical arrival of the equipment at customer premises shall take place not later than 1 week after CTS."
+    },
+    {
+      "order": 79,
+      "type": "requirement",
+      "req_id": "HAR SSOW-45",
+      "title": "Delivery conditions",
+      "description": "The delivery conditions of the hardware shall be as specified in the [AD-01] DC Harness Spec § 15 – Package and Shipping Requirements -"
+    },
+    {
+      "order": 80,
+      "type": "requirement",
+      "req_id": "HAR SSOW-46",
+      "title": "Deliverable harness integration procedure",
+      "description": "The contractor shall provide a procedure for the Integration of the Harness at Airbus Defence and Space."
+    },
+    {
+      "order": 81,
+      "type": "title",
+      "section": "5.3",
+      "title": "Delivery Address",
+      "description": "The delivery address for all hardware deliverable items is:\n\nAirbus Defence and Space GmbH\n\nWareneingang (Geb.6.1 – Spedition Claus)\n\nEmpfänger: D. Max Mustermann, (ext.XXXX) / Ignacio Mediavilla (ext.9200)\n\nLudwig Bölkow Allee 40 82024 Taufkirchen\n\nGermany"
+    },
+    {
+      "order": 82,
+      "type": "title",
+      "section": "5.4",
+      "title": "Spare/Repairs Approach",
+      "description": ""
+    },
+    {
+      "order": 83,
+      "type": "requirement",
+      "req_id": "HAR SSOW-47",
+      "title": "Repairing g time",
+      "description": "The Contractor shall be able to repair the of flight H/W in 2 weeks turnaround time at AIT site."
+    },
+    {
+      "order": 84,
+      "type": "title",
+      "section": "5.4.1",
+      "title": "Spares",
+      "description": "A spare implementation shall be proposed by the Contractor allowing for repair of any failure that might occur on any delivered equipment and at any time during the program until the launch of the satellite.\n\nThe Contractor shall assess and propose the best industrial and most efficient repair approach.\n\nThe Supplier shall be able to provide sufficient spare parts to ensure that any repair or modification is possible without delay due to delivery time of parts and materials.\n\nFor harness, the following spare approach shall apply."
+    },
+    {
+      "order": 85,
+      "type": "title",
+      "section": "5.4.2",
+      "title": "Non-deliverable spare batch",
+      "description": ""
+    },
+    {
+      "order": 86,
+      "type": "requirement",
+      "req_id": "HAR SSOW-48",
+      "title": "Non-deliverable : spare kit",
+      "description": "The Supplier shall implement an in-house spare/repair/attrition approach to guarantee the immediate availability of parts (eg. connectors, back shells, etc) and materials for carrying out modifications on the harness covering minimum the 10% of the total assembly after delivery."
+    },
+    {
+      "order": 87,
+      "type": "title",
+      "section": "5.4.3",
+      "title": "Deliverable spare kit",
+      "description": ""
+    },
+    {
+      "order": 88,
+      "type": "requirement",
+      "req_id": "HAR SSOW-49",
+      "title": "Deliverable spare kit",
+      "description": "In addition to the above requested spare part availability, the contractor shall deliver a spare kit containing backup and non-reusable parts and materials necessary in case of repairing or modifications during the AIT activities. The contents of the spare kit shall be computed extra to the nominal harness delivery.\n\nAt least following items and quantities shall be part of the deliverable spare kit:\n\n| **Item** | **Quantity per type ** | **Minimum quantity per type** |\n| --- | --- | --- |\n| Saver (only for FMs) | 10% | 1 piece |\n| EMC cap | 10% | 1 piece |\n| Screw lock (male or female + washers or clip) | 10% | 2 pieces (1 set) |\n| Tie-rap + protective layer | 25% | 250 pieces |\n| Al foil | 2 rolls | 2 rolls |\n\n| Airbus Amber |  |  |\n| --- | --- | --- |\n| **Item** | **Quantity per type ** | **Minimum quantity per type** |\n| Yellow Kapton | 2 rolls | 2 rolls |\n| Bonding wire | 10% | 10m |\n| Bonding strap | 20% | 2 pieces |\n| Ring tonge terminal | 20% | 2 pieces |\n\nTable 5.4-1: Deliverable spare kit\n\nThe Supplier can add other non-reusable materials and parts deemed necessary in case of dismounting and reintegration during AIT (eg. due to unit dismounting or other repairing)"
+    },
+    {
+      "order": 89,
+      "type": "requirement",
+      "req_id": "HAR SSOW-50",
+      "title": "Delivery of the : spare kit",
+      "description": "The Supplier shall deliver the deliverable spare/repair kit together with each harness model."
+    },
+    {
+      "order": 90,
+      "type": "title",
+      "section": "5.5",
+      "title": "Ground Support Equipment",
+      "description": ""
+    },
+    {
+      "order": 91,
+      "type": "requirement",
+      "req_id": "HAR SSOW-51",
+      "title": "GSE",
+      "description": "Ground Support Equipment (GSE) necessary to transport, protect, store, handle and integrate the harness within the spacecraft shall be delivered.\n\nIn particular, the Contractor shall deliver the hardware items in appropriate reusable containers, with a full set of connector savers.\n\nSpecial handling MGSE shall be provided by the Contractor and approved by the Customer for units with a mass higher than 50 kg\n\nTechnical requirements for package, shipping and delivery can be found in the DC harness spec:\n\n- § 15 –Package and Shipping Requirements-\n\n- § 16 –Delivery Requirements-.\n\n- §11 – Mock-up- / HAR-1282 in case the mockup is delivered."
+    },
+    {
+      "order": 92,
+      "type": "title",
+      "section": "5.6",
+      "title": "Options",
+      "description": ""
+    },
+    {
+      "order": 93,
+      "type": "title",
+      "section": "5.6.1",
+      "title": "Option 1: PF IEM Harness in ISO 8",
+      "description": "[Deleted]"
+    },
+    {
+      "order": 94,
+      "type": "title",
+      "section": "5.6.2",
+      "title": "Option 2: Integration of the harness and all its subassemblies",
+      "description": "[Deleted]"
+    },
+    {
+      "order": 95,
+      "type": "title",
+      "section": "5.6.3",
+      "title": "Option 3: Voltage drop, current derating and thermal dissipation analysis",
+      "description": ""
+    },
+    {
+      "order": 96,
+      "type": "title",
+      "section": "5.6.4",
+      "title": "Option 4: Thermal analysis of the bundle (overshielded bundles)",
+      "description": ""
+    },
+    {
+      "order": 97,
+      "type": "title",
+      "section": "5.6.5",
+      "title": "Option 5: Price and Lead time of an additional Flight Models",
+      "description": "While it is presently assumed that 2 identical OGM satellites are built, there is the opportunity to enlarge the constellation. Therefore, the price and lead time of an additional Flight Model shall be provided.\n\nOption 5a: OGM Harness recurrent FM3\n\nOption 5b: OGM Harness recurrent FM4"
+    },
+    {
+      "order": 98,
+      "type": "title",
+      "section": "5.6.6",
+      "title": "Option 6: EM PF IEM harness flight capable",
+      "description": "EM PF IEM harness shall be optionally built built with Class 1 components ESCC wrt connectors and accessories (cables and workmanship standards are anyway flight qualified)"
+    },
+    {
+      "order": 99,
+      "type": "title",
+      "section": "5.7",
+      "title": "Schedule",
+      "description": ""
+    },
+    {
+      "order": 100,
+      "type": "requirement",
+      "req_id": "HAR SSOW-52",
+      "title": "Revisited schedule",
+      "description": "The Tenderer shall provide the shortest credible lead time for the baseline and options assuming the schedule boundaries and milestone dates provided in this document.\n\nThe Tenderer shall give clear evidence of the industrial maturity and capacity to deliver within the expected timeframe."
+    },
+    {
+      "order": 101,
+      "type": "requirement",
+      "req_id": "HAR SSOW-53",
+      "title": "Schedule contents",
+      "description": "The schedule shall include all Milestones defined in the Meeting Plan and Deliveries in the Deliverable Item List."
+    },
+    {
+      "order": 102,
+      "type": "requirement",
+      "req_id": "HAR SSOW-54",
+      "title": "Co-engineering",
+      "description": "In relation with §3.2 Contractor responsibilities, HAR SSOW-4 / Changes until PDR, the Contractor shall support a co-engineering phase from Kick-Off until the PDR, which will be done to align the overall design of the harness. After that period changes will be managed via standard configuration control process.\n\nSelection of components (cables, connectors, backshells) will be agreed during coengineering phase between the Contractor and Airbus based on system trade-off results."
+    },
+    {
+      "order": 103,
+      "type": "requirement",
+      "req_id": "HAR SSOW-55",
+      "title": "Long lead items",
+      "description": "The Contractor shall highlight any long lead items including relevant lead time and identify any margin in the schedule. Additionally, the lead time for a re-order of components shall be provided."
+    },
+    {
+      "order": 104,
+      "type": "title",
+      "section": "5.8",
+      "title": "Other Information Expected",
+      "description": ""
+    },
+    {
+      "order": 105,
+      "type": "requirement",
+      "req_id": "HAR SSOW-56",
+      "title": "ITAR items",
+      "description": "The Contractor shall identify potential ITAR / other national regulation restrictions (affecting export control / handling of the unit), and propose alternatives wherever possible."
+    },
+    {
+      "order": 106,
+      "type": "title",
+      "section": "5.9",
+      "title": "PA Requirements",
+      "description": "Relevant PA and cleanliness requirements are noted in the [AD-08] and [AD-03]."
+    },
+    {
+      "order": 107,
+      "type": "title",
+      "section": "6",
+      "title": "Reviews, Milestones and Documentation",
+      "description": ""
+    },
+    {
+      "order": 108,
+      "type": "title",
+      "section": "6.1",
+      "title": "Reviews, Milestones and Meetings",
+      "description": ""
+    },
+    {
+      "order": 109,
+      "type": "requirement",
+      "req_id": "HAR SSOW-57",
+      "title": "Reviews and KIP/MIPs P Plan",
+      "description": "The list of milestones (MS) and MIPs is provided below, considering the harness is an equipment category CAT D.\n\nThe list of milestones and inspections represents an streamlined plan aimed to alight the Contractor from documentary workload. In order to ensure compliance with the progress of the ongoing processes, ADS reserves the right to attend the KIPs and review the manufacturing and inspection documentation on-site. This measure aims to accelerate the schedule by endorsing ADS the authorization to continue, based on the acceptance of the reviewed documentation at the manufacturing site, without the formal delivery of Datapacks by the Contractor.\n\n## _Note:\n\nThis should be read in conjunction with the documents listed per review in the GSOW [AD-02]. The need for these reviews shall be established on the basis of requirements expressed in GSOW [AD-02].\n\nFormal submittals for equipment reviews are in the next list identified as MS=”YES” (MS: Milestone):\n\n| **Meeting** | **MS** | **Review name** | **Date** | **Deliverables** |\n| --- | --- | --- | --- | --- |\n| **KO** (see GSOW [AD- 02]) | YES | Kick-off | May 2026 | As in §6.2 |\n| **EQSR / MPCB** **(**see GSOW [AD-02]) | YES | Equipment Qualification Status Review / Material and Process Control Board | To be proposed by the supplier | As in §6.2 |\n| **PDR** **(**see GSOW [AD- 02]) | YES | Preliminary Design Review | To be proposed by the supplier No later than**Q4.2026** | As in §6.2 |\n| **Manufacturing** **QR** **(**see GSOW [AD- 02]) (if needed - to be confirmed at EQSR) | YES | Manufacturing Qualification Review | To be proposed by the supplier | As in §6.2 |\n| **CDR** – (see GSOW AD02) | YES | Critical Design Review | To be proposed by the supplier No later than**Q1.2027** | As in §6.2 |\n| **MIP/KIP#1** | NO | Manufacturing Mockup Inspection | To be proposed by the supplier |  |\n\n| **Meeting** | **MS** | **Review name** | **Date** | **Deliverables** |\n| --- | --- | --- | --- | --- |\n| Objective: Upon finalization of the manufacturing jigs, the mockups shall be verified by the customer at harness supplier clean-room facility. This MIP is mandatory for MRR. Authorization to proceed with the MRR. |  |  |  |  |\n| **MRR** | YES | Manufacturing Readiness Review | To be proposed by the supplier No later than 6 months before the IRR. | As in §6.2 |\n| Objective: Authorization to manufacture the start-connectors upon successful mockup inspection and after successful PDR (for EM) and CDR (for FM) |  |  |  |  |\n| **KIP#2** | NO | Start connectors before closing | To be proposed by the supplier |  |\n| Objective: Authorization to close the backshells upon successful connector inspection to confirm ECSS flight quality. Manufacturing documents and KIPs shall be inspected by the Prime/Customer. Authorization to proceed with the routing of the bundles on the manufacturing mockup. |  |  |  |  |\n| **KIP#3** | NO | Routing before end connectors manufacturing | To be proposed by the supplier |  |\n| Objective: Upon completion of the routing on the mockup and before starting the manufacturing of the end-connectors, the routing shall be inspected by the Prime/Customer. Authorization to cut the final length for manufacturing of the end-connectors. |  |  |  |  |\n| **KIP#4** | NO | End-connectors before closing | To be proposed by the supplier |  |\n| Objective: Authorization to close the backshells upon successful connector inspection to confirm ECSS flight quality. Manufacturing documents and KIPs shall be inspected by the Prime/Customer. |  |  |  |  |\n| **MIP/KIP#5 /** **Manufacturing** **TRR** | NO | Final routing inspection and review of the mfg. documents in the cleanroom. / Test Readiness Review | To be proposed by the supplier | Test Procedure |\n\n| **Meeting** | **MS** | **Review name** | **Date** | **Deliverables** |\n| --- | --- | --- | --- | --- |\n| Objective: Upon finalization of the harness manufacturing by completing the end-connectors, the final routing shall be inspected by the Prime/Customer. Authorization to dismount the harness from the manufacturing mockup in order to proceed with the manufacturing tests. This MIP is mandatory for TRR. Manufacturing TRR objective: To grant the authorization to proceed with the manufacturing tests upon successful MIP/KIP#5 and approval of the TP. |  |  |  |  |\n| **KIP/MIP#6 /** **Manufacturing** **PTR** | NO | Manufacturing Post-Test Review | To be proposed by the supplier | As-Run Test Report |\n| Objective: Upon completion of the manufacturing tests (2ndconnector mating for overshielded harness), the connectors shall be inspected by the Prime/Customer. Manufacturing PTR objective: Review of the as-run test results upon completion of the manufacturing tests in order to confirm that the measurements are in line with the predictions in order to meet the requirements Authorization to proceed with cleanliness. |  |  |  |  |\n| **MIP/KIP#7** **(ISO5 harness** **only)** | NO | Cleanliness inspection | Bakeout test reports | Cleanliness inspection |\n| Objective: Upon finalization of the bake-out with TQCM and completion of the particulate cleaning in ISO5, the harness shall be inspected in dark room with UV light at supplier facilities by the Prime/Customer. Authorization to proceed with the packing for delivery (ISO5 harness) |  |  |  |  |\n| **CTS** **to** **AIT** **Site** | YES | Consent to Shipment to the AIT Site | **2 weeks**before need dates for IRRs (defined in Table 5-1) | As in §6.2 EIDP if no Harness AIT |\n| **IRR** | YES | Integration Readiness Review | To be proposed by the supplier | Integration procedure |\n| Objective: Upon passed harness incoming inspection (packed, w/o opening bags) and approval of the integration procedure it will be authorized to proceed with the integration of the harness onto the S/C panels and Instrument. Each bundle shall be inspected at Prime/Customer facilities when unpacked and before integration to confirm no damages/crossed contamination occurred during transportation. |  |  |  |  |\n\n| **Meeting** | **MS** | **Review name** | **Date** | **Deliverables** |\n| --- | --- | --- | --- | --- |\n| **MIP/KIP#8** **(one** **per** **integration** **slot) /** **Integration** **PTR** | YES | Integration Post-Test Review | To be proposed by the supplier | As-runs |\n| Objective: Upon completion of the integration campaign the harness shall be inspected by the Prime/Customer. PTR objective: Review of the integration status upon completion of the integration activities (harness bundles installation, flying lead connection and verification) and measurement results in order to confirm that the measurements are in line with the analysis predictions (eg. Vd) and meet the requirements (eg data busses) Authorization to proceed with the electrical integration (AIT) Note: The Supplier shall envisage several integration stages, as the harness may not be fully integrated in one stage. |  |  |  |  |\n| **TRB** **/** **DRB** **integrated** | YES | Test Review Board / Delivery Review Board Objective: Formal DRB and acceptance of the integratedharness. | To be proposed by the supplier | Required (EIDP) As in §6.2 |\n\nTable 6.1-1: OGM Harness Project Meetings and Reviews"
+    },
+    {
+      "order": 110,
+      "type": "title",
+      "section": "6.2",
+      "title": "Deliverable Documentation",
+      "description": "All Documents shall be provided as defined in GSOW [AD-02] and in _Req HAR SSOW-59_ .\n\nEnd Item Data Packages (EIDP) shall be provided for all deliverable items, as defined in GSOW [AD-02]).\n\nThe Table of content of each deliverable document is defined in the corresponding ECSS standard.\n\nThe contractor may propose to combine documents into single ones, allowing to make best use of his documentation heritage and company standards. The mapping shall be indicated in the compliance statement.\n\nThe contractor may further justify that some documents are not applicable to his product ( e.g. SW Lifecycle Document do not need to be delivered for products without S/W)."
+    },
+    {
+      "order": 111,
+      "type": "requirement",
+      "req_id": "HAR SSOW-58",
+      "title": "Document Requirements Lists (DRL)",
+      "description": "NA"
+    },
+    {
+      "order": 112,
+      "type": "requirement",
+      "req_id": "HAR SSOW-59",
+      "title": "Revised Documentation",
+      "description": "The equipment documentation deliveries and the associated datapacks are as specified in the GSOW, amended and completed by this SOW as follows:\n\nDocuments to be delivered are:\n\n| DRL Reference | Project Management | PROPOSAL | KO | EQSR | PDR | QR | CDR | MRR | CTS | IRR | DRB | Remarks |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| PM-1 | Project Management Plan | X | X |  | X |  |  |  |  |  |  | As per Annex A of ECSS-M-ST-10C, Rev 1 |\n| PM-2 | Progress Report |  |  | X | X |  | X | X | X |  |  | As per management requirements in advance of progress meetings |\n| PM-3 | Project Meetings Plan |  |  | X | X |  | X | X | X | X |  | Monthly, plus weekly update for short term (4 week) time window; |\n| PM-4 | Minutes of Meetings |  |  | X | X |  | X | X | X | X | X | \"A\" applies to meetings with Customer; \"I\" applies to meetings with lower tier / sub- contractors, others; MoM with Customer issued not later than 1 week following the meeting, signed by all attending parties; |\n| PM-4a | Meeting and Reviews Presentations |  |  | X | X |  | X | X | X | X | X |  |\n| PM-5 | Project Directory |  | X |  |  |  |  |  |  |  |  | First Issue at KO, further updates as required; |\n| PM-7 | Inventory Record |  |  |  | X |  | X | X |  | X | X | As per Annex I of ECSS-M-ST-60C |\n\n| DRL Reference | Project Management | PROPOSAL | KO | EQSR | PDR | QR | CDR | MRR | CTS | IRR | DRB | Remarks |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| PM-8 | Schedule Reporting (including Master Schedule) | X |  | X | X |  | X | X | X | X | X | together with Progress Report, with lower level inputs; As per Annex C of ECSS-M-ST-60C and Annex B of ECSS-M-ST-60C. |\n| PM-9 | Contract Change Notice |  |  | X | X |  | X | X | X | X | X | As required; As per Annex O of ECSS-M-ST-60C. |\n| PM-10 | Change Status List | Change Status List |  | X | X |  | X | X | X | X | X | Together with Progress Report. |\n| PM-11 | Action Item Status List |  |  | X | X |  | X | X | X | X | X | Common database to be maintained by the Contractor but readable by the customer; Extract to be provided for each Progress Meeting. |\n| PM-12 | Product Tree | X |  |  | X |  | X |  |  |  | X | As per Annex B of ECSS-M-ST-10C, Rev 1, further deliveries as required for updates |\n| PM-13 | Work Breakdown Structure | X | X | X | X |  | X |  |  |  |  | First delivery with proposal, additional updates as required; As per Annex C of ECSS-M-ST-10C, Rev 1 |\n| PM-14 | Work Package Description | X | X | X | X |  | X |  |  |  |  | First delivery with proposal, additional updates as required; As per Annex D of ECSS-M-ST-10C, Rev 1 |\n| PM-15 | Invoicing and Payments Status Report |  |  | X | X |  | X | X | X | X | X | Together with Progress Report PM-2. |\n| PM-16 | Milestone Payment Plan | X | X | X | X |  | X | X | X | X | X | First delivery with proposal, additional updates as required; As per Annex H of ECSS-M-ST-60C. |\n| PM-16a | Payment Milestone Achievement Certificate (PMAC) |  |  | X | X |  | X | X | X | X | X | Delivery as required. |\n| PM-18 | Contract Structure | X |  | X | X |  | X |  |  |  |  | First delivery with proposal, additional updates as required. |\n| PM-20 | Configuration Control and Documentation Management Plan |  | X |  | X |  | X |  |  |  |  | As per Annex A of ECSS-M-ST-40C, Rev 1 (including Document Management Procedure), may be included in the Management plan PM-1 |\n| PM-21 | Document Change Notice |  |  | X | X |  | X | X | X | X | X |  |\n| PM-22 | Contract Close-out Data Package |  |  |  |  |  |  |  |  |  | X | Delivery timing to be consistent with the Contract.. |\n\n| DRL Reference | Project Management | PROPOSAL | KO | EQSR | PDR | QR | CDR | MRR | CTS | IRR | DRB | Remarks |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| PM-23A | Request for Deviation |  |  | X | X |  | X | X | X | X | X | As applicable; Approval required for all those items which will result in a degradation with respect to the customer specified requirements; As per Annex I of ECSS-M-ST-40C, Rev 1. |\n| PM-23B | Request for Waiver |  |  | X | X |  | X | X | X | X | X | As applicable; Approval required for all those items which will result in a degradation with respect to the customer specified requirements; As per Annex J of ECSS-M-ST-40C, Rev 1,. |\n| PM-24 | Project Organization Breakdown Structure | X | X |  | X |  |  |  |  |  |  | First delivery with proposal, additional updates as required. |\n| PM-26 | Configuration Item Data List (CIDL) |  |  |  | X |  | X | X | X | X | X | Combination of Configuration Items (CI) list and CIDL as per Annexes B and C of ECSS-M-ST-40C, Rev 1; (Including RFD/RFW Status List). |\n| PM-26b | As Build Configuration List |  |  |  |  |  |  |  | X |  | X | As per Annexes D of ECSS-M-ST-40C, Rev 1 |\n| PM-27 | Document Status List |  |  |  | X |  | X | X | X | X | X |  |\n| PM-28 | Risks Assessment and Management Plan | Risks Assessment X | X |  | X |  | X |  |  |  |  | As per Annex B of ECSS-M-ST-80C. |\n| PM-29 | Risks Register and Risk Report | X | X | X | X |  | X | X | X | X | X | Status of Major Risks; presented at all Progress Meetings; based on Annexes C, D of ECSS-M-ST-80C |\n| PM-30 | List of Acronyms and Abbreviations |  |  |  |  |  |  |  |  |  |  | as required. |\n| PM-31 | Photographic Documentation |  |  |  |  |  |  |  | X |  | X |  |\n| PM-32 | Export Control List |  | X |  | X |  | X |  | X | X | X |  |\n| PM-33 | Export License | X |  |  |  |  | X |  | X | X | X | Format and contents pending applicable export regulations. |\n| PM34 | REACh and RoHS Documentation |  | X |  | X |  |  |  | X |  | X | First issue to be delivered with proposal. Format and contents according to Airbus template. |\n\nTable 6.2-1: Document Requirement List (DRL – Project Management\n\nIts use, total or partial reproduction, as well as its communication to third parties, is prohibited without written authorisation. © Airbus Defence and Space GmbH 2025 – All rights reserved! Airbus Amber\n\n| DRL Reference | Engineering | PROPOSAL | KO | EQSR | PDR | QR | CDR | MRR | CTS | IRR | DRB | Remarks |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| EN-1 | Subsystem and Equipment Design Definition Documents |  |  |  | X |  | X | X | X | X | X | As per Annex G of ECSS-E-ST-10C |\n| EN-6 | Instrument / Subsystem / Equipment Budgets and Margins Definition Document |  |  |  | X |  | X |  | X |  | X | Engineering and Performance Budgets compiled within EN-9. |\n| EN-7 | Instrument /Subsystem / Equipment Design Justification File |  |  |  | X |  | X |  |  |  | X | As per Annex K and L of ECSS-E-ST-10C Can be combined with EN-1 |\n| EN-8 | Instrument / Subsystem / Equipment Analysis Reports  ) |  |  |  | X |  | X |  | X |  | X | As required in support of Design Justification Document; As per Annex Q of ECSS-E-ST-10C; including voltage drop analysis |\n| EN-11 | Subsystem and Equipment Design, Development and Verification Plan |  | X |  | X |  | X | X |  | X | X |  |\n| EN-12 | Instrument/ / Subsystem / Equipment AIT Plan |  |  |  | X |  | X | X |  | X | X |  |\n| EN-13 | Subsystem and Equipment Verification Control Document (VCD) |  |  |  | X |  | X |  | X |  | X | To be delivered consistent with lower tier reviews As per Annexes B and F of ECSS-E-ST-10- 02C |\n| EN-15a | Subsystem and Equipment Test Plans |  |  |  | X |  | X | X |  | X |  | To be delivered consistent with lower tier reviews.. |\n| EN-15B | Test Requirements |  |  |  | X |  | X | X |  | X |  | As per Annex C of ECSS-E-10-03A; also includes inputs to instrument level and satellite level testing., may be combined with Test Plan EN- 15a |\n\n| DRL Reference | Engineering | PROPOSAL | KO | EQSR | PDR | QR | CDR | MRR | CTS | IRR | DRB | Remarks |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| EN-16 | Subsystem and Equipment Test Procedures |  |  |  |  |  |  | X | X | X | X | For QR, PTR and DRB marked up \"as run\" procedures;. |\n| EN-17 | Subsystem and Equipment Test Reports |  |  |  |  |  |  |  | X |  | X | For EQSR reports from precursor program where qualification was achieved; As per Annex C of ECSS-E-ST-10-02C |\n| EN-18 | Test Correlation Reports |  |  |  |  |  |  |  |  |  | X | Mechanical, Thermal, etc. See also Voltage Drop verification report EN-99 |\n| EN-36 | Subsystem and Equipments Review Data Packages | X |  | X | X | X | X | X | X | X | X | 3 weeks in advance of the related lower tier review; As per review procedure by the Contractor |\n| EN-40 | Subsystem and Equipment Interface Control Document, incl. drawings, 3D CAD Models and Electrical Schematics |  |  | X | X |  | X | X | X | X | X |  |\n| EN-98 | Voltage Drop and Resistance Analysis |  |  |  | X |  | X | X | X |  | X |  |\n| EN-99 | Voltage Drop and Resistance Verification Report |  |  |  |  |  |  |  |  |  | X |  |\n\nTable 6.2-2: Document Requirement List (DRL – Engineering Documents\n\n| AIRBUS | AIRBUS |  |  |  |  |  |  | **Harness SOW** | **Harness SOW** | **Harness SOW** | **Harness SOW** | **Harness SOW** | **Harness SOW** | **Harness SOW** |  |  |  |  |  |  |  |  |  |  | Date: 10.12.2025 Page 46ge 46e 46 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| Airbus Amber |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| DRL Reference | Manufacturing, Assembly and Integration |  |  |  |  | PROPOSAL |  | KO |  | EQSR |  | PDR |  | QR |  |  | CDR |  | MRR |  | CTS |  | IRR |  | DRB Remarks |\n| As per ECSS-E- |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| MA-24 | Integration Procedures |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | X |  | 10-03A section |\n| 4.11.3 |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| MA -26 | Manufacturing logsheet, logbooks and Inspection Report |  |  |  | Manufacturing logsheet, logbooks and Inspection |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | X |  |  |  | X As per ECSS-E- 10-02C Annex F |\n| MA -27 | Harness Procedure |  | Repair |  | Repair |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  | X if needed |\n| MA -28 | Harness Procedure | Cleaning |  |  | Cleaning |  |  |  |  |  |  |  |  | X |  |  | X |  |  |  | X |  |  |  | X If needed |\n| MA -29 | Manufacturing File |  |  | Manufacturing File |  |  |  |  |  |  |  |  |  |  |  |  |  |  | X |  |  |  |  |  | This is the MRR DP. |\n| Table 6.2-3: Document Requirement List (DRL – Manufacturing, Assembly and Integration Documents |  |  |  |  |  |  |  | Table 6.2-3: Document Requirement List (DRL – Manufacturing, Assembly and Integration Documents |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| DRL Reference | Product Assurance |  |  | PROPOSAL |  | KO |  | EQSR |  | PDR |  | QR |  | CDR |  |  | MRR |  | CTS |  | IRR |  | DRB |  | Remarks |\n| Product |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| PA-1 | Assurance | & |  | X |  | X |  |  |  | X |  |  |  | X |  |  |  |  |  |  |  |  |  |  |  |\n| Safety Plan |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| PA-3 | Audit Plan |  |  |  |  |  |  |  |  | X |  |  |  | X |  |  |  |  |  |  |  |  |  |  |  |\n| PA-4 | Audit Checklists and Reports |  |  |  |  |  |  |  |  | X |  |  |  | X |  |  |  |  |  |  |  |  |  |  | As available and as required |\n| As per ECSS-Q-ST- |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| 10-04C, Annex A, and |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| PA-5 | Critical Items List |  | Critical Items List | Critical Items List |  |  |  |  |  | X |  | X |  | X |  |  | X |  | X |  | X |  | X |  | together with progress |\n| report for each |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| progress meeting |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| To be available on-line |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| PA-6 | Non Conformance Reports |  |  |  |  | X |  |  |  | X |  |  |  | X |  |  | X |  | X |  | X |  | X |  | on the NCTS TOOL, major NCRs within 48 |\n| hours |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |\n| PA-7 | NCR Status List | NCR Status List |  |  |  |  |  |  |  | X |  | X |  | X |  |  | X |  | X |  | X |  | X |  | As per ECSS-Q-ST- 10-09C, Annex B |\n| PA-8 | Qualification Status List |  |  |  |  |  |  |  |  | X |  | X |  |  |  |  |  |  | X |  | X |  | X |  | As per ECSS-Q-ST- 10C, Annex B |\n| PA-9 | MIP/KIP List |  |  |  |  |  |  |  |  | X |  |  |  | X |  |  | X |  | X |  | X |  | X |  |  |\n| PA-10 | Alert Status List | Alert Status List |  |  |  |  |  |  |  | X |  | X |  | X |  |  | X |  | X |  | X |  | X |  |  |\n\nTable 6.2-3: Document Requirement List (DRL – Manufacturing, Assembly and Integration Documents\n\n| DRL Reference | Product Assurance | PROPOSAL | KO | EQSR | PDR | QR | CDR | MRR | CTS | IRR | DRB | Remarks |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| PA-11 | End Item Data Packages (EIDP) |  |  |  |  |  |  |  | X |  | X | As per ECSS-Q-ST- 20C, Annex B; for EQSR applicable to lower level equipment subject to the review |\n| PA-12 | Long Lead Items List |  |  |  | X |  | X |  |  |  |  |  |\n| PA-13 | Cleanliness and Contamination Control Plan (C&CCP) |  |  |  | X | X | X | X | X | X | X | As per ECSS-Q-ST- 70-01C, Annex B; for DRB, the record sheets are required |\n| PA-15 | Reliability and Availability Prediction Report |  |  |  | X |  | X |  | X | X | X | As per ECSS-Q-ST- 30C, Annex E |\n| PA-17 | Safety Data Package |  |  |  | X |  | X |  | X | X | X | Inputs to  level as per launch authority requirements; including ECSS-Q-ST- 40C Annex C+D |\n| PA-20 | Parts Approval Document (PAD) |  |  | X | X |  | X | X | X | X | X | As per ECSS-Q-ST- 60C, Rev.1, Annex D; final issues at MRR |\n| PA-21 | Declared Components List (DCL) |  |  |  | X | X | X | X | X | X | X | As per ECSS-Q-ST- 60C, Rev.1, Annex B |\n| PA-23 | Parts Derating Analysis |  |  |  | X |  | X | X | X |  | X | part of Voltage Drop Analysis |\n| PA-24 | Request For Approval (of materials / processes) |  |  |  |  | X | X | X | X | X | X |  |\n| PA-25 | Declared Mechanical Parts List (DMPL) |  |  |  | X | X | X | X | X | X | X | As per ECSS-Q-ST- 70C, Annex B |\n| PA-26 | Declared Material List (DML) |  |  |  | X | X | X | X | X | X | X | As per ECSS-Q-ST- 70C, Annex A |\n| PA-27 | Declared Process List (DPL) |  |  |  | X | X | X | X | X | X | X | As per ECSS-Q-ST- 70C, Annex C |\n| PA-32 | MIP/KIP Report |  |  |  |  |  | X | X | X | X | X |  |\n| PA-33 | Certificate of Conformity |  |  |  |  |  |  |  | X |  | X | As per ECSS-Q-ST- 20C, Annex D |\n| PA-34 | Component Control Plan |  |  |  | X |  | X |  |  |  |  | As per ECSS-Q-ST- 60C, Rev1, Annex A |\n\n| DRL Reference | Product Assurance | PROPOSAL | KO | EQSR | PDR | QR | CDR | MRR | CTS | IRR | DRB | Remarks |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| PA-35 | Logbook (incl Mating/De-mating record) |  |  |  |  |  |  |  | X | X | X | As per ECSS-Q-ST- 20C, Annex C |\n| PA-39 | Cleaning Procedure |  |  | X | X | X | X | X | X | X | X | To include: - Cleaning for molecular and particulate contamination of sensitive surfaces, of insensitive surfaces. - Verification of cleanliness process on representative samples. - Verification of cleanliness after cleaning. - Declaration of cleaning agents and cleaning tools. |\n\nTable 6.2-4: Document Requirement List (DRL – Product Assurance Documents)"
+    },
+    {
+      "order": 113,
+      "type": "title",
+      "section": "7",
+      "title": "Specific Support and Post Delivery Requirements cific Support and Post Delivery Requirements",
+      "description": "The post-delivery activities start after delivery of the manufactured harness to AIT or after completion of the harness integration onto the instrument or satellite by the harness Subcontractor, as it corresponds."
+    },
+    {
+      "order": 114,
+      "type": "title",
+      "section": "7.1",
+      "title": "Support Higher Level AIT",
+      "description": ""
+    },
+    {
+      "order": 115,
+      "type": "requirement",
+      "req_id": "HAR SSOW-60",
+      "title": "Post-Delivery S μoddns",
+      "description": "In order to assist failure investigations, repairing and changes during instrument and satellite level AIT activities, the Supplier shall guarantee support on experienced project engineering personnel, qualified personnel in harness manufacturing at AIT sites, time and material basis, for a period of 2 year after delivery of the harness."
+    },
+    {
+      "order": 116,
+      "type": "requirement",
+      "req_id": "HAR SSOW-61",
+      "title": "Post-Delivery Support Procedures",
+      "description": "For the application of harness changes (e.g. connector pin allocation, additional line) after delivery, the corresponding repair/modification procedures shall be provided by the harness Supplier with inputs from the Customer regarding the integration status of the instrument or satellite (depending on the integration stage) for the execution of the activities."
+    },
+    {
+      "order": 117,
+      "type": "title",
+      "section": "7.2",
+      "title": "Specific Support / Participation to Higher Level System Reviews",
+      "description": "None."
+    },
+    {
+      "order": 118,
+      "type": "title",
+      "section": "7.3",
+      "title": "Specific Support to Phase E1",
+      "description": ""
+    },
+    {
+      "order": 119,
+      "type": "title",
+      "section": "7.4",
+      "title": "Long Term Storage and Maintenance",
+      "description": "The requirements for storage and maintenance are as per the GSOW."
+    }
+  ]
+}
