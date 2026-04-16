@@ -7,6 +7,9 @@ A **requirement** node starts with a requirement ID line
 Each node accumulates the body text that follows it until the next node is
 detected.  Noise lines (page markers, watermarks, non-semantic headings) are
 stripped from descriptions.
+
+Customer-specific patterns can be passed directly to :func:`parse_nodes`; when
+omitted the module-level Airbus defaults are used (backward-compatible).
 """
 
 import json
@@ -16,48 +19,52 @@ from typing import List, Optional
 
 
 # ---------------------------------------------------------------------------
-# Regex patterns
+# Default (Airbus) regex patterns — used when no overrides are supplied
 # ---------------------------------------------------------------------------
 
 # Numbered heading:  ## **4.3.1 Design**  or  ## 4 Scope of Work
-_TITLE_RE = re.compile(
+_DEFAULT_TITLE_PATTERN: str = (
     r'^\s*#{1,6}\s+\*?\*?'           # markdown heading + optional bold
     r'(\d+(?:\.\d+)*)'               # section number  (group 1)
     r'\s+'                            # separator
     r'(.*?)'                          # heading text   (group 2)
-    r'\*?\*?\s*$',                    # optional closing bold
-    re.IGNORECASE,
+    r'\*?\*?\s*$'                     # optional closing bold
 )
 
 # Requirement ID line:  HAR SSOW-7 / Electrical detail design
-_REQ_RE = re.compile(
-    r'^(HAR\s+SSOW-\d+)\s*/\s*(.+)$',
-    re.IGNORECASE,
-)
+_DEFAULT_REQ_ID_PATTERN: str = r'^(HAR\s+SSOW-\d+)\s*/\s*(.+)$'
 
-# Noise lines to discard completely (never added to descriptions)
+# Noise line patterns (Airbus-specific)
+_DEFAULT_NOISE_PATTERNS: List[str] = [
+    r'^\s*Airbus\s+Amber\s*$',
+    r'^\s*unclassified\s*$',
+    r'^\s*AIRBUS\s*$',
+    r'OGM-SOW-ADSF.*?Page\s+\d+',
+    r'^\s*#{1,6}\s+\*?\*?(?:AIRBUS|Harness\s+SOW|Airbus\s+Amber|Remarks?:|Notes?:|None\.|unclassified)\*?\*?\s*$',
+    r'^\s*\*\*Harness\s+SOW\*\*\s*$',
+    r'^\s*\*\*==>.*?<==\*\*\s*$',
+    r'^\s*\*\*-{5}\s+(?:Start|End)\s+of\s+picture\s+text\s+-{5}\*\*',
+    r'^#+\s+\*?\*?End\s+of\s+Document\*?\*?\s*$',
+]
+
+# Compiled module-level defaults (reused when no overrides supplied)
+_TITLE_RE = re.compile(_DEFAULT_TITLE_PATTERN, re.IGNORECASE)
+_REQ_RE = re.compile(_DEFAULT_REQ_ID_PATTERN, re.IGNORECASE)
 _NOISE_PATTERNS: List[re.Pattern] = [
-    re.compile(r'^\s*Airbus\s+Amber\s*$', re.IGNORECASE),
-    re.compile(r'^\s*unclassified\s*$', re.IGNORECASE),
-    re.compile(r'^\s*AIRBUS\s*$', re.IGNORECASE),
-    # Page-reference lines like "OGM-SOW-ADSF-21001104007 Version: 2 Date: ... Page N"
-    re.compile(r'OGM-SOW-ADSF.*?Page\s+\d+', re.IGNORECASE),
-    # Non-numbered markdown headings that are document artefacts
-    re.compile(r'^\s*#{1,6}\s+\*?\*?(?:AIRBUS|Harness\s+SOW|Airbus\s+Amber|'
-               r'Remarks?:|Notes?:|None\.|unclassified)\*?\*?\s*$',
-               re.IGNORECASE),
-    # Standalone bold artefact lines (not headings)
-    re.compile(r'^\s*\*\*Harness\s+SOW\*\*\s*$', re.IGNORECASE),
-    # Picture placeholders
-    re.compile(r'^\s*\*\*==>.*?<==\*\*\s*$'),
-    re.compile(r'^\s*\*\*-{5}\s+(?:Start|End)\s+of\s+picture\s+text\s+-{5}\*\*'),
-    # End-of-document markers
-    re.compile(r'^#+\s+\*?\*?End\s+of\s+Document\*?\*?\s*$', re.IGNORECASE),
+    re.compile(p, re.IGNORECASE) for p in _DEFAULT_NOISE_PATTERNS
 ]
 
 
-def _is_noise(line: str) -> bool:
-    return any(p.search(line) for p in _NOISE_PATTERNS)
+# ---------------------------------------------------------------------------
+# Internal helpers
+# ---------------------------------------------------------------------------
+
+def _compile_noise(patterns: List[str]) -> List[re.Pattern]:
+    return [re.compile(p, re.IGNORECASE) for p in patterns]
+
+
+def _is_noise(line: str, compiled: List[re.Pattern]) -> bool:
+    return any(p.search(line) for p in compiled)
 
 
 def _clean_title_text(text: str) -> str:
@@ -69,16 +76,13 @@ def _clean_title_text(text: str) -> str:
 def _flush_description(lines: List[str]) -> str:
     """Join accumulated description lines, stripping leading/trailing blanks
     and collapsing internal runs of more than two blank lines."""
-    # Strip italic/bold markers from the start of lines for cleaner text
     result_lines: List[str] = []
     for ln in lines:
-        # Remove leading/trailing markdown italic/bold markers
         clean = re.sub(r'^[\s_*]+', '', ln)
         clean = re.sub(r'[\s_*]+$', '', clean)
         result_lines.append(clean)
 
     text = '\n'.join(result_lines)
-    # Collapse 3+ consecutive blank lines → 2
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
@@ -87,25 +91,55 @@ def _flush_description(lines: List[str]) -> str:
 # Public API
 # ---------------------------------------------------------------------------
 
-def parse_nodes(clean_md: str, source: str = "") -> dict:
+def parse_nodes(
+    clean_md: str,
+    source: str = "",
+    *,
+    req_id_pattern: Optional[str] = None,
+    title_pattern: Optional[str] = None,
+    noise_patterns: Optional[List[str]] = None,
+) -> dict:
     """Parse *clean_md* and return a JSON-serialisable dict.
 
     Args:
-        clean_md: Content of the cleaned markdown file.
-        source:   Original PDF filename (stored in output for reference).
+        clean_md:        Content of the cleaned markdown file.
+        source:          Original PDF filename (stored in output for reference).
+        req_id_pattern:  Regex string for requirement ID lines (group 1 = ID,
+                         group 2 = title).  Defaults to the Airbus pattern.
+        title_pattern:   Regex string for numbered section headings (group 1 =
+                         section number, group 2 = heading text).  Defaults to
+                         the standard markdown numbered-heading pattern.
+        noise_patterns:  List of regex strings for lines to discard entirely.
+                         Defaults to the Airbus noise pattern list.
 
     Returns:
-        ``{"source": ..., "nodes": [...]}``
+        ``{"source": ..., "node_count": ..., "title_count": ...,
+           "requirement_count": ..., "nodes": [...]}``
     """
+    title_re = (
+        re.compile(title_pattern, re.IGNORECASE)
+        if title_pattern is not None
+        else _TITLE_RE
+    )
+    req_re = (
+        re.compile(req_id_pattern, re.IGNORECASE)
+        if req_id_pattern is not None
+        else _REQ_RE
+    )
+    noise_compiled = (
+        _compile_noise(noise_patterns)
+        if noise_patterns is not None
+        else _NOISE_PATTERNS
+    )
+
     nodes: List[dict] = []
     order = 0
     seen_req_ids: set = set()
 
-    # Current node being built
     cur_node: Optional[dict] = None
     desc_lines: List[str] = []
 
-    def _commit():
+    def _commit() -> None:
         nonlocal cur_node, desc_lines
         if cur_node is not None:
             cur_node["description"] = _flush_description(desc_lines)
@@ -116,12 +150,10 @@ def parse_nodes(clean_md: str, source: str = "") -> dict:
     for raw_line in clean_md.splitlines():
         line = raw_line.rstrip()
 
-        # --- Skip noise lines entirely ---
-        if _is_noise(line):
+        if _is_noise(line, noise_compiled):
             continue
 
-        # --- Try title match ---
-        m_title = _TITLE_RE.match(line)
+        m_title = title_re.match(line)
         if m_title:
             _commit()
             order += 1
@@ -137,12 +169,10 @@ def parse_nodes(clean_md: str, source: str = "") -> dict:
             desc_lines = []
             continue
 
-        # --- Try requirement match ---
-        m_req = _REQ_RE.match(line)
+        m_req = req_re.match(line)
         if m_req:
             req_id = re.sub(r'\s+', ' ', m_req.group(1)).strip()
             if req_id in seen_req_ids:
-                # Duplicate — treat rest of lines as noise until next node
                 _commit()
                 continue
             seen_req_ids.add(req_id)
@@ -159,11 +189,9 @@ def parse_nodes(clean_md: str, source: str = "") -> dict:
             desc_lines = []
             continue
 
-        # --- Accumulate description ---
         if cur_node is not None:
             desc_lines.append(line)
 
-    # Flush the last node
     _commit()
 
     return {

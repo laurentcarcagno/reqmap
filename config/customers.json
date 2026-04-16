@@ -1,0 +1,20 @@
+{
+  "customers": {
+    "airbus": {
+      "label": "Airbus",
+      "req_id_pattern": "^(HAR\\s+SSOW-\\d+)\\s*/\\s*(.+)$",
+      "title_pattern": null,
+      "noise_patterns": [
+        "^\\s*Airbus\\s+Amber\\s*$",
+        "^\\s*unclassified\\s*$",
+        "^\\s*AIRBUS\\s*$",
+        "OGM-SOW-ADSF.*?Page\\s+\\d+",
+        "^\\s*#{1,6}\\s+\\*?\\*?(?:AIRBUS|Harness\\s+SOW|Airbus\\s+Amber|Remarks?:|Notes?:|None\\.|unclassified)\\*?\\*?\\s*$",
+        "^\\s*\\*\\*Harness\\s+SOW\\*\\*\\s*$",
+        "^\\s*\\*\\*==>.*?<==\\*\\*\\s*$",
+        "^\\s*\\*\\*-{5}\\s+(?:Start|End)\\s+of\\s+picture\\s+text\\s+-{5}\\*\\*",
+        "^#+\\s+\\*?\\*?End\\s+of\\s+Document\\*?\\*?\\s*$"
+      ]
+    }
+  }
+}
