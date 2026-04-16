@@ -5,9 +5,8 @@ import sys
 import uuid
 from pathlib import Path
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app.config import get_settings
+from app.database import AsyncSessionLocal
 from app.repositories.document_repository import update_document_status
 from app.repositories.node_repository import bulk_insert_nodes
 from app.services.customer_config import get_customer
@@ -18,44 +17,71 @@ _DEFAULT_APPLICABILITY = {"title": "T", "requirement": "A"}
 _DEFAULT_CONFORMITY = {"title": "T", "requirement": "C"}
 
 
+def _ensure_reqmap_importable() -> None:
+    """Add the project root to sys.path so reqmap is importable from the backend."""
+    project_root = Path(__file__).resolve().parents[3]
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+
+
 async def process_document(
-    db: AsyncSession,
     document_id: str,
     file_path: str,
     customer_id: str,
 ) -> None:
-    """Run the full reqmap pipeline for a document and persist results."""
-    settings = get_settings()
+    """Run the full reqmap pipeline for a document and persist results.
 
-    await update_document_status(db, document_id, "processing")
-    await db.commit()
+    Uses its own database session — never shares the request-scoped session.
+    """
+    settings = get_settings()
+    _ensure_reqmap_importable()
+
+    async with AsyncSessionLocal() as db:
+        try:
+            await update_document_status(db, document_id, "processing")
+            await db.commit()
+        except Exception:
+            logger.exception("Failed to set processing status for %s", document_id)
+            return
 
     try:
-        _run_pipeline(db, document_id, file_path, customer_id, settings)
+        parsed, node_rows = _run_reqmap(file_path, customer_id, document_id, settings)
     except Exception as exc:
-        logger.exception("Processing failed for document %s", document_id)
-        async with db:
+        logger.exception("reqmap pipeline failed for document %s", document_id)
+        async with AsyncSessionLocal() as db:
+            await update_document_status(db, document_id, "failed", error_message=str(exc)[:500])
+            await db.commit()
+        return
+
+    async with AsyncSessionLocal() as db:
+        try:
+            await bulk_insert_nodes(db, node_rows)
             await update_document_status(
-                db, document_id, "failed", error_message=str(exc)
+                db,
+                document_id,
+                "completed",
+                node_count=parsed["node_count"],
+                title_count=parsed["title_count"],
+                requirement_count=parsed["requirement_count"],
             )
             await db.commit()
+            logger.info(
+                "Processed document %s: %d nodes (%d titles, %d requirements)",
+                document_id,
+                parsed["node_count"],
+                parsed["title_count"],
+                parsed["requirement_count"],
+            )
+        except Exception as exc:
+            logger.exception("Failed to persist nodes for document %s", document_id)
+            await db.rollback()
+            async with AsyncSessionLocal() as db2:
+                await update_document_status(db2, document_id, "failed", error_message=str(exc)[:500])
+                await db2.commit()
 
 
-def _run_pipeline(db, document_id: str, file_path: str, customer_id: str, settings) -> None:
-    """Synchronous pipeline — called from async context via background task."""
-    import asyncio
-
-    asyncio.get_event_loop().run_until_complete(
-        _async_pipeline(db, document_id, file_path, customer_id, settings)
-    )
-
-
-async def _async_pipeline(db: AsyncSession, document_id: str, file_path: str, customer_id: str, settings) -> None:
-    # Ensure reqmap package is importable (it lives one level up from backend/)
-    backend_dir = Path(__file__).resolve().parents[3]
-    if str(backend_dir) not in sys.path:
-        sys.path.insert(0, str(backend_dir))
-
+def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings) -> tuple[dict, list[dict]]:
+    """Synchronous reqmap extraction — runs in the async background task."""
     from reqmap.extractor import PDFExtractor
     from reqmap.node_parser import parse_nodes
 
@@ -97,22 +123,4 @@ async def _async_pipeline(db: AsyncSession, document_id: str, file_path: str, cu
             "conformity": _DEFAULT_CONFORMITY[node_type],
         })
 
-    async with db:
-        await bulk_insert_nodes(db, node_rows)
-        await update_document_status(
-            db,
-            document_id,
-            "completed",
-            node_count=parsed["node_count"],
-            title_count=parsed["title_count"],
-            requirement_count=parsed["requirement_count"],
-        )
-        await db.commit()
-
-    logger.info(
-        "Processed document %s: %d nodes (%d titles, %d requirements)",
-        document_id,
-        parsed["node_count"],
-        parsed["title_count"],
-        parsed["requirement_count"],
-    )
+    return parsed, node_rows

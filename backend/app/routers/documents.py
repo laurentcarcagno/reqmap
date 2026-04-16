@@ -57,7 +57,6 @@ async def upload_document(
 
     background_tasks.add_task(
         process_document,
-        db=db,
         document_id=doc.id,
         file_path=file_path,
         customer_id=customer,
