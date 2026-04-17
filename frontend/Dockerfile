@@ -1,7 +1,10 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci --legacy-peer-deps
+ENV npm_config_proxy=http://olfeo.hemeria.local:3129 \
+    npm_config_https_proxy=http://olfeo.hemeria.local:3129 \
+    npm_config_strict_ssl=false
+RUN npm install --legacy-peer-deps --no-audit --no-fund
 
 FROM node:22-alpine AS builder
 WORKDIR /app

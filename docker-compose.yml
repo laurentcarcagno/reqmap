@@ -14,7 +14,7 @@ services:
       - backend_data:/app/data
       - backend_uploads:/app/uploads
     ports:
-      - "8008:8000"
+      - "8090:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
       interval: 15s
@@ -28,6 +28,9 @@ services:
       dockerfile: frontend/Dockerfile
       args:
         BACKEND_URL: http://backend:8000
+        HTTP_PROXY: http://olfeo.hemeria.local:3129
+        HTTPS_PROXY: http://olfeo.hemeria.local:3129
+        NO_PROXY: localhost,127.0.0.1,backend
     restart: unless-stopped
     environment:
       BACKEND_URL: http://backend:8000
