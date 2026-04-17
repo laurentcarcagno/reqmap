@@ -5,17 +5,20 @@ import { useDropzone } from "react-dropzone";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Upload, X, FileText, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { api } from "@/lib/api";
+import { api, type Document } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { ProcessingModal } from "./processing-modal";
 
 interface UploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onDocumentReady?: (doc: Document) => void;
 }
 
-export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
+export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDialogProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<string>("");
+  const [processingDocId, setProcessingDocId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
   const { data: customersData } = useQuery({
@@ -28,10 +31,12 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
 
   const { mutate: uploadFile, isPending } = useMutation({
     mutationFn: () => api.documents.upload(selectedFile!, selectedCustomer),
-    onSuccess: () => {
-      toast.success("Document uploaded and processing started");
+    onSuccess: (doc) => {
       queryClient.invalidateQueries({ queryKey: ["documents"] });
-      handleClose();
+      setSelectedFile(null);
+      setSelectedCustomer("");
+      onOpenChange(false);
+      setProcessingDocId(doc.id);
     },
     onError: (err: Error) => {
       toast.error(err.message ?? "Upload failed");
@@ -55,15 +60,34 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
     onOpenChange(false);
   }
 
+  function handleProcessingComplete(doc: Document) {
+    setProcessingDocId(null);
+    queryClient.invalidateQueries({ queryKey: ["documents"] });
+    toast.success(`"${doc.original_filename}" processed — ${doc.requirement_count} requirements extracted`);
+    onDocumentReady?.(doc);
+  }
+
+  function handleProcessingClose() {
+    setProcessingDocId(null);
+    queryClient.invalidateQueries({ queryKey: ["documents"] });
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedFile || !selectedCustomer) return;
     uploadFile();
   }
 
-  if (!open) return null;
-
   return (
+    <>
+    {processingDocId && (
+      <ProcessingModal
+        documentId={processingDocId}
+        onComplete={handleProcessingComplete}
+        onClose={handleProcessingClose}
+      />
+    )}
+    {!open ? null : (
     <div
       role="dialog"
       aria-modal="true"
@@ -179,5 +203,7 @@ export function UploadDialog({ open, onOpenChange }: UploadDialogProps) {
         </form>
       </div>
     </div>
+    )}
+    </>
   );
 }

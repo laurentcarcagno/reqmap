@@ -6,7 +6,11 @@ import { useState } from "react";
 import { UploadDialog } from "@/components/features/upload/upload-dialog";
 import { cn } from "@/lib/utils";
 
-export function Header() {
+interface HeaderProps {
+  onDocumentReady?: (doc: import("@/lib/api").Document) => void;
+}
+
+export function Header({ onDocumentReady }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const [uploadOpen, setUploadOpen] = useState(false);
 
@@ -47,7 +51,7 @@ export function Header() {
         <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" aria-hidden="true" />
       </button>
 
-      <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} />
+      <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} {...(onDocumentReady ? { onDocumentReady } : {})} />
     </header>
   );
 }

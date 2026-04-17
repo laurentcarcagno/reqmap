@@ -8,9 +8,10 @@ import { DocumentCard } from "./document-card";
 interface DocumentListProps {
   selectedDocumentId: string | null;
   onSelectDocument: (id: string) => void;
+  onDocumentDeleted: (id: string) => void;
 }
 
-export function DocumentList({ selectedDocumentId, onSelectDocument }: DocumentListProps) {
+export function DocumentList({ selectedDocumentId, onSelectDocument, onDocumentDeleted }: DocumentListProps) {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["documents"],
     queryFn: () => api.documents.list({ limit: 100 }),
@@ -69,6 +70,7 @@ export function DocumentList({ selectedDocumentId, onSelectDocument }: DocumentL
           document={doc}
           isSelected={doc.id === selectedDocumentId}
           onSelect={() => onSelectDocument(doc.id)}
+          onDeleted={onDocumentDeleted}
         />
       ))}
     </ul>

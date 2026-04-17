@@ -1,6 +1,6 @@
 """Document data access layer."""
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.document import Document
@@ -51,3 +51,8 @@ async def update_document_status(
     if requirement_count:
         values["requirement_count"] = requirement_count
     await db.execute(update(Document).where(Document.id == document_id).values(**values))
+
+
+async def delete_document(db: AsyncSession, document_id: str) -> bool:
+    result = await db.execute(delete(Document).where(Document.id == document_id))
+    return result.rowcount > 0

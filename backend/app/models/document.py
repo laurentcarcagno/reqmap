@@ -28,6 +28,10 @@ class Document(Base):
     node_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     title_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     requirement_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    doc_title: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    doc_reference: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    doc_author: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    doc_company: Mapped[str | None] = mapped_column(String(256), nullable=True)
     uploaded_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now()

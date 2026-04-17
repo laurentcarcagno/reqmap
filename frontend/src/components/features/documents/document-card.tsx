@@ -1,13 +1,17 @@
 "use client";
 
-import { FileText, Loader2, CheckCircle2, XCircle, Clock } from "lucide-react";
-import type { Document, DocumentStatus } from "@/lib/api";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FileText, Loader2, CheckCircle2, XCircle, Clock, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { api, type Document, type DocumentStatus } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 interface DocumentCardProps {
   document: Document;
   isSelected: boolean;
   onSelect: () => void;
+  onDeleted: (id: string) => void;
 }
 
 const STATUS_ICONS: Record<DocumentStatus, React.ReactNode> = {
@@ -24,18 +28,34 @@ const STATUS_LABELS: Record<DocumentStatus, string> = {
   failed: "Failed",
 };
 
-export function DocumentCard({ document, isSelected, onSelect }: DocumentCardProps) {
+export function DocumentCard({ document, isSelected, onSelect, onDeleted }: DocumentCardProps) {
+  const queryClient = useQueryClient();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
   const date = new Date(document.created_at).toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
   });
 
+  const { mutate: doDelete, isPending: isDeleting } = useMutation({
+    mutationFn: () => api.documents.delete(document.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      onDeleted(document.id);
+      toast.success(`"${document.original_filename}" deleted`);
+    },
+    onError: () => {
+      toast.error("Failed to delete document");
+      setConfirmDelete(false);
+    },
+  });
+
   return (
-    <li role="option" aria-selected={isSelected}>
+    <li role="option" aria-selected={isSelected} className="group relative">
       <button
         onClick={onSelect}
         className={cn(
-          "w-full rounded-md px-3 py-2.5 text-left transition-colors",
+          "w-full rounded-md px-3 py-2.5 text-left transition-colors pr-8",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
           isSelected
             ? "bg-sidebar-accent text-sidebar-accent-foreground"
@@ -74,6 +94,49 @@ export function DocumentCard({ document, isSelected, onSelect }: DocumentCardPro
           </div>
         </div>
       </button>
+
+      {/* Delete button — appears on hover */}
+      {!confirmDelete && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
+          disabled={isDeleting}
+          aria-label={`Delete ${document.original_filename}`}
+          className={cn(
+            "absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1",
+            "text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors",
+            "opacity-0 group-hover:opacity-100 focus-visible:opacity-100",
+            "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+          )}
+        >
+          <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+        </button>
+      )}
+
+      {/* Inline confirm */}
+      {confirmDelete && (
+        <div className="absolute inset-0 flex items-center justify-between gap-1 rounded-md bg-destructive/10 px-3 py-2 z-10">
+          <span className="text-xs font-medium text-destructive truncate">Delete?</span>
+          <div className="flex items-center gap-1 shrink-0">
+            <button
+              type="button"
+              onClick={() => doDelete()}
+              disabled={isDeleting}
+              className="rounded px-2 py-0.5 text-xs font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              {isDeleting ? <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" /> : "Yes"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(false)}
+              disabled={isDeleting}
+              className="rounded px-2 py-0.5 text-xs font-medium bg-muted text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )}
     </li>
   );
 }

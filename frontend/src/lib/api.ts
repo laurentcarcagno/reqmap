@@ -58,6 +58,10 @@ export interface Document {
   node_count: number;
   title_count: number;
   requirement_count: number;
+  doc_title: string | null;
+  doc_reference: string | null;
+  doc_author: string | null;
+  doc_company: string | null;
   uploaded_by: string | null;
   created_at: string;
   updated_at: string;
@@ -103,6 +107,9 @@ export const api = {
     },
 
     get: (id: string): Promise<Document> => request(`/documents/${id}`),
+
+    delete: (id: string): Promise<void> =>
+      request(`/documents/${id}`, { method: "DELETE" }),
 
     upload: async (file: File, customer: string): Promise<Document> => {
       const form = new FormData();

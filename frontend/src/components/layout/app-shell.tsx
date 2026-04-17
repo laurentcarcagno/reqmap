@@ -1,20 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { DocumentViewer } from "@/components/features/documents/document-viewer";
+import type { Document } from "@/lib/api";
 
 export function AppShell() {
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
 
+  const handleDocumentReady = useCallback((doc: Document) => {
+    setSelectedDocumentId(doc.id);
+  }, []);
+
+  const handleDocumentDeleted = useCallback((id: string) => {
+    setSelectedDocumentId((current) => (current === id ? null : current));
+  }, []);
+
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background">
-      <Header />
+      <Header onDocumentReady={handleDocumentReady} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
           selectedDocumentId={selectedDocumentId}
           onSelectDocument={setSelectedDocumentId}
+          onDocumentDeleted={handleDocumentDeleted}
         />
         <main
           id="main-content"

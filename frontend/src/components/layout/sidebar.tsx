@@ -5,9 +5,10 @@ import { DocumentList } from "@/components/features/documents/document-list";
 interface SidebarProps {
   selectedDocumentId: string | null;
   onSelectDocument: (id: string) => void;
+  onDocumentDeleted: (id: string) => void;
 }
 
-export function Sidebar({ selectedDocumentId, onSelectDocument }: SidebarProps) {
+export function Sidebar({ selectedDocumentId, onSelectDocument, onDocumentDeleted }: SidebarProps) {
   return (
     <aside
       className="flex w-72 shrink-0 flex-col border-r border-sidebar-border bg-sidebar overflow-hidden"
@@ -20,6 +21,7 @@ export function Sidebar({ selectedDocumentId, onSelectDocument }: SidebarProps) 
         <DocumentList
           selectedDocumentId={selectedDocumentId}
           onSelectDocument={onSelectDocument}
+          onDocumentDeleted={onDocumentDeleted}
         />
       </div>
     </aside>

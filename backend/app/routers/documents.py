@@ -9,6 +9,7 @@ from app.config import get_settings
 from app.database import get_db
 from app.repositories.document_repository import (
     create_document,
+    delete_document,
     get_document,
     list_documents,
 )
@@ -89,3 +90,16 @@ async def get_document_endpoint(
     if doc is None:
         raise HTTPException(status_code=404, detail="Document not found")
     return DocumentResponse.model_validate(doc)
+
+
+@router.delete("/{document_id}", status_code=204)
+async def delete_document_endpoint(
+    document_id: str,
+    db: AsyncSession = Depends(get_db),
+) -> None:
+    """Delete a document and all its extracted nodes."""
+    doc = await get_document(db, document_id)
+    if doc is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+    await delete_document(db, document_id)
+    await db.commit()

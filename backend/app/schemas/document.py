@@ -16,6 +16,10 @@ class DocumentResponse(BaseModel):
     node_count: int
     title_count: int
     requirement_count: int
+    doc_title: str | None
+    doc_reference: str | None
+    doc_author: str | None
+    doc_company: str | None
     uploaded_by: str | None
     created_at: datetime
     updated_at: datetime

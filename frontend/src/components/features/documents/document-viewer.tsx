@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FileText } from "lucide-react";
 import { api } from "@/lib/api";
 import { NodeTable } from "@/components/features/nodes/node-table";
+import { DocumentHeader } from "./document-header";
 
 interface DocumentViewerProps {
   documentId: string | null;
@@ -15,6 +16,14 @@ export function DocumentViewer({ documentId }: DocumentViewerProps) {
     queryFn: () => api.documents.get(documentId!),
     enabled: !!documentId,
   });
+
+  const { data: nodesData } = useQuery({
+    queryKey: ["nodes", documentId],
+    queryFn: () => api.nodes.list(documentId!, { limit: 500 }),
+    enabled: !!documentId && doc?.status === "completed",
+  });
+
+  const nodes = nodesData?.data ?? [];
 
   if (!documentId) {
     return (
@@ -32,18 +41,7 @@ export function DocumentViewer({ documentId }: DocumentViewerProps) {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {doc && (
-        <div className="flex h-10 shrink-0 items-center border-b border-border px-4 gap-3">
-          <h1 className="text-sm font-semibold text-foreground truncate" title={doc.original_filename}>
-            {doc.original_filename}
-          </h1>
-          {doc.status === "completed" && (
-            <span className="text-xs text-muted-foreground shrink-0">
-              {doc.title_count} titles · {doc.requirement_count} requirements
-            </span>
-          )}
-        </div>
-      )}
+      {doc && <DocumentHeader document={doc} nodes={nodes} />}
       <div className="flex-1 overflow-auto">
         <NodeTable documentId={documentId} />
       </div>
