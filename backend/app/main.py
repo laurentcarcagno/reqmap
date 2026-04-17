@@ -6,11 +6,30 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from sqlalchemy import text
+
 from app.config import get_settings
 from app.database import engine, Base
 from app.routers import health, customers, documents, nodes
 
 logger = logging.getLogger(__name__)
+
+
+_DOC_MIGRATIONS = [
+    "ALTER TABLE documents ADD COLUMN doc_title TEXT",
+    "ALTER TABLE documents ADD COLUMN doc_reference TEXT",
+    "ALTER TABLE documents ADD COLUMN doc_author TEXT",
+    "ALTER TABLE documents ADD COLUMN doc_company TEXT",
+]
+
+
+async def _run_migrations(conn) -> None:
+    """Apply idempotent schema migrations for new columns."""
+    for stmt in _DOC_MIGRATIONS:
+        try:
+            await conn.execute(text(stmt))
+        except Exception:
+            pass
 
 
 @asynccontextmanager
@@ -19,6 +38,7 @@ async def lifespan(app: FastAPI):
     settings.upload_dir.mkdir(parents=True, exist_ok=True)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        await _run_migrations(conn)
     logger.info("ReqMap API started")
     yield
     await engine.dispose()
