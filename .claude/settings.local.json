@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p docs/output)",
+      "Bash(npx @marp-team/marp-cli docs/reqmap-overview.md --pptx --allow-local-files -o docs/output/reqmap-overview.pptx)"
+    ]
+  }
+}
