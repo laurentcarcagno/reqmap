@@ -99,7 +99,7 @@ export function NodeTable({ documentId }: NodeTableProps) {
             <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground">
               Title
             </th>
-            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-48 hidden lg:table-cell">
+            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-full hidden lg:table-cell">
               <div className="flex items-center gap-1.5">
                 <span>Description</span>
                 <button
@@ -142,7 +142,7 @@ export function NodeTable({ documentId }: NodeTableProps) {
                   <span className="font-mono text-xs text-deep dark:text-foreground">{node.req_id}</span>
                 )}
               </td>
-              <td className="px-3 py-2">
+              <td className="px-3 py-2 whitespace-nowrap">
                 <span
                   className={cn(
                     node.type === "title"
@@ -153,7 +153,7 @@ export function NodeTable({ documentId }: NodeTableProps) {
                   {node.title}
                 </span>
               </td>
-              <td className="px-3 py-2 hidden lg:table-cell max-w-xs">
+              <td className="px-3 py-2 hidden lg:table-cell">
                 <DescriptionCell text={node.description} expandAll={expandAll} />
               </td>
               <td className="px-3 py-2">
