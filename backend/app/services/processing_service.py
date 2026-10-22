@@ -97,6 +97,7 @@ def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings) ->
     customer = get_customer(str(settings.customers_config_path), customer_id)
     req_id_pattern = customer.req_id_pattern if customer else None
     noise_patterns = customer.noise_patterns if customer else None
+    post_process = customer.post_process if customer else None
     title_pattern = customer.title_pattern if customer else None
 
     clean_md = pdf_to_markdown(
@@ -105,6 +106,7 @@ def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings) ->
         images_dir=assets_dir(document_id),
         asset_url_prefix=f"/api/v1/documents/{document_id}/assets",
         tables_as_images=settings.tables_as_images,
+        post_process=post_process,
     )
 
     parse_kwargs: dict = {"source": pdf_path.name}

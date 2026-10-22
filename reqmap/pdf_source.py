@@ -7,9 +7,10 @@ import re
 import sys
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Mapping, Optional
 
-_PDF2MD_SRC = Path(__file__).resolve().parents[1] / "pdf2md" / "src"
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+_PDF2MD_SRC = _PROJECT_ROOT / "pdf2md" / "src"
 if str(_PDF2MD_SRC) not in sys.path:
     sys.path.insert(0, str(_PDF2MD_SRC))
 
@@ -46,6 +47,33 @@ def inline_id_images(
     return "\n".join(lines)
 
 
+def apply_post_process(
+    markdown: str, post_process: Mapping[str, str], source: Path, assets_dir: Optional[Path] = None
+) -> str:
+    """Run pdf2md post-processing plugins (``--post-process NAME``) on ``markdown``.
+
+    ``post_process`` maps a plugin name to its script, relative to the repository root; the
+    plugins run in the order given. They are registered in a throwaway plugin folder through
+    pdf2md's own API, so the user's registry is neither read nor modified.
+    """
+    from pdf2md.plugins import load_plugins, post_process_outputs, register_plugin
+
+    with tempfile.TemporaryDirectory(prefix="pdf2md_plugins_") as tmp:
+        plugin_dir = Path(tmp) / "plugins"
+        for name, script in post_process.items():
+            path = (_PROJECT_ROOT / script).resolve()
+            if not path.is_relative_to(_PROJECT_ROOT):
+                raise ValueError(f"plugin script outside the repository: {script}")
+            register_plugin(name, path, plugin_dir)
+        md_path = Path(tmp) / "document.md"
+        md_path.write_text(markdown, encoding="utf-8")
+        post_process_outputs(
+            load_plugins(list(post_process), plugin_dir), Path(source), md_path, None,
+            assets_dir or Path(tmp),
+        )
+        return md_path.read_text(encoding="utf-8")
+
+
 def pdf_to_markdown(
     pdf_path: Path,
     req_id_pattern: Optional[str] = None,
@@ -53,6 +81,7 @@ def pdf_to_markdown(
     images_dir: Optional[Path] = None,
     asset_url_prefix: Optional[str] = None,
     tables_as_images: Optional[int] = None,
+    post_process: Optional[Mapping[str, str]] = None,
 ) -> str:
     """Convert a PDF to markdown with pdf2md, ready for ``parse_nodes``.
 
@@ -61,6 +90,8 @@ def pdf_to_markdown(
     ``tables_as_images`` (pdf2md ``--tables-as-images``) renders the tables of at least that
     many rows as pictures of their page area instead of Markdown text; it needs ``images_dir``
     to be kept, otherwise those tables would vanish with the temporary directory.
+    ``post_process`` is applied to pdf2md's markdown before the images are post-processed
+    (see :func:`apply_post_process`).
     """
     if tables_as_images is not None and images_dir is None:
         raise ValueError("tables_as_images needs images_dir")
@@ -72,7 +103,15 @@ def pdf_to_markdown(
     if images_dir is None:
         with tempfile.TemporaryDirectory(prefix="pdf2md_") as tmp:
             result = convert_pdf(Path(pdf_path), settings, images_dir=Path(tmp))
-        return inline_id_images(result.markdown, req_id_pattern)
+        markdown = _plugins(result.markdown, post_process, pdf_path, None)
+        return inline_id_images(markdown, req_id_pattern)
     images_dir.mkdir(parents=True, exist_ok=True)
     result = convert_pdf(Path(pdf_path), settings, images_dir=images_dir)
-    return inline_id_images(result.markdown, req_id_pattern, images_dir, asset_url_prefix)
+    markdown = _plugins(result.markdown, post_process, pdf_path, images_dir)
+    return inline_id_images(markdown, req_id_pattern, images_dir, asset_url_prefix)
+
+
+def _plugins(
+    markdown: str, post_process: Optional[Mapping[str, str]], source: Path, assets_dir: Optional[Path]
+) -> str:
+    return apply_post_process(markdown, post_process, source, assets_dir) if post_process else markdown

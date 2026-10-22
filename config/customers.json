@@ -15,6 +15,17 @@
         "^\\s*\\*\\*-{5}\\s+(?:Start|End)\\s+of\\s+picture\\s+text\\s+-{5}\\*\\*",
         "^#+\\s+\\*?\\*?End\\s+of\\s+Document\\*?\\*?\\s*$"
       ]
+    },
+    "tas": {
+      "label": "Thales Alénia Space",
+      "req_id_pattern": "^<a id=\"[^\"]+\"></a>\\*\\*(\\S+)(?:\\s+(.*?))?\\*\\*$",
+      "title_pattern": "^(?=\\s*#{1,6}\\s|\\s*\\d+\\.\\d)\\s*(?:#{1,6}\\s+)?\\*{0,2}(\\d+(?:\\.\\d+)*)\\.?\\s+(.*?)\\*{0,2}\\s*$",
+      "noise_patterns": [
+        "^\\s*<!--\\s*end\\s+\\S+\\s*-->\\s*$"
+      ],
+      "post_process": {
+        "Thales Alénia Space": "pdf2md/examples/plugins/thales_alenia_space.py"
+      }
     }
   }
 }

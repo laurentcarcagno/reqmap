@@ -178,7 +178,7 @@ def parse_nodes(
             seen_req_ids.add(req_id)
             _commit()
             order += 1
-            req_title = m_req.group(2).strip()
+            req_title = (m_req.group(2) or "").strip()  # the title group may be optional
             cur_node = {
                 "order": order,
                 "type": "requirement",

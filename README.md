@@ -18,6 +18,9 @@ The repo has three layers: the `reqmap/` library (this README), a FastAPI `backe
 - **Requirement IDs drawn as pictures** are OCR'd by pdf2md into image alt text and turned back into text lines
   (`reqmap/pdf_source.py`)
 - Header/footer, table-of-contents and figure handling done by pdf2md
+- **Customer formats** — `config/customers.json` gives each customer its requirement patterns and, optionally, the
+  pdf2md post-processing plugins to run (`post_process`: plugin name → script). `tas` (Thales Alénia Space) runs the
+  pdf2md plugin `--post-process "Thales Alénia Space"`, which marks the `#ID Title … ##` requirements
 - **JSON node extraction** — parses the markdown into an ordered list of `title` and `requirement` nodes,
   with customer-specific patterns (`config/customers.json`)
 
@@ -56,6 +59,10 @@ python -m reqmap path/to/document.pdf --output-dir ./output
 
 # Disable OCR (faster, but scanned pages and image-based IDs are lost)
 python -m reqmap path/to/document.pdf --no-ocr
+
+# Use a customer format of config/customers.json (requirement patterns + pdf2md plugins);
+# "tas" = Thales Alénia Space (#ID Title ... ## requirements), default = Airbus
+python -m reqmap path/to/document.pdf --customer tas --json
 
 # Keep tables as pictures of the PDF page (optionally: only tables of MIN_ROWS rows or more)
 python -m reqmap path/to/document.pdf --tables-as-images [MIN_ROWS]

@@ -15,6 +15,9 @@ class CustomerConfig(BaseModel):
     req_id_pattern: str
     title_pattern: str | None = None
     noise_patterns: list[str] = []
+    # pdf2md post-processing plugins applied to the converted markdown, in order:
+    # plugin name -> script path relative to the repository root
+    post_process: dict[str, str] = {}
 
 
 class CustomersConfig(BaseModel):

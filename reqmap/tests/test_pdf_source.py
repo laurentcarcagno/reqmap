@@ -68,3 +68,65 @@ def test_tables_as_images_needs_a_kept_images_dir(tmp_path: Path):
 
     with pytest.raises(ValueError, match="images_dir"):
         pdf_to_markdown(tmp_path / "doc.pdf", tables_as_images=1)
+
+
+TAS_MARKDOWN = """# 3. GENERAL REQUIREMENTS
+
+3.1 ELECTRICAL REQUIREMENTS
+
+#EUR-DCH-000010 Interconnection wiring Parent(s): none Assignment: Verification: [R, I] The harness shall be built as drawn.
+
+3.1.2 Resistance
+
+#EUR-DCH-000020 Continuity Parent(s): none Assignment: Verification: [T] Continuity shall be measured. ##
+"""
+
+
+def _tas_customer() -> dict:
+    import json
+
+    config = Path(__file__).resolve().parents[2] / "config" / "customers.json"
+    return json.loads(config.read_text(encoding="utf-8"))["customers"]["tas"]
+
+
+def test_tas_plugin_runs_through_the_customer_configuration(tmp_path: Path):
+    from reqmap.pdf_source import apply_post_process
+
+    tas = _tas_customer()
+    marked = apply_post_process(TAS_MARKDOWN, tas["post_process"], tmp_path / "doc.pdf")
+    assert '<a id="eur-dch-000010"></a>**EUR-DCH-000010 Interconnection wiring**' in marked
+    assert "<!-- end EUR-DCH-000020 -->" in marked
+
+
+def test_tas_documents_parse_into_titles_and_requirements(tmp_path: Path):
+    from reqmap.node_parser import parse_nodes
+    from reqmap.pdf_source import apply_post_process
+
+    tas = _tas_customer()
+    marked = apply_post_process(TAS_MARKDOWN, tas["post_process"], tmp_path / "doc.pdf")
+    data = parse_nodes(
+        marked,
+        req_id_pattern=tas["req_id_pattern"],
+        title_pattern=tas["title_pattern"],
+        noise_patterns=tas["noise_patterns"],
+    )
+    assert [(n["type"], n.get("section") or n.get("req_id")) for n in data["nodes"]] == [
+        ("title", "3"),
+        ("title", "3.1"),
+        ("requirement", "EUR-DCH-000010"),
+        ("title", "3.1.2"),
+        ("requirement", "EUR-DCH-000020"),
+    ]
+    requirement = data["nodes"][2]
+    assert requirement["title"] == "Interconnection wiring"
+    assert "Verification: [R, I]" in requirement["description"]
+    assert "<!--" not in requirement["description"]  # the end marker is noise
+
+
+def test_plugin_scripts_must_stay_inside_the_repository(tmp_path: Path):
+    import pytest
+
+    from reqmap.pdf_source import apply_post_process
+
+    with pytest.raises(ValueError, match="outside the repository"):
+        apply_post_process("x", {"evil": "../../etc/passwd.py"}, tmp_path / "doc.pdf")

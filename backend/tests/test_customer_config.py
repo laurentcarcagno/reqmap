@@ -55,3 +55,16 @@ def test_load_config_raises_for_empty_customers(tmp_path):
     p.write_text(json.dumps({"customers": {}}), encoding="utf-8")
     with pytest.raises(Exception):
         load_customers_config(str(p))
+
+
+def test_shipped_config_has_the_thales_alenia_space_format():
+    config = Path(__file__).resolve().parents[2] / "config" / "customers.json"
+    load_customers_config.cache_clear()
+    try:
+        tas = get_customer(str(config), "tas")
+        assert tas is not None and tas.label == "Thales Alénia Space"
+        assert list(tas.post_process) == ["Thales Alénia Space"]
+        assert (config.parents[1] / tas.post_process["Thales Alénia Space"]).is_file()
+        assert get_customer(str(config), "airbus").post_process == {}
+    finally:
+        load_customers_config.cache_clear()

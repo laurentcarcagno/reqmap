@@ -168,6 +168,10 @@ docker compose -f docker-compose.dev.yml up --build
 ```
 3. The customer appears in the upload dialog dropdown immediately.
 
+A customer can also run pdf2md post-processing plugins (the equivalent of `pdf2md --post-process NAME`) on the
+converted markdown, with `"post_process": {"Plugin name": "pdf2md/examples/plugins/script.py"}` (name → script path
+relative to the repo root, run in order). `tas` (Thales Alénia Space) uses this to mark `#ID Title … ##` requirements.
+
 ---
 
 ## Development Roadmap
