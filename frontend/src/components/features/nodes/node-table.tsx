@@ -89,23 +89,23 @@ export function NodeTable({ documentId }: NodeTableProps) {
     <div className="w-full overflow-x-auto">
       <table className="w-full border-collapse text-sm" aria-label="Requirement nodes">
         <thead>
-          <tr className="border-b border-border bg-muted/50">
-            <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground w-12">
+          <tr className="border-b border-border bg-deep">
+            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-12">
               #
             </th>
-            <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground w-28">
+            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-28">
               ID / Section
             </th>
-            <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground">
+            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground">
               Title
             </th>
-            <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground w-48 hidden lg:table-cell">
+            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-48 hidden lg:table-cell">
               <div className="flex items-center gap-1.5">
                 <span>Description</span>
                 <button
                   type="button"
                   onClick={() => setExpandAll((v) => !v)}
-                  className="inline-flex items-center gap-1 rounded px-1 py-0.5 text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
+                  className="inline-flex items-center gap-1 px-1 py-0.5 text-[10px] text-deep-foreground/70 hover:bg-white/10 hover:text-deep-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
                   aria-label={expandAll ? "Collapse all descriptions" : "Expand all descriptions"}
                   title={expandAll ? "Collapse all" : "Expand all"}
                 >
@@ -115,10 +115,10 @@ export function NodeTable({ documentId }: NodeTableProps) {
                 </button>
               </div>
             </th>
-            <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground w-28">
+            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-28">
               Applicability
             </th>
-            <th scope="col" className="sticky top-0 bg-muted/50 px-3 py-2 text-left font-medium text-muted-foreground w-32">
+            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-32">
               Conformity
             </th>
           </tr>
@@ -130,16 +130,16 @@ export function NodeTable({ documentId }: NodeTableProps) {
               className={cn(
                 "border-b border-border transition-colors",
                 node.type === "title"
-                  ? "bg-accent/20 hover:bg-accent/40 font-medium"
-                  : "hover:bg-muted/30",
+                  ? "bg-selection/60 hover:bg-selection font-medium"
+                  : "hover:bg-accent",
               )}
             >
-              <td className="px-3 py-2 text-muted-foreground tabular-nums">{node.order}</td>
+              <td className="px-3 py-2 font-mono text-muted-foreground">{node.order}</td>
               <td className="px-3 py-2">
                 {node.type === "title" ? (
                   <span className="font-mono text-xs text-muted-foreground">{node.section}</span>
                 ) : (
-                  <span className="font-mono text-xs text-primary">{node.req_id}</span>
+                  <span className="font-mono text-xs text-deep dark:text-foreground">{node.req_id}</span>
                 )}
               </td>
               <td className="px-3 py-2">

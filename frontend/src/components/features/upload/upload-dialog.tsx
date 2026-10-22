@@ -95,33 +95,33 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
       className="fixed inset-0 z-50 flex items-center justify-center"
     >
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-[hsl(206_100%_7%/0.55)]"
         onClick={handleClose}
         aria-hidden="true"
       />
-      <div className="relative z-10 w-full max-w-md rounded-lg border border-border bg-card p-6 shadow-xl">
-        <div className="flex items-center justify-between mb-4">
-          <h2 id="upload-dialog-title" className="text-lg font-semibold text-card-foreground">
+      <div className="relative z-10 w-full max-w-md border border-deep bg-card">
+        <div className="flex items-center justify-between bg-deep p-3.5 text-deep-foreground">
+          <h2 id="upload-dialog-title" className="text-[15px] font-semibold uppercase tracking-[0.04em]">
             Upload Document
           </h2>
           <button
             onClick={handleClose}
-            className="rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex h-6 w-6 items-center justify-center border border-white/40 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Close dialog"
           >
-            <X className="h-4 w-4" aria-hidden="true" />
+            <X className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-[18px]">
           {/* Drop zone */}
           <div
             {...getRootProps()}
             className={cn(
-              "flex flex-col items-center justify-center rounded-lg border-2 border-dashed p-8 text-center transition-colors cursor-pointer",
+              "flex flex-col items-center justify-center border-2 border-dashed p-8 text-center transition-colors cursor-pointer",
               isDragActive
-                ? "border-primary bg-primary/5"
-                : "border-border hover:border-primary/50 hover:bg-accent/30",
+                ? "border-primary bg-accent"
+                : "border-border hover:border-deep hover:bg-accent",
               isPending && "pointer-events-none opacity-60",
             )}
             aria-describedby="drop-zone-hint"
@@ -146,7 +146,7 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
           </div>
 
           {fileRejections.length > 0 && (
-            <div className="flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <div className="flex items-center gap-2 border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
               <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span>Only PDF files are accepted</span>
             </div>
@@ -154,7 +154,7 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
 
           {/* Customer selector */}
           <div className="space-y-1">
-            <label htmlFor="customer-select" className="text-sm font-medium text-foreground">
+            <label htmlFor="customer-select" className="hem-label text-muted-foreground">
               Customer
             </label>
             <select
@@ -163,11 +163,7 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
               onChange={(e) => setSelectedCustomer(e.target.value)}
               disabled={isPending}
               required
-              className={cn(
-                "w-full rounded-md border border-input bg-background px-3 py-2 text-sm",
-                "text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                "disabled:opacity-60",
-              )}
+              className="hem-input disabled:bg-accent disabled:text-muted-foreground disabled:cursor-not-allowed"
             >
               <option value="">Select a customer…</option>
               {customers.map((c) => (
@@ -179,23 +175,19 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex justify-end gap-2 border-t border-border pt-3">
             <button
               type="button"
               onClick={handleClose}
               disabled={isPending}
-              className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="hem-btn hem-btn-ghost"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!selectedFile || !selectedCustomer || isPending}
-              className={cn(
-                "rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground",
-                "hover:bg-primary/90 transition-colors disabled:opacity-60",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-              )}
+              className="hem-btn hem-btn-primary"
             >
               {isPending ? "Uploading…" : "Upload"}
             </button>

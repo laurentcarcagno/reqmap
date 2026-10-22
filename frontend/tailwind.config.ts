@@ -50,12 +50,27 @@ const config: Config = {
           accent: "hsl(var(--sidebar-accent))",
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
         },
+        deep: {
+          DEFAULT: "hsl(var(--deep))",
+          foreground: "hsl(var(--deep-foreground))",
+        },
+        selection: "hsl(var(--selection))",
+        "tricolor-blue": "hsl(var(--tricolor-blue))",
+        "tricolor-red": "hsl(var(--tricolor-red))",
         status: {
           pending: "hsl(var(--status-pending))",
           processing: "hsl(var(--status-processing))",
           completed: "hsl(var(--status-completed))",
           failed: "hsl(var(--status-failed))",
         },
+      },
+      boxShadow: {
+        sm: "none",
+        DEFAULT: "none",
+        md: "none",
+        lg: "none",
+        xl: "none",
+        "2xl": "none",
       },
       borderRadius: {
         lg: "var(--radius)",

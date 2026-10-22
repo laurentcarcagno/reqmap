@@ -11,13 +11,13 @@ interface DocumentHeaderProps {
 }
 
 const CONFORMITY_COLORS: Record<string, string> = {
-  C: "#22c55e",
-  "C TBC": "#86efac",
-  PC: "#f59e0b",
-  NC: "#ef4444",
-  TBC: "#94a3b8",
-  NA: "#cbd5e1",
-  T: "#a78bfa",
+  C: "#1F8A4C",
+  "C TBC": "#65BD86",
+  PC: "#C68A00",
+  NC: "#BA1A1A",
+  TBC: "#73777D",
+  NA: "#C2DDF0",
+  T: "#006EB1",
 };
 
 interface MetaItemProps {
@@ -32,7 +32,7 @@ function MetaItem({ icon, label, value }: MetaItemProps) {
     <div className="flex items-center gap-1.5 text-xs text-muted-foreground min-w-0">
       <span className="shrink-0 text-muted-foreground/60">{icon}</span>
       <span className="text-muted-foreground/60 shrink-0">{label}:</span>
-      <span className="font-medium text-foreground truncate" title={value}>{value}</span>
+      <span className="font-mono font-medium text-foreground truncate" title={value}>{value}</span>
     </div>
   );
 }
@@ -53,16 +53,16 @@ export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
   const hasMetadata = document.doc_title || document.doc_reference || document.doc_author || document.doc_company;
 
   return (
-    <div className="border-b border-border bg-card/50 px-4 py-3">
+    <div className="border-b border-border bg-card px-4 py-3">
       <div className="flex items-start gap-6">
         {/* Left: doc metadata */}
         <div className="flex-1 min-w-0 space-y-1.5">
           {document.doc_title ? (
-            <h2 className="text-base font-semibold text-foreground leading-tight" title={document.doc_title}>
+            <h2 className="text-[18px] font-medium tracking-[0.04em] text-deep dark:text-foreground leading-tight" title={document.doc_title}>
               {document.doc_title}
             </h2>
           ) : (
-            <h2 className="text-base font-semibold text-foreground leading-tight truncate" title={document.original_filename}>
+            <h2 className="text-[18px] font-medium tracking-[0.04em] text-deep dark:text-foreground leading-tight truncate" title={document.original_filename}>
               {document.original_filename}
             </h2>
           )}
@@ -104,7 +104,7 @@ export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
                     {pieData.map((entry) => (
                       <Cell
                         key={entry.name}
-                        fill={CONFORMITY_COLORS[entry.name] ?? "#94a3b8"}
+                        fill={CONFORMITY_COLORS[entry.name] ?? "#73777D"}
                         stroke="transparent"
                       />
                     ))}
@@ -117,7 +117,7 @@ export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
                     contentStyle={{
                       fontSize: 11,
                       padding: "4px 8px",
-                      borderRadius: 6,
+                      borderRadius: 0,
                       border: "1px solid hsl(var(--border))",
                       background: "hsl(var(--card))",
                       color: "hsl(var(--card-foreground))",
@@ -131,8 +131,8 @@ export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
               {pieData.map((entry) => (
                 <div key={entry.name} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                   <span
-                    className="h-2 w-2 rounded-full shrink-0"
-                    style={{ background: CONFORMITY_COLORS[entry.name] ?? "#94a3b8" }}
+                    className="h-2 w-2 shrink-0"
+                    style={{ background: CONFORMITY_COLORS[entry.name] ?? "#73777D" }}
                     aria-hidden="true"
                   />
                   <span className="font-mono">{entry.name}</span>

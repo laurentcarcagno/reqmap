@@ -31,7 +31,7 @@ export function DocumentList({ selectedDocumentId, onSelectDocument, onDocumentD
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="h-16 rounded-md bg-sidebar-accent/50 animate-pulse"
+            className="h-16 bg-sidebar-accent/50 animate-pulse"
             aria-hidden="true"
           />
         ))}

@@ -29,7 +29,7 @@ export function ConformitySelect({ value, onChange, disabled }: ConformitySelect
       disabled={disabled}
       aria-label="Conformity"
       className={cn(
-        "rounded border border-transparent bg-transparent px-1.5 py-0.5 text-xs font-medium",
+        "border border-transparent bg-transparent px-1.5 py-0.5 text-xs font-medium",
         "hover:border-input hover:bg-background cursor-pointer transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1",
         "disabled:cursor-not-allowed disabled:opacity-50",

@@ -55,15 +55,15 @@ export function DocumentCard({ document, isSelected, onSelect, onDeleted }: Docu
       <button
         onClick={onSelect}
         className={cn(
-          "w-full rounded-md px-3 py-2.5 text-left transition-colors pr-8",
+          "w-full border-l-[3px] px-3 py-2.5 text-left transition-colors pr-8",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
           isSelected
-            ? "bg-sidebar-accent text-sidebar-accent-foreground"
-            : "text-sidebar-foreground hover:bg-sidebar-accent/60",
+            ? "border-primary bg-sidebar-accent text-sidebar-accent-foreground"
+            : "border-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent/60",
         )}
       >
         <div className="flex items-start gap-2">
-          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <FileText className="mt-0.5 h-4 w-4 shrink-0 text-sidebar-foreground/50" aria-hidden="true" />
           <div className="min-w-0 flex-1">
             <p
               className="truncate text-sm font-medium leading-tight"
@@ -73,18 +73,18 @@ export function DocumentCard({ document, isSelected, onSelect, onDeleted }: Docu
             </p>
             <div className="mt-1 flex items-center gap-2">
               <span
-                className="flex items-center gap-1 text-xs text-muted-foreground"
+                className="flex items-center gap-1 text-xs text-sidebar-foreground/60"
                 aria-label={`Status: ${STATUS_LABELS[document.status]}`}
               >
                 {STATUS_ICONS[document.status]}
                 {STATUS_LABELS[document.status]}
               </span>
               {document.status === "completed" && (
-                <span className="text-xs text-muted-foreground">
+                <span className="font-mono text-xs text-sidebar-foreground/60">
                   · {document.node_count} nodes
                 </span>
               )}
-              <span className="ml-auto text-xs text-muted-foreground">{date}</span>
+              <span className="ml-auto font-mono text-xs text-sidebar-foreground/60">{date}</span>
             </div>
             {document.status === "failed" && document.error_message && (
               <p className="mt-0.5 truncate text-xs text-destructive" title={document.error_message}>
@@ -103,8 +103,8 @@ export function DocumentCard({ document, isSelected, onSelect, onDeleted }: Docu
           disabled={isDeleting}
           aria-label={`Delete ${document.original_filename}`}
           className={cn(
-            "absolute right-1.5 top-1/2 -translate-y-1/2 rounded p-1",
-            "text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors",
+            "absolute right-1.5 top-1/2 -translate-y-1/2 p-1",
+            "text-sidebar-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors",
             "opacity-0 group-hover:opacity-100 focus-visible:opacity-100",
             "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
           )}
@@ -115,14 +115,14 @@ export function DocumentCard({ document, isSelected, onSelect, onDeleted }: Docu
 
       {/* Inline confirm */}
       {confirmDelete && (
-        <div className="absolute inset-0 flex items-center justify-between gap-1 rounded-md bg-destructive/10 px-3 py-2 z-10">
+        <div className="absolute inset-0 flex items-center justify-between gap-1 bg-sidebar px-3 py-2 z-10 border-l-[3px] border-destructive">
           <span className="text-xs font-medium text-destructive truncate">Delete?</span>
           <div className="flex items-center gap-1 shrink-0">
             <button
               type="button"
               onClick={() => doDelete()}
               disabled={isDeleting}
-              className="rounded px-2 py-0.5 text-xs font-medium bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="hem-label px-2 py-0.5 bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               {isDeleting ? <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" /> : "Yes"}
             </button>
@@ -130,7 +130,7 @@ export function DocumentCard({ document, isSelected, onSelect, onDeleted }: Docu
               type="button"
               onClick={() => setConfirmDelete(false)}
               disabled={isDeleting}
-              className="rounded px-2 py-0.5 text-xs font-medium bg-muted text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              className="hem-label px-2 py-0.5 bg-muted text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
               No
             </button>

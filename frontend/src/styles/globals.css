@@ -9,97 +9,113 @@
 
 @layer base {
   :root {
-    /* --- Geometry --- */
-    --radius: 0.5rem;
+    /* --- Geometry (Hemeria: sharp corners everywhere) --- */
+    --radius: 0px;
 
     /* --- Typography --- */
-    --font-sans: "Inter", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", "Fira Code", monospace;
+    --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-    /* --- Light theme --- */
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* --- Light theme (THOR · Hemeria, tinted sky-blue neutrals) --- */
+    --background: 205 67% 96%;            /* Cold Mist */
+    --foreground: 206 100% 7%;            /* Ink */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 210 50% 99%;                  /* Instrument White */
+    --card-foreground: 206 100% 7%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 210 50% 99%;
+    --popover-foreground: 206 100% 7%;
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 203 100% 35%;              /* Console Sky */
+    --primary-foreground: 210 50% 99%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 201 67% 94%;             /* Hover Mist */
+    --secondary-foreground: 206 53% 15%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 206 41% 90%;                 /* Muted Mist */
+    --muted-foreground: 216 4% 47%;       /* Mute Ink */
 
-    --accent: 210 40% 94%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 201 67% 94%;                /* Hover Mist */
+    --accent-foreground: 206 53% 15%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 75% 42%;             /* Signal Danger (never Tricolor Red) */
+    --destructive-foreground: 210 50% 99%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 205 61% 85%;                /* Console Border */
+    --input: 205 61% 85%;
+    --ring: 203 100% 35%;
 
-    /* --- Sidebar --- */
-    --sidebar: 210 40% 98%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-accent: 210 40% 93%;
-    --sidebar-accent-foreground: 222 47% 11%;
+    /* --- Sidebar: Sovereign Deep Blue --- */
+    --sidebar: 206 53% 15%;
+    --sidebar-foreground: 210 50% 99%;
+    --sidebar-border: 206 45% 24%;
+    --sidebar-accent: 205 68% 18%;
+    --sidebar-accent-foreground: 210 50% 99%;
 
-    /* --- Status badges --- */
-    --status-pending: 38 92% 50%;
-    --status-processing: 221 83% 53%;
-    --status-completed: 142 71% 45%;
-    --status-failed: 0 84% 60%;
+    /* --- Table header / deep surfaces --- */
+    --deep: 206 53% 15%;
+    --deep-foreground: 210 50% 99%;
+    --selection: 210 88% 90%;             /* Selection Veil */
+
+    /* --- Tricolor (ceremonial only: page-header stripe, brand dot) --- */
+    --tricolor-blue: 217 66% 31%;
+    --tricolor-red: 351 90% 41%;
+
+    /* --- Status (Signal colors) --- */
+    --status-pending: 42 100% 39%;
+    --status-processing: 203 100% 35%;
+    --status-completed: 145 63% 33%;
+    --status-failed: 0 75% 42%;
   }
 
   .dark {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 98%;
+    --background: 206 53% 8%;
+    --foreground: 205 67% 96%;
 
-    --card: 222 47% 10%;
-    --card-foreground: 210 40% 98%;
+    --card: 206 50% 11%;
+    --card-foreground: 205 67% 96%;
 
-    --popover: 222 47% 10%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 206 50% 11%;
+    --popover-foreground: 205 67% 96%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 203 80% 50%;
+    --primary-foreground: 206 100% 7%;
 
-    --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 206 45% 17%;
+    --secondary-foreground: 205 67% 96%;
 
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 206 45% 17%;
+    --muted-foreground: 205 20% 65%;
 
-    --accent: 217 32% 20%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 206 45% 20%;
+    --accent-foreground: 205 67% 96%;
 
-    --destructive: 0 63% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 210 50% 99%;
 
-    --border: 217 32% 20%;
-    --input: 217 32% 20%;
-    --ring: 217 91% 60%;
+    --border: 206 40% 22%;
+    --input: 206 40% 22%;
+    --ring: 203 80% 50%;
 
     /* --- Sidebar --- */
-    --sidebar: 222 47% 9%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-border: 217 32% 18%;
-    --sidebar-accent: 217 32% 15%;
-    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar: 206 53% 6%;
+    --sidebar-foreground: 210 50% 99%;
+    --sidebar-border: 206 45% 16%;
+    --sidebar-accent: 205 60% 15%;
+    --sidebar-accent-foreground: 210 50% 99%;
 
-    /* --- Status badges --- */
-    --status-pending: 38 92% 50%;
-    --status-processing: 217 91% 60%;
-    --status-completed: 142 71% 45%;
-    --status-failed: 0 63% 55%;
+    --deep: 206 53% 15%;
+    --deep-foreground: 210 50% 99%;
+    --selection: 206 50% 24%;
+
+    --tricolor-blue: 217 60% 45%;
+    --tricolor-red: 351 80% 50%;
+
+    /* --- Status --- */
+    --status-pending: 42 90% 50%;
+    --status-processing: 203 80% 50%;
+    --status-completed: 145 55% 45%;
+    --status-failed: 0 70% 55%;
   }
 }
 
@@ -108,17 +124,67 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans text-[13px] leading-[1.45];
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Identifier-is-mono: tabular figures wherever mono is used */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
   }
 
   /* Accessible focus indicators */
   :focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    @apply outline-none ring-2 ring-ring;
   }
 
   /* Skip navigation link for a11y */
   .skip-nav {
-    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground;
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground;
+  }
+}
+
+/* =========================================================================
+   HEMERIA PRIMITIVES — flat, sharp, wide-tracked caps chrome.
+   ========================================================================= */
+@layer components {
+  /* Label: buttons, pills, table headers */
+  .hem-label {
+    @apply text-[11px] font-bold uppercase tracking-[0.12em];
+  }
+  .hem-eyebrow {
+    @apply text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground;
+  }
+
+  .hem-btn {
+    @apply hem-label inline-flex h-8 items-center justify-center gap-2 border px-3.5;
+    transition: filter 120ms linear, background-color 120ms linear;
+  }
+  .hem-btn:disabled { @apply cursor-not-allowed opacity-55; }
+  .hem-btn-primary { @apply border-primary bg-primary text-primary-foreground; }
+  .hem-btn-primary:hover:not(:disabled) { filter: brightness(1.07); }
+  .hem-btn-ghost { @apply border-deep bg-transparent text-deep dark:border-foreground dark:text-foreground; }
+  .hem-btn-ghost:hover:not(:disabled) { @apply bg-accent; }
+  .hem-btn-danger { @apply border-destructive bg-transparent text-destructive; }
+  .hem-btn-danger:hover:not(:disabled) { @apply bg-destructive text-destructive-foreground; }
+
+  .hem-input {
+    @apply w-full border border-input bg-card px-2.5 py-1.5 text-[13px] text-foreground placeholder:text-muted-foreground;
+  }
+  .hem-input:hover:not(:disabled) { @apply border-deep; }
+  .hem-input:focus { @apply border-primary outline-none; box-shadow: none; }
+
+  /* Tricolor page-header stripe: blue / white / red */
+  .hem-stripe {
+    @apply flex w-1 shrink-0 flex-col self-stretch;
+  }
+  .hem-stripe > span:nth-child(1) { @apply flex-1 bg-tricolor-blue; }
+  .hem-stripe > span:nth-child(2) { @apply flex-1 border-y-0 bg-card; }
+  .hem-stripe > span:nth-child(3) { @apply flex-1 bg-tricolor-red; }
+
+  /* Square status pill */
+  .hem-pill {
+    @apply inline-flex items-center gap-1.5 border px-2 py-0.5 text-[10px] font-bold uppercase leading-[1.4] tracking-[0.14em];
   }
 }

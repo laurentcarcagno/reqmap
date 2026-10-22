@@ -74,8 +74,8 @@ export function ProcessingModal({ documentId, onComplete, onClose }: ProcessingM
       aria-labelledby="processing-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center"
     >
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" aria-hidden="true" />
-      <div className="relative z-10 w-full max-w-sm rounded-lg border border-border bg-card p-8 shadow-xl text-center">
+      <div className="absolute inset-0 bg-[hsl(206_100%_7%/0.55)]" aria-hidden="true" />
+      <div className="relative z-10 w-full max-w-sm border border-deep bg-card p-8 text-center">
         {isProcessing && (
           <>
             <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary mb-4" aria-hidden="true" />
@@ -85,8 +85,8 @@ export function ProcessingModal({ documentId, onComplete, onClose }: ProcessingM
             <p className="mt-2 text-sm text-muted-foreground">
               Extracting requirements from PDF
             </p>
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1 text-xs font-mono text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" aria-hidden="true" />
+            <div className="mt-4 inline-flex items-center gap-1.5 bg-muted px-3 py-1 text-xs font-mono text-muted-foreground">
+              <span className="h-1.5 w-1.5 bg-primary animate-pulse" aria-hidden="true" />
               {formatTime(elapsed)} elapsed
             </div>
           </>
@@ -94,7 +94,7 @@ export function ProcessingModal({ documentId, onComplete, onClose }: ProcessingM
 
         {status === "completed" && (
           <>
-            <CheckCircle2 className="mx-auto h-10 w-10 text-green-500 mb-4" aria-hidden="true" />
+            <CheckCircle2 className="mx-auto h-10 w-10 text-[hsl(var(--status-completed))] mb-4" aria-hidden="true" />
             <h2 id="processing-modal-title" className="text-base font-semibold text-card-foreground">
               Processing complete
             </h2>
@@ -116,7 +116,7 @@ export function ProcessingModal({ documentId, onComplete, onClose }: ProcessingM
             <button
               type="button"
               onClick={onClose}
-              className="mt-5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-5 hem-btn hem-btn-primary"
             >
               Close
             </button>

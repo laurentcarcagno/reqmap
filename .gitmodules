@@ -1,0 +1,3 @@
+[submodule "pdf2md"]
+	path = pdf2md
+	url = https://github.com/laurentcarcagno/pdf2md.git

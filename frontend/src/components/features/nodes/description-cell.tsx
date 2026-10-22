@@ -24,7 +24,7 @@ export function DescriptionCell({ text, expandAll }: DescriptionCellProps) {
           "prose prose-xs dark:prose-invert max-w-none text-xs text-muted-foreground",
           "prose-p:my-0.5 prose-ul:my-0.5 prose-ol:my-0.5 prose-li:my-0",
           "prose-headings:text-foreground prose-headings:font-semibold prose-headings:my-1",
-          "prose-code:text-[11px] prose-code:bg-muted prose-code:px-1 prose-code:rounded",
+          "prose-code:text-[11px] prose-code:bg-muted prose-code:px-1 ",
           "prose-strong:text-foreground",
           !expanded && "line-clamp-2",
         )}

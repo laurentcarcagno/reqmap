@@ -15,7 +15,7 @@ export function Sidebar({ selectedDocumentId, onSelectDocument, onDocumentDelete
       aria-label="Document list"
     >
       <div className="flex h-10 shrink-0 items-center border-b border-sidebar-border px-4">
-        <h2 className="text-sm font-semibold text-sidebar-foreground">Documents</h2>
+        <h2 className="hem-label tracking-[0.18em] text-sidebar-foreground/70">Documents</h2>
       </div>
       <div className="flex-1 overflow-y-auto">
         <DocumentList
