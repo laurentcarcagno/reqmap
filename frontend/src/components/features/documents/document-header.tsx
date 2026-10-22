@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts";
-import { User, Building2, BookOpen, Tag } from "lucide-react";
+import { User, Building2, BookOpen, Tag, Download } from "lucide-react";
 import type { Node, Document } from "@/lib/api";
+import { ExportDialog } from "@/components/features/export/export-dialog";
 
 interface DocumentHeaderProps {
   document: Document;
@@ -38,6 +39,7 @@ function MetaItem({ icon, label, value }: MetaItemProps) {
 }
 
 export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
+  const [exportOpen, setExportOpen] = useState(false);
   const pieData = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const node of nodes) {
@@ -54,9 +56,9 @@ export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
 
   return (
     <div className="border-b border-border bg-card px-4 py-3">
-      <div className="flex items-start gap-6">
+      <div className="grid grid-cols-[1fr_auto_1fr] items-start gap-6">
         {/* Left: doc metadata */}
-        <div className="flex-1 min-w-0 space-y-1.5">
+        <div className="min-w-0 space-y-1.5">
           {document.doc_title ? (
             <h2 className="text-[18px] font-medium tracking-[0.04em] text-deep dark:text-foreground leading-tight" title={document.doc_title}>
               {document.doc_title}
@@ -83,9 +85,24 @@ export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
               <span>{document.requirement_count} requirements</span>
             </div>
           )}
+          {document.status === "completed" && (
+            <>
+              <button
+                type="button"
+                onClick={() => setExportOpen(true)}
+                className="hem-btn hem-btn-ghost"
+                aria-label="Export as Excel compliance matrix"
+              >
+                <Download className="h-3.5 w-3.5" aria-hidden="true" />
+                Export
+              </button>
+              <ExportDialog documentId={document.id} open={exportOpen} onOpenChange={setExportOpen} />
+            </>
+          )}
         </div>
 
-        {/* Right: conformity pie */}
+        {/* Center: conformity pie (the empty third column keeps it centered) */}
+        <div className="flex justify-center">
         {totalReqs > 0 && (
           <div className="shrink-0 flex items-center gap-3">
             <div className="w-28 h-24">
@@ -142,6 +159,8 @@ export function DocumentHeader({ document, nodes }: DocumentHeaderProps) {
             </div>
           </div>
         )}
+        </div>
+        <div aria-hidden="true" />
       </div>
     </div>
   );

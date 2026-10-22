@@ -19,12 +19,13 @@ export function AppShell() {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background">
-      <Header onDocumentReady={handleDocumentReady} />
+      <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar
           selectedDocumentId={selectedDocumentId}
           onSelectDocument={setSelectedDocumentId}
           onDocumentDeleted={handleDocumentDeleted}
+          onDocumentReady={handleDocumentReady}
         />
         <main
           id="main-content"

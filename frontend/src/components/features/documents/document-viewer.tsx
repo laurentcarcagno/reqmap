@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FileText } from "lucide-react";
 import { api } from "@/lib/api";
@@ -11,6 +12,7 @@ interface DocumentViewerProps {
 }
 
 export function DocumentViewer({ documentId }: DocumentViewerProps) {
+  const [expandAll, setExpandAll] = useState(false);
   const { data: doc } = useQuery({
     queryKey: ["documents", documentId],
     queryFn: () => api.documents.get(documentId!),
@@ -43,7 +45,7 @@ export function DocumentViewer({ documentId }: DocumentViewerProps) {
     <div className="flex flex-1 flex-col overflow-hidden">
       {doc && <DocumentHeader document={doc} nodes={nodes} />}
       <div className="flex-1 overflow-auto">
-        <NodeTable documentId={documentId} />
+        <NodeTable documentId={documentId} expandAll={expandAll} onExpandAllChange={setExpandAll} />
       </div>
     </div>
   );

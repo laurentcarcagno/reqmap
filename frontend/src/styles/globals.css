@@ -188,3 +188,19 @@
     @apply inline-flex items-center gap-1.5 border px-2 py-0.5 text-[10px] font-bold uppercase leading-[1.4] tracking-[0.14em];
   }
 }
+
+/* Rendered markdown of the node descriptions (tailwind typography is not installed) */
+@layer components {
+  .hem-md { @apply min-w-0 break-words; overflow-wrap: anywhere; }
+  .hem-md > * + * { @apply mt-1; }
+  .hem-md p { @apply my-0.5; }
+  .hem-md strong { @apply font-bold text-foreground; }
+  .hem-md ul { @apply list-disc pl-4; }
+  .hem-md ol { @apply list-decimal pl-4; }
+  .hem-md code { @apply bg-muted px-1 font-mono text-[11px]; }
+  .hem-md h1, .hem-md h2, .hem-md h3, .hem-md h4 { @apply my-1 font-semibold text-foreground; }
+  .hem-md img { @apply my-1 h-auto max-w-[75%]; }
+  .hem-md table { @apply w-full border-collapse text-[11px]; }
+  .hem-md th, .hem-md td { @apply border border-border px-2 py-1 align-top; }
+  .hem-md th { @apply bg-muted text-center font-bold text-foreground; }
+}

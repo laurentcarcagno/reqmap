@@ -1,17 +1,10 @@
 "use client";
 
-import { Moon, Sun, Upload } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
-import { UploadDialog } from "@/components/features/upload/upload-dialog";
 
-interface HeaderProps {
-  onDocumentReady?: (doc: import("@/lib/api").Document) => void;
-}
-
-export function Header({ onDocumentReady }: HeaderProps) {
+export function Header() {
   const { theme, setTheme } = useTheme();
-  const [uploadOpen, setUploadOpen] = useState(false);
 
   return (
     <header className="flex h-16 shrink-0 items-center border-b border-border bg-card px-4 gap-3">
@@ -32,15 +25,6 @@ export function Header({ onDocumentReady }: HeaderProps) {
       <div className="flex-1" />
 
       <button
-        onClick={() => setUploadOpen(true)}
-        className="hem-btn hem-btn-primary"
-        aria-label="Upload document"
-      >
-        <Upload className="h-4 w-4" aria-hidden="true" />
-        <span>Upload</span>
-      </button>
-
-      <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         className="hem-btn hem-btn-ghost w-8 px-0"
         aria-label="Toggle theme"
@@ -49,7 +33,6 @@ export function Header({ onDocumentReady }: HeaderProps) {
         <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" aria-hidden="true" />
       </button>
 
-      <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} {...(onDocumentReady ? { onDocumentReady } : {})} />
     </header>
   );
 }

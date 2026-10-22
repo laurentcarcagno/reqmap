@@ -3,7 +3,8 @@
 import type { ApplicabilityValue } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
-const APPLICABILITY_VALUES: ApplicabilityValue[] = ["NA", "A", "A/M", "TBC", "T"];
+// "T" (Title) is only held by title rows, which show no dropdown
+const APPLICABILITY_VALUES: ApplicabilityValue[] = ["NA", "A", "A/M", "TBC"];
 
 const VALUE_STYLES: Record<ApplicabilityValue, string> = {
   NA: "text-muted-foreground",

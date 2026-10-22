@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertCircle, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import { toast } from "sonner";
@@ -8,15 +8,34 @@ import { api, type Node, type ApplicabilityValue, type ConformityValue } from "@
 import { cn } from "@/lib/utils";
 import { ApplicabilitySelect } from "./applicability-select";
 import { ConformitySelect } from "./conformity-select";
+import { CommentCell } from "./comment-cell";
 import { DescriptionCell } from "./description-cell";
+
+const MIN_COLUMN_WIDTH = 48;
+
+/** Header columns. `auto` sizes them to their content until the user first drags a handle. */
+const COLUMNS = [
+  { label: "#", auto: "w-12", fallback: 56 },
+  { label: "ID / Section", auto: "w-px whitespace-nowrap", fallback: 130 },
+  { label: "Title", auto: "w-px whitespace-nowrap", fallback: 260 },
+  { label: "Description", auto: "w-[44%]", fallback: 420, shared: "hidden lg:table-cell" },
+  { label: "Applicability", auto: "w-28", fallback: 112 },
+  { label: "Conformity", auto: "w-32", fallback: 128 },
+  { label: "Comment", auto: "w-[33%] min-w-64", fallback: 300 },
+] as const;
+const DESCRIPTION_INDEX = 3;
 
 interface NodeTableProps {
   documentId: string;
+  expandAll: boolean;
+  onExpandAllChange: (expandAll: boolean) => void;
 }
 
-export function NodeTable({ documentId }: NodeTableProps) {
+export function NodeTable({ documentId, expandAll, onExpandAllChange }: NodeTableProps) {
   const queryClient = useQueryClient();
-  const [expandAll, setExpandAll] = useState(false);
+  // null: columns size themselves; after the first drag every column gets a fixed pixel width
+  const [widths, setWidths] = useState<number[] | null>(null);
+  const headRefs = useRef<(HTMLTableCellElement | null)[]>([]);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["nodes", documentId],
@@ -30,7 +49,7 @@ export function NodeTable({ documentId }: NodeTableProps) {
       patch,
     }: {
       nodeId: string;
-      patch: { applicability?: ApplicabilityValue; conformity?: ConformityValue };
+      patch: { applicability?: ApplicabilityValue; conformity?: ConformityValue; comment?: string; description?: string };
     }) => api.nodes.update(nodeId, patch),
     onMutate: async ({ nodeId, patch }) => {
       await queryClient.cancelQueries({ queryKey: ["nodes", documentId] });
@@ -59,6 +78,39 @@ export function NodeTable({ documentId }: NodeTableProps) {
 
   const nodes = data?.data ?? [];
 
+  function startResize(index: number, e: React.PointerEvent<HTMLDivElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    const handle = e.currentTarget;
+    handle.setPointerCapture(e.pointerId);
+    const current =
+      widths ??
+      COLUMNS.map((column, i) => Math.round(headRefs.current[i]?.getBoundingClientRect().width || column.fallback));
+    setWidths(current);
+    const startX = e.clientX;
+    const startWidth = current[index] ?? MIN_COLUMN_WIDTH;
+    const onMove = (move: PointerEvent) =>
+      setWidths((prev) =>
+        prev ? prev.map((w, i) => (i === index ? Math.max(MIN_COLUMN_WIDTH, startWidth + move.clientX - startX) : w)) : prev,
+      );
+    const onUp = () => {
+      handle.removeEventListener("pointermove", onMove);
+      handle.removeEventListener("pointerup", onUp);
+    };
+    handle.addEventListener("pointermove", onMove);
+    handle.addEventListener("pointerup", onUp);
+  }
+
+  const resized = widths !== null;
+  const total = widths?.reduce((sum, w) => sum + w, 0) ?? 0;
+  const tableStyle = widths
+    ? ({
+        tableLayout: "fixed",
+        "--w-all": `${total}px`,
+        "--w-no-desc": `${total - (widths[DESCRIPTION_INDEX] ?? 0)}px`,
+      } as React.CSSProperties)
+    : undefined;
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-12 gap-3 text-muted-foreground">
@@ -86,41 +138,61 @@ export function NodeTable({ documentId }: NodeTableProps) {
   }
 
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="w-full border-collapse text-sm" aria-label="Requirement nodes">
+    // No overflow here: the header sticks to the scroll container of the document viewer
+    <div className="w-full">
+      <table
+        className={cn(
+          "border-collapse text-sm",
+          resized ? "w-[var(--w-no-desc)] lg:w-[var(--w-all)] [&_td]:overflow-hidden" : "w-full",
+        )}
+        style={tableStyle}
+        aria-label="Requirement nodes"
+      >
         <thead>
           <tr className="border-b border-border bg-deep">
-            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-12">
-              #
-            </th>
-            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-28">
-              ID / Section
-            </th>
-            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground">
-              Title
-            </th>
-            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-full hidden lg:table-cell">
-              <div className="flex items-center gap-1.5">
-                <span>Description</span>
-                <button
-                  type="button"
-                  onClick={() => setExpandAll((v) => !v)}
-                  className="inline-flex items-center gap-1 px-1 py-0.5 text-[10px] text-deep-foreground/70 hover:bg-white/10 hover:text-deep-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
-                  aria-label={expandAll ? "Collapse all descriptions" : "Expand all descriptions"}
-                  title={expandAll ? "Collapse all" : "Expand all"}
-                >
-                  {expandAll
-                    ? <><ChevronsDownUp className="h-3 w-3" aria-hidden="true" /><span>Collapse all</span></>
-                    : <><ChevronsUpDown className="h-3 w-3" aria-hidden="true" /><span>Expand all</span></>}
-                </button>
-              </div>
-            </th>
-            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-28">
-              Applicability
-            </th>
-            <th scope="col" className="hem-label sticky top-0 bg-deep px-3 py-2.5 text-left text-deep-foreground w-32">
-              Conformity
-            </th>
+            {COLUMNS.map((column, i) => (
+              <th
+                key={column.label}
+                ref={(el) => {
+                  headRefs.current[i] = el;
+                }}
+                scope="col"
+                style={widths ? { width: widths[i] } : undefined}
+                className={cn(
+                  "hem-label sticky top-0 z-10 bg-deep px-3 py-2.5 text-left text-deep-foreground",
+                  !resized && column.auto,
+                  "shared" in column && column.shared,
+                )}
+              >
+                {i === DESCRIPTION_INDEX ? (
+                  <div className="flex items-center gap-1.5">
+                    <span>Description</span>
+                    <button
+                      type="button"
+                      onClick={() => onExpandAllChange(!expandAll)}
+                      className="inline-flex items-center gap-1 px-1 py-0.5 text-[10px] text-deep-foreground/70 hover:bg-white/10 hover:text-deep-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors"
+                      aria-label={expandAll ? "Collapse all descriptions" : "Expand all descriptions"}
+                      title={expandAll ? "Collapse all" : "Expand all"}
+                    >
+                      {expandAll
+                        ? <><ChevronsDownUp className="h-3 w-3" aria-hidden="true" /><span>Collapse all</span></>
+                        : <><ChevronsUpDown className="h-3 w-3" aria-hidden="true" /><span>Expand all</span></>}
+                    </button>
+                  </div>
+                ) : (
+                  column.label
+                )}
+                <div
+                  role="separator"
+                  aria-orientation="vertical"
+                  aria-label={`Resize ${column.label} column (double-click to reset)`}
+                  title="Drag to resize · double-click to reset"
+                  onPointerDown={(e) => startResize(i, e)}
+                  onDoubleClick={() => setWidths(null)}
+                  className="absolute right-0 top-0 h-full w-1.5 cursor-col-resize touch-none select-none hover:bg-white/30"
+                />
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -135,7 +207,7 @@ export function NodeTable({ documentId }: NodeTableProps) {
               )}
             >
               <td className="px-3 py-2 font-mono text-muted-foreground">{node.order}</td>
-              <td className="px-3 py-2">
+              <td className="px-3 py-2 whitespace-nowrap">
                 {node.type === "title" ? (
                   <span className="font-mono text-xs text-muted-foreground">{node.section}</span>
                 ) : (
@@ -144,6 +216,7 @@ export function NodeTable({ documentId }: NodeTableProps) {
               </td>
               <td className="px-3 py-2 whitespace-nowrap">
                 <span
+                  title={node.title}
                   className={cn(
                     node.type === "title"
                       ? "font-semibold text-foreground"
@@ -153,20 +226,42 @@ export function NodeTable({ documentId }: NodeTableProps) {
                   {node.title}
                 </span>
               </td>
-              <td className="px-3 py-2 hidden lg:table-cell">
-                <DescriptionCell text={node.description} expandAll={expandAll} />
+              <td className={cn("px-3 py-2 hidden lg:table-cell", !resized && "max-w-0")}>
+                {node.type === "requirement" && (
+                  <DescriptionCell
+                    text={node.description}
+                    expandAll={expandAll}
+                    onSave={(description) => updateNode({ nodeId: node.id, patch: { description } })}
+                  />
+                )}
               </td>
               <td className="px-3 py-2">
-                <ApplicabilitySelect
-                  value={node.applicability}
-                  onChange={(v) => updateNode({ nodeId: node.id, patch: { applicability: v } })}
-                />
+                {node.applicability === "T" ? (
+                  <span className="font-mono text-xs text-muted-foreground">T</span>
+                ) : (
+                  <ApplicabilitySelect
+                    value={node.applicability}
+                    onChange={(v) => updateNode({ nodeId: node.id, patch: { applicability: v } })}
+                  />
+                )}
               </td>
               <td className="px-3 py-2">
-                <ConformitySelect
-                  value={node.conformity}
-                  onChange={(v) => updateNode({ nodeId: node.id, patch: { conformity: v } })}
-                />
+                {node.conformity === "T" ? (
+                  <span className="font-mono text-xs text-muted-foreground">T</span>
+                ) : (
+                  <ConformitySelect
+                    value={node.conformity}
+                    onChange={(v) => updateNode({ nodeId: node.id, patch: { conformity: v } })}
+                  />
+                )}
+              </td>
+              <td className="px-3 py-2">
+                {node.type === "requirement" && (
+                  <CommentCell
+                    value={node.comment}
+                    onSave={(comment) => updateNode({ nodeId: node.id, patch: { comment } })}
+                  />
+                )}
               </td>
             </tr>
           ))}

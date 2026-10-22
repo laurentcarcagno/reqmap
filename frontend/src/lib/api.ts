@@ -81,8 +81,45 @@ export interface Node {
   description: string;
   applicability: ApplicabilityValue;
   conformity: ConformityValue;
+  comment: string;
   updated_by: string | null;
   updated_at: string;
+}
+
+export type Classification = "" | "public" | "commercial" | "internal";
+export type ExportControl = "" | "Not Listed/Not Controlled" | "Listed/Controlled";
+
+export interface DocumentRef {
+  title: string;
+  reference: string;
+  edition: string;
+}
+
+export interface Acronym {
+  acronym: string;
+  description: string;
+}
+
+/** Values of the Excel compliance matrix that cannot be deduced from the PDF. */
+export interface ExportSettings {
+  client: string;
+  project: string;
+  reference: string;
+  edition: string;
+  date: string; // ISO, YYYY-MM-DD
+  subject: string;
+  subtitle: string;
+  classification: Classification;
+  export_control: ExportControl;
+  quality_manager: string;
+  project_manager: string;
+  redactor: string;
+  doc_type: string;
+  author: string;
+  revision_description: string;
+  applicable_docs: DocumentRef[];
+  reference_docs: DocumentRef[];
+  acronyms: Acronym[];
 }
 
 export interface PaginatedResponse<T> {
@@ -107,6 +144,18 @@ export const api = {
     },
 
     get: (id: string): Promise<Document> => request(`/documents/${id}`),
+
+    /** Download URL of the Excel compliance matrix (HMA-C-049 template). */
+    exportUrl: (id: string): string => `${BASE}/documents/${id}/export`,
+
+    getExportSettings: (id: string): Promise<ExportSettings> =>
+      request(`/documents/${id}/export-settings`),
+
+    saveExportSettings: (id: string, settings: ExportSettings): Promise<ExportSettings> =>
+      request(`/documents/${id}/export-settings`, {
+        method: "PUT",
+        body: JSON.stringify(settings),
+      }),
 
     delete: (id: string): Promise<void> =>
       request(`/documents/${id}`, { method: "DELETE" }),
@@ -140,7 +189,7 @@ export const api = {
 
     update: (
       nodeId: string,
-      body: { applicability?: ApplicabilityValue; conformity?: ConformityValue },
+      body: { applicability?: ApplicabilityValue; conformity?: ConformityValue; comment?: string; description?: string },
     ): Promise<Node> =>
       request(`/nodes/${nodeId}`, {
         method: "PATCH",
