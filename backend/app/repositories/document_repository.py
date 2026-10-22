@@ -53,6 +53,12 @@ async def update_document_status(
     await db.execute(update(Document).where(Document.id == document_id).values(**values))
 
 
+async def save_export_settings(db: AsyncSession, document_id: str, settings_json: str) -> None:
+    await db.execute(
+        update(Document).where(Document.id == document_id).values(export_settings=settings_json)
+    )
+
+
 async def delete_document(db: AsyncSession, document_id: str) -> bool:
     result = await db.execute(delete(Document).where(Document.id == document_id))
     return result.rowcount > 0

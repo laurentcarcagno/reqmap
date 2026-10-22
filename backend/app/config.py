@@ -29,6 +29,10 @@ class Settings(BaseSettings):
     upload_dir: Path = Path("uploads")
     max_upload_bytes: int = 52_428_800  # 50 MB
 
+    # Tables of at least this many rows are kept as pictures of the PDF page (pdf2md
+    # --tables-as-images); None keeps every table as Markdown text
+    tables_as_images: int | None = 1
+
     # Customer config
     customers_config_path: Path = Path("config/customers.json")
 

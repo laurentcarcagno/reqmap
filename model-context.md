@@ -87,6 +87,9 @@ The `parse_nodes()` function accepts these as keyword arguments, defaulting to A
 ### Applicability values: `NA`, `A`, `A/M`, `TBC`, `T`
 ### Conformity values: `NA`, `C`, `C TBC`, `PC`, `NC`, `TBC`, `T`
 
+### Tables as images
+PDF tables are kept as pictures of their page area (pdf2md `--tables-as-images`), stored with the document's other figures and referenced from the node descriptions. Backend setting `TABLES_AS_IMAGES` (default `1` = tables of at least 1 row; empty = keep tables as Markdown text). Existing documents must be re-imported to benefit.
+
 ### Background Processing
 Document processing runs as a FastAPI `BackgroundTask`. It opens its own `AsyncSessionLocal` sessions — never shares the request-scoped session.
 
@@ -102,7 +105,9 @@ Document processing runs as a FastAPI `BackgroundTask`. It opens its own `AsyncS
 | `GET` | `/api/v1/documents` | List documents |
 | `GET` | `/api/v1/documents/{id}` | Get document by ID |
 | `GET` | `/api/v1/documents/{id}/nodes` | List nodes for a document |
-| `PATCH` | `/api/v1/nodes/{id}` | Update node applicability/conformity |
+| `GET`/`PUT` | `/api/v1/documents/{id}/export-settings` | Values of the Excel matrix not deducible from the PDF (project, edition, signatories, AD/RD/acronym tables…), saved per document |
+| `GET` | `/api/v1/documents/{id}/export` | Excel compliance matrix filled into `config/templates/HMA-C-049_EdC_Matrice-Conformite-Exigences.xlsx` |
+| `PATCH` | `/api/v1/nodes/{id}` | Update node applicability/conformity/comment |
 
 Interactive docs: `http://localhost:8000/api/docs`
 
@@ -169,5 +174,5 @@ docker compose -f docker-compose.dev.yml up --build
 
 - **Release 1.0 (MVP):** Upload, Process, Review — ✅ In progress
 - **Release 1.1:** Multi-user auth (JWT), real-time collaboration (WebSockets)
-- **Release 1.2:** DOCX support, export (CSV/Excel), audit trail
+- **Release 1.2:** DOCX support, export (CSV; Excel matrix already available), audit trail
 - **Release 2.0:** White-label theming, customer admin panel, CI/CD

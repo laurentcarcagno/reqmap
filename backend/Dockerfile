@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     tesseract-ocr \
     tesseract-ocr-fra \
     tesseract-ocr-eng \
+    fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python deps first (layer cache)

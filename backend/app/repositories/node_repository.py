@@ -39,6 +39,8 @@ async def update_node(
     node_id: str,
     applicability: str | None = None,
     conformity: str | None = None,
+    comment: str | None = None,
+    description: str | None = None,
     updated_by: str | None = None,
 ) -> Node | None:
     values: dict = {}
@@ -46,6 +48,10 @@ async def update_node(
         values["applicability"] = applicability
     if conformity is not None:
         values["conformity"] = conformity
+    if description is not None:
+        values["description"] = description
+    if comment is not None:
+        values["comment"] = comment
     if updated_by is not None:
         values["updated_by"] = updated_by
     if not values:

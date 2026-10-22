@@ -32,6 +32,7 @@ class Document(Base):
     doc_reference: Mapped[str | None] = mapped_column(String(256), nullable=True)
     doc_author: Mapped[str | None] = mapped_column(String(256), nullable=True)
     doc_company: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    export_settings: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON
     uploaded_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now()

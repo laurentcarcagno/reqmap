@@ -4,6 +4,7 @@ Usage:
     python -m reqmap input.pdf
     python -m reqmap input.pdf --output-dir ./out
     python -m reqmap input.pdf --no-ocr
+    python -m reqmap input.pdf --tables-as-images
     python -m reqmap input.pdf --json
 """
 
@@ -29,6 +30,11 @@ def main(argv=None):
     parser.add_argument(
         "--no-ocr", action="store_true",
         help="Disable OCR (faster, but scanned pages and image-based IDs are lost)",
+    )
+    parser.add_argument(
+        "--tables-as-images", nargs="?", const=1, type=int, metavar="MIN_ROWS",
+        help="Render tables (of at least MIN_ROWS rows, default 1) as pictures of the PDF page, "
+             "saved in <stem>_assets/ and referenced from the markdown",
     )
     parser.add_argument(
         "--json", action="store_true",
@@ -60,7 +66,15 @@ def main(argv=None):
     stem = pdf_path.stem
 
     # Extract
-    md = pdf_to_markdown(pdf_path, _DEFAULT_REQ_ID_PATTERN, enable_ocr=not args.no_ocr)
+    assets_name = f"{stem}_assets"
+    md = pdf_to_markdown(
+        pdf_path,
+        _DEFAULT_REQ_ID_PATTERN,
+        enable_ocr=not args.no_ocr,
+        images_dir=out_dir / assets_name if args.tables_as_images is not None else None,
+        asset_url_prefix=assets_name,
+        tables_as_images=args.tables_as_images,
+    )
 
     md_path = out_dir / f"{stem}.md"
     md_path.write_text(md, encoding="utf-8")

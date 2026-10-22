@@ -80,6 +80,11 @@ async def process_document(
                 await db2.commit()
 
 
+def assets_dir(document_id: str) -> Path:
+    """Where the figures extracted from a document are stored."""
+    return get_settings().upload_dir / "assets" / document_id
+
+
 def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings) -> tuple[dict, list[dict]]:
     """Synchronous reqmap extraction — runs in the async background task."""
     from reqmap.node_parser import parse_nodes
@@ -94,7 +99,13 @@ def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings) ->
     noise_patterns = customer.noise_patterns if customer else None
     title_pattern = customer.title_pattern if customer else None
 
-    clean_md = pdf_to_markdown(pdf_path, req_id_pattern)
+    clean_md = pdf_to_markdown(
+        pdf_path,
+        req_id_pattern,
+        images_dir=assets_dir(document_id),
+        asset_url_prefix=f"/api/v1/documents/{document_id}/assets",
+        tables_as_images=settings.tables_as_images,
+    )
 
     parse_kwargs: dict = {"source": pdf_path.name}
     if req_id_pattern:

@@ -20,6 +20,8 @@ _DOC_MIGRATIONS = [
     "ALTER TABLE documents ADD COLUMN doc_reference TEXT",
     "ALTER TABLE documents ADD COLUMN doc_author TEXT",
     "ALTER TABLE documents ADD COLUMN doc_company TEXT",
+    "ALTER TABLE documents ADD COLUMN export_settings TEXT",
+    "ALTER TABLE nodes ADD COLUMN comment TEXT NOT NULL DEFAULT ''",
 ]
 
 

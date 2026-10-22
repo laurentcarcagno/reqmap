@@ -89,7 +89,7 @@ All colors/spacing/radii are CSS custom properties in `frontend/src/styles/globa
 ## Roadmap context (from [model-context.md](model-context.md))
 - 1.0 MVP (current): upload → process → review
 - 1.1: JWT auth, WebSocket collaboration (JWT settings already stubbed in [backend/app/config.py](backend/app/config.py))
-- 1.2: DOCX support, CSV/Excel export, audit trail
+- 1.2: DOCX support, CSV export (Excel compliance matrix already available), audit trail
 
 ---
 

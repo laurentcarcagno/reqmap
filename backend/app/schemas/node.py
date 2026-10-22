@@ -21,6 +21,7 @@ class NodeResponse(BaseModel):
     description: str
     applicability: ApplicabilityValue
     conformity: ConformityValue
+    comment: str
     updated_by: str | None
     updated_at: datetime
 
@@ -30,6 +31,8 @@ class NodeResponse(BaseModel):
 class NodeUpdateRequest(BaseModel):
     applicability: ApplicabilityValue | None = None
     conformity: ConformityValue | None = None
+    comment: str | None = Field(default=None, max_length=5000)
+    description: str | None = Field(default=None, max_length=200_000)
 
 
 class NodeListResponse(BaseModel):

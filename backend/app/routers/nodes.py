@@ -35,7 +35,7 @@ async def update_node_endpoint(
     body: NodeUpdateRequest,
     db: AsyncSession = Depends(get_db),
 ) -> NodeResponse:
-    """Update a node's applicability and/or conformity."""
+    """Update a node's applicability, conformity, comment and/or description."""
     existing = await get_node(db, node_id)
     if existing is None:
         raise HTTPException(status_code=404, detail="Node not found")
@@ -45,6 +45,8 @@ async def update_node_endpoint(
         node_id,
         applicability=body.applicability,
         conformity=body.conformity,
+        comment=body.comment,
+        description=body.description,
     )
     await db.commit()
     return NodeResponse.model_validate(updated)

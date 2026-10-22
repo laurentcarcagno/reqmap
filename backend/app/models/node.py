@@ -36,6 +36,7 @@ class Node(Base):
         nullable=False,
         default="C",
     )
+    comment: Mapped[str] = mapped_column(Text, nullable=False, default="", server_default="")
     updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
