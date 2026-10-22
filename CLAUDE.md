@@ -51,9 +51,9 @@ Interactive API docs: `http://localhost:8000/api/docs` (or `:8090` in prod compo
 ## Architecture highlights
 
 ### The pipeline
-`PDF → PDFExtractor.extract() → (raw_md, clean_md) → parse_nodes(clean_md) → [{order,type,section?,req_id?,title,description}, ...]`
+`PDF → pdf_to_markdown() (pdf2md) → md → parse_nodes(md) → [{order,type,section?,req_id?,title,description}, ...]`
 
-- [reqmap/extractor.py](reqmap/extractor.py) orchestrates: pymupdf4llm extraction → header/footer removal → inline-image OCR injection → markdown cleaning.
+- [reqmap/pdf_source.py](reqmap/pdf_source.py) wraps `pdf2md.convert_pdf` (git submodule in `pdf2md/`, package under `pdf2md/src`): page classification → engine fallback chain (geometric, OCR, docling, marker, pymupdf). Requirement IDs drawn as pictures come back as image alt text and are turned into text lines. Clone with `--recurse-submodules` (or `git submodule update --init`).
 - [reqmap/node_parser.py](reqmap/node_parser.py) walks the cleaned markdown and emits nodes. **Patterns are parameterized** (`req_id_pattern`, `title_pattern`, `noise_patterns`) and default to Airbus-specific values when not supplied.
 
 ### Customer-configurable extractors

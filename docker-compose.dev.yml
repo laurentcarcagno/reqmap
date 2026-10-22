@@ -6,6 +6,7 @@ services:
     volumes:
       - ./backend/app:/app/app
       - ./reqmap:/app/reqmap
+      - ./pdf2md:/app/pdf2md
       - ./config:/app/config
       - backend_data:/app/data
       - backend_uploads:/app/uploads

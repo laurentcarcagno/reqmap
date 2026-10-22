@@ -1,9 +1,9 @@
-"""ReqMap CLI — extract clean markdown from a PDF.
+"""ReqMap CLI — extract markdown from a PDF (via pdf2md) and parse it into nodes.
 
 Usage:
     python -m reqmap input.pdf
     python -m reqmap input.pdf --output-dir ./out
-    python -m reqmap input.pdf --no-ocr --no-clean
+    python -m reqmap input.pdf --no-ocr
     python -m reqmap input.pdf --json
 """
 
@@ -12,8 +12,8 @@ import logging
 import sys
 from pathlib import Path
 
-from reqmap.extractor import PDFExtractor
-from reqmap.node_parser import parse_nodes, save_nodes
+from reqmap.node_parser import _DEFAULT_REQ_ID_PATTERN, parse_nodes, save_nodes
+from reqmap.pdf_source import pdf_to_markdown
 
 
 def main(argv=None):
@@ -28,15 +28,11 @@ def main(argv=None):
     )
     parser.add_argument(
         "--no-ocr", action="store_true",
-        help="Disable inline text-image OCR",
-    )
-    parser.add_argument(
-        "--no-clean", action="store_true",
-        help="Skip markdown cleaning (only produce _raw.md)",
+        help="Disable OCR (faster, but scanned pages and image-based IDs are lost)",
     )
     parser.add_argument(
         "--json", action="store_true",
-        help="Parse clean markdown and produce <stem>_nodes.json",
+        help="Parse the markdown and produce <stem>_nodes.json",
     )
     parser.add_argument(
         "--verbose", "-v", action="store_true",
@@ -64,24 +60,16 @@ def main(argv=None):
     stem = pdf_path.stem
 
     # Extract
-    extractor = PDFExtractor(enable_ocr=not args.no_ocr)
-    raw_md, clean_md = extractor.extract(pdf_path)
+    md = pdf_to_markdown(pdf_path, _DEFAULT_REQ_ID_PATTERN, enable_ocr=not args.no_ocr)
 
-    # Save raw
-    raw_path = out_dir / f"{stem}_raw.md"
-    raw_path.write_text(raw_md, encoding="utf-8")
-    print(f"Raw markdown  → {raw_path}  ({len(raw_md):,} chars)")
-
-    # Save clean
-    if not args.no_clean:
-        clean_path = out_dir / f"{stem}_clean.md"
-        clean_path.write_text(clean_md, encoding="utf-8")
-        print(f"Clean markdown → {clean_path}  ({len(clean_md):,} chars)")
+    md_path = out_dir / f"{stem}.md"
+    md_path.write_text(md, encoding="utf-8")
+    print(f"Markdown      → {md_path}  ({len(md):,} chars)")
 
     # Save JSON nodes
-    if args.json and not args.no_clean:
+    if args.json:
         json_path = out_dir / f"{stem}_nodes.json"
-        data = parse_nodes(clean_md, source=pdf_path.name)
+        data = parse_nodes(md, source=pdf_path.name)
         save_nodes(data, json_path)
         print(
             f"JSON nodes     → {json_path}  "

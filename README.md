@@ -1,34 +1,49 @@
 # ReqMap
 
-**PDF → Clean Markdown → Structured JSON** extraction framework for requirement documents.
+**PDF → Markdown → Structured nodes** for requirement documents, with a web UI to review them.
 
 Takes a PDF as input and produces:
-1. A raw markdown file (direct pymupdf4llm output, cleaned of headers/footers and OCR artefacts)
-2. A clean markdown file (further cleaned: TOC removed, headings inferred, tables repaired)
-3. Optionally, a structured JSON file of ordered title and requirement nodes — ready for traceability matrix tooling
+1. A markdown file, converted by [pdf2md](https://github.com/laurentcarcagno/pdf2md) (git submodule in `pdf2md/`)
+2. Optionally, a structured JSON file of ordered title and requirement nodes — ready for traceability matrix tooling
+
+The repo has three layers: the `reqmap/` library (this README), a FastAPI `backend/` and a Next.js `frontend/`
+(styled with the THOR · Hemeria design system, see `DESIGN.md`).
 
 ## Features
 
-- **pymupdf4llm** extraction with plain PyMuPDF fallback
-- **Inline text-image OCR** — detects requirement IDs embedded as raster images and replaces mangled pymupdf4llm output with correct text
-- **Header/footer detection** — position-based analysis of repeating text, images, and tables across pages
-- **Markdown cleaning** — TOC/list-of-figures removal, heading inference from numbered sections, table repair
-- **Whitespace-layout table detection** — span-clustering algorithm for tables without visible borders
-- **JSON node extraction** — parses the clean markdown into an ordered list of `title` and `requirement` nodes
+- **pdf2md** multi-pass conversion: per-page classification, then a fallback chain of engines
+  (geometric/pdfplumber, OCR with Tesseract + RapidOCR, docling, marker, plain PyMuPDF)
+- **Requirement IDs drawn as pictures** are OCR'd by pdf2md into image alt text and turned back into text lines
+  (`reqmap/pdf_source.py`)
+- Header/footer, table-of-contents and figure handling done by pdf2md
+- **JSON node extraction** — parses the markdown into an ordered list of `title` and `requirement` nodes,
+  with customer-specific patterns (`config/customers.json`)
 
 ## Installation
 
 ```bash
-cd ReqMap
-pip install -r requirements.txt
+git clone --recurse-submodules https://github.com/laurentcarcagno/reqmap.git
+# already cloned?  git submodule update --init
+cd reqmap
+pip install -r requirements.txt                    # pdf2md core + OCR
+sudo apt install tesseract-ocr tesseract-ocr-fra tesseract-ocr-eng
 ```
+
+Optional heavy engines (docling, marker; used on pages the geometric pass cannot handle):
+
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
+pip install "docling>=2.140" "marker-pdf>=2.0"
+```
+
+The backend container image already includes them (CPU build of torch). For GPU builds see `pdf2md/README.md`.
 
 ## Usage
 
 ### Command line
 
 ```bash
-# Basic usage — produces <stem>_raw.md and <stem>_clean.md
+# Basic usage — produces <stem>.md
 python -m reqmap path/to/document.pdf
 
 # Also produce <stem>_nodes.json (ordered title + requirement nodes)
@@ -37,11 +52,8 @@ python -m reqmap path/to/document.pdf --json
 # Specify output directory
 python -m reqmap path/to/document.pdf --output-dir ./output
 
-# Disable inline OCR (faster, but misses image-based requirement IDs)
+# Disable OCR (faster, but scanned pages and image-based IDs are lost)
 python -m reqmap path/to/document.pdf --no-ocr
-
-# Only produce raw markdown (skip cleaning and JSON)
-python -m reqmap path/to/document.pdf --no-clean
 
 # Verbose logging
 python -m reqmap path/to/document.pdf -v
@@ -51,34 +63,23 @@ python -m reqmap path/to/document.pdf -v
 
 ```python
 from pathlib import Path
-from reqmap.extractor import PDFExtractor
+from reqmap.pdf_source import pdf_to_markdown
 from reqmap.node_parser import parse_nodes, save_nodes
 
-# Step 1 — extract markdown
-extractor = PDFExtractor(
-    enable_ocr=True,           # OCR inline text-images
-    cleaning_config={          # MarkdownCleaner options
-        'remove_toc': True,
-        'remove_page_numbers': True,
-    },
-    hf_threshold_pages=3,     # min pages for header/footer detection
-    hf_zone_pct=0.10,         # top/bottom 10% zone
-)
-raw_md, clean_md = extractor.extract(Path("document.pdf"))
+# Step 1 — PDF to markdown (pdf2md)
+md = pdf_to_markdown(Path("document.pdf"), req_id_pattern=r"^(HAR\s+SSOW-\d+)\s*/\s*(.+)$")
 
 # Step 2 — parse into structured nodes
-data = parse_nodes(clean_md, source="document.pdf")
+data = parse_nodes(md, source="document.pdf")
 save_nodes(data, Path("document_nodes.json"))
 ```
 
 ## Output
 
-### Markdown files
+### Markdown file
 
-| File | Description |
-|---|---|
-| `<stem>_raw.md` | pymupdf4llm output after header/footer removal and OCR injection |
-| `<stem>_clean.md` | Further cleaned: TOC removed, headings inferred, tables repaired |
+`<stem>.md` — the pdf2md output (headers/footers and tables of contents removed, figure references dropped,
+requirement-ID pictures restored as text).
 
 ### JSON nodes (`--json`)
 
@@ -131,33 +132,29 @@ An ordered list of `title` and `requirement` nodes parsed from the clean markdow
 
 ```
 PDF
- └─► pymupdf4llm extraction
-      └─► Header/footer removal   (HeaderFooterDetector)
-           └─► Inline OCR injection  (InlineImageOCR)
-                └─► Markdown cleaning   (MarkdownCleaner)
-                     ├─► <stem>_raw.md
-                     ├─► <stem>_clean.md
-                     └─► <stem>_nodes.json   (NodeParser, --json)
+ └─► pdf2md.convert_pdf            (classify pages → engine fallback chain → markdown)
+      └─► inline_id_images         (ID pictures → text lines, other figures dropped)
+           ├─► <stem>.md
+           └─► parse_nodes ──► <stem>_nodes.json   (--json)
 ```
 
 ## Architecture
 
 ```
 reqmap/
-├── extractor.py               # PDFExtractor — orchestrates the full pipeline
-├── inline_image_ocr.py        # InlineImageOCR — detect + OCR small text-images
-├── markdown_cleaner.py        # MarkdownCleaner — clean/structure markdown
-├── header_footer_detector.py  # HeaderFooterDetector — repeating H/F removal
-├── node_parser.py             # parse_nodes — extract ordered title/req nodes
-└── cli.py                     # CLI entry point
+├── pdf_source.py   # pdf_to_markdown — wraps the pdf2md submodule
+├── node_parser.py  # parse_nodes — extract ordered title/req nodes
+└── cli.py          # CLI entry point
+pdf2md/             # git submodule: https://github.com/laurentcarcagno/pdf2md (package in pdf2md/src)
 ```
 
 ## Dependencies
 
+Declared by pdf2md (see `pdf2md/README.md` for the rationale of each):
+
 | Package | Purpose |
 |---|---|
-| pymupdf | PDF parsing, text/image block extraction |
-| pymupdf4llm | High-quality PDF → markdown conversion |
-| rapidocr-onnxruntime | OCR engine for inline text-images |
-| numpy | Image array handling, statistical analysis |
-| Pillow | Image processing |
+| pymupdf, pdfplumber | Page classification, rendering, exact line boxes |
+| rapidocr, onnxruntime, opencv-python-headless, Tesseract | OCR of scanned pages and picture-drawn IDs |
+| ftfy, pydantic, tqdm | Text repair, settings, progress |
+| docling, marker-pdf, torch (optional) | Layout/table models for complex pages |

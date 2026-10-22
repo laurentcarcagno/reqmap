@@ -13,7 +13,7 @@ ReqMap is a full-stack web application that converts PDF requirement documents i
 | **Frontend** | Next.js 15, React 19, Tailwind CSS, TanStack Query, Sonner, react-dropzone |
 | **Backend** | FastAPI (Python 3.12), SQLAlchemy 2 async, aiosqlite, Pydantic v2, Uvicorn |
 | **Database** | SQLite (MVP) via `aiosqlite` |
-| **Extraction** | `reqmap` Python package (existing: `PDFExtractor`, `parse_nodes`) |
+| **Extraction** | `pdf2md` (git submodule) for PDF → markdown, `reqmap.parse_nodes` for markdown → nodes |
 | **Containerization** | Docker + Docker Compose |
 
 ---
@@ -23,13 +23,11 @@ ReqMap is a full-stack web application that converts PDF requirement documents i
 ```
 ReqMap/
 ├── reqmap/                  # Python extraction tools (refactored for configurable patterns)
-│   ├── extractor.py         # PDFExtractor — PDF → clean markdown
+│   ├── pdf_source.py        # pdf_to_markdown() — wraps the pdf2md submodule
 │   ├── node_parser.py       # parse_nodes() — markdown → title/requirement nodes
-│   ├── markdown_cleaner.py
-│   ├── header_footer_detector.py
-│   ├── inline_image_ocr.py
 │   └── tests/
 │       └── test_node_parser.py
+├── pdf2md/                  # git submodule (laurentcarcagno/pdf2md) — PDF → markdown
 ├── backend/
 │   ├── app/
 │   │   ├── main.py          # FastAPI app entry + lifespan

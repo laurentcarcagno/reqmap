@@ -1,5 +1,14 @@
+# PDF -> markdown is delegated to the pdf2md submodule (see pdf2md/pyproject.toml).
+# Core + OCR dependencies of pdf2md; heavy engines are optional extras:
+#   pip install -r requirements.txt
+#   pip install -e './pdf2md[all]' marker-pdf   # docling + marker (torch)
 pymupdf>=1.24.0
-pymupdf4llm>=0.0.17
-rapidocr-onnxruntime>=1.3.0
+pdfplumber>=0.11
+pydantic>=2.6
+ftfy>=6.3
+tqdm>=4.67
+rapidocr>=3.10
+onnxruntime>=1.20
+opencv-python-headless>=4.11
 numpy>=1.24.0
 Pillow>=10.0.0

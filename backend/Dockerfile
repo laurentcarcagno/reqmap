@@ -7,14 +7,24 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
     tesseract-ocr \
+    tesseract-ocr-fra \
+    tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python deps first (layer cache)
 COPY backend/pyproject.toml .
 RUN pip install --no-cache-dir ".[dev]" && pip install --no-cache-dir uvicorn
 
-# Copy reqmap package (extraction tools)
+# Heavy pdf2md engines (docling, marker) with the CPU build of torch (the default
+# PyPI wheel is the multi-GB NVIDIA build). Kept before the source COPYs for layer cache.
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu \
+        --extra-index-url https://pypi.org/simple \
+    && pip install --no-cache-dir "docling>=2.140" "marker-pdf>=2.0"
+
+# Copy reqmap package (node parsing) and the pdf2md submodule (PDF to markdown;
+# the package lives in pdf2md/src, added to sys.path by reqmap.pdf_source)
 COPY reqmap /app/reqmap
+COPY pdf2md /app/pdf2md
 
 # Copy backend application
 COPY backend/app /app/app
