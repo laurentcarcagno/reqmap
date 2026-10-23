@@ -4,7 +4,7 @@ import type { ConformityValue } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 // "T" (Title) is only held by title rows, which show no dropdown
-const CONFORMITY_VALUES: ConformityValue[] = ["NA", "C", "C TBC", "PC", "NC", "TBC"];
+export const CONFORMITY_VALUES: ConformityValue[] = ["NA", "C", "C TBC", "PC", "NC", "TBC"];
 
 const VALUE_STYLES: Record<ConformityValue, string> = {
   NA: "text-muted-foreground",

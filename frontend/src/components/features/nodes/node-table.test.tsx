@@ -22,6 +22,7 @@ vi.mock("@/lib/api", () => ({
         data: [
           { id: "t1", order: 1, type: "title", section: "4.1", title: "General Requirements", description: "", applicability: "T", conformity: "T", comment: "" },
           { id: "r1", order: 2, type: "requirement", req_id: "S2NG-THW-2252//R", title: "", description: "Degradation factor", applicability: "A", conformity: "C", comment: "" },
+          { id: "r2", order: 3, type: "requirement", req_id: "S2NG-THW-4291//R", title: "", description: "Flight proven materials", applicability: "A", conformity: "NC", comment: "" },
         ],
       }),
       update: vi.fn(),
@@ -52,6 +53,28 @@ describe("NodeTable", () => {
     await user.click(screen.getByRole("button", { name: "Show titles" }));
 
     expect(screen.getByText("General Requirements")).toBeInTheDocument();
+  });
+
+  it("filters the rows on the Conformity column", async () => {
+    renderTable();
+    const user = userEvent.setup();
+    await screen.findByText("S2NG-THW-2252//R");
+
+    await user.click(screen.getByRole("button", { name: "Filter Conformity" }));
+    await user.click(screen.getByRole("checkbox", { name: "NC" }));
+
+    expect(screen.getByText("S2NG-THW-4291//R")).toBeInTheDocument();
+    expect(screen.queryByText("S2NG-THW-2252//R")).not.toBeInTheDocument();
+    expect(screen.queryByText("General Requirements")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("checkbox", { name: "C" }));
+    expect(screen.getByText("S2NG-THW-2252//R")).toBeInTheDocument();
+    expect(screen.getByText("S2NG-THW-4291//R")).toBeInTheDocument();
+
+    // The chip in the toolbar clears the filter, titles come back
+    await user.click(screen.getByRole("button", { name: /Clear the Conformity filter/ }));
+    expect(screen.getByText("General Requirements")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Clear the Conformity filter/ })).not.toBeInTheDocument();
   });
 
   it("hides and shows the selected column", async () => {

@@ -2,12 +2,12 @@
 
 import { useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, AlertCircle, ChevronsDownUp, ChevronsUpDown, Eye, EyeOff } from "lucide-react";
+import { Loader2, AlertCircle, ChevronsDownUp, ChevronsUpDown, Eye, EyeOff, ListFilter, X } from "lucide-react";
 import { toast } from "sonner";
 import { api, type Node, type ApplicabilityValue, type ConformityValue } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { ApplicabilitySelect } from "./applicability-select";
-import { ConformitySelect } from "./conformity-select";
+import { CONFORMITY_VALUES, ConformitySelect } from "./conformity-select";
 import { CommentCell } from "./comment-cell";
 import { DescriptionCell } from "./description-cell";
 
@@ -27,6 +27,7 @@ const COLUMNS = [
   { label: "Comment", auto: "w-[33%] min-w-64", fallback: 300 },
 ] as const;
 const DESCRIPTION_INDEX = 3;
+const CONFORMITY_INDEX = 5;
 
 interface NodeTableProps {
   documentId: string;
@@ -42,6 +43,9 @@ export function NodeTable({ documentId, expandAll, onExpandAllChange }: NodeTabl
   const [selectedColumn, setSelectedColumn] = useState<number | null>(null);
   const [hiddenColumns, setHiddenColumns] = useState<Set<number>>(new Set());
   const [hideTitles, setHideTitles] = useState(false);
+  // Conformity values to keep; empty = no filter. Title rows (conformity "T") never match a filter.
+  const [conformityFilter, setConformityFilter] = useState<ConformityValue[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["nodes", documentId],
@@ -83,9 +87,17 @@ export function NodeTable({ documentId, expandAll, onExpandAllChange }: NodeTabl
   });
 
   const nodes = data?.data ?? [];
-  const visibleNodes = hideTitles ? nodes.filter((n) => n.type !== "title") : nodes;
+  const visibleNodes = nodes.filter(
+    (n) =>
+      (!hideTitles || n.type !== "title") &&
+      (conformityFilter.length === 0 || conformityFilter.includes(n.conformity)),
+  );
   const shown = (column: number) => !hiddenColumns.has(column);
   const selectedHidden = selectedColumn !== null && hiddenColumns.has(selectedColumn);
+
+  function toggleConformity(value: ConformityValue) {
+    setConformityFilter((prev) => (prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]));
+  }
 
   function toggleSelectedColumn() {
     if (selectedColumn === null) return;
@@ -205,6 +217,18 @@ export function NodeTable({ documentId, expandAll, onExpandAllChange }: NodeTabl
           {hideTitles ? <Eye className="h-3 w-3" aria-hidden="true" /> : <EyeOff className="h-3 w-3" aria-hidden="true" />}
           {hideTitles ? "Show titles" : "Hide titles"}
         </button>
+        {conformityFilter.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setConformityFilter([])}
+            title="Clear the Conformity filter"
+            className="hem-btn hem-btn-ghost h-6 gap-1.5 px-2 text-[10px]"
+          >
+            Conformity: {conformityFilter.join(", ")}
+            <X className="h-3 w-3" aria-hidden="true" />
+            <span className="sr-only">Clear the Conformity filter</span>
+          </button>
+        )}
       </div>
       <table
         className={cn(
@@ -226,6 +250,7 @@ export function NodeTable({ documentId, expandAll, onExpandAllChange }: NodeTabl
                 style={shownWidths ? { width: shownWidths[i] } : undefined}
                 className={cn(
                   "hem-label sticky top-8 z-10 bg-deep px-3 py-2.5 text-left text-deep-foreground",
+                  i === CONFORMITY_INDEX && filterOpen && "z-30",
                   shown(i) ? !resized && column.auto : COLLAPSED,
                   "shared" in column && column.shared,
                   selectedColumn === i && "ring-2 ring-inset ring-ring",
@@ -245,6 +270,54 @@ export function NodeTable({ documentId, expandAll, onExpandAllChange }: NodeTabl
                         ? <><ChevronsDownUp className="h-3 w-3" aria-hidden="true" /><span>Collapse all</span></>
                         : <><ChevronsUpDown className="h-3 w-3" aria-hidden="true" /><span>Expand all</span></>}
                     </button>
+                  </div>
+                ) : i === CONFORMITY_INDEX && shown(i) ? (
+                  <div className="relative flex items-center gap-1.5">
+                    {selectButton(i)}
+                    <button
+                      type="button"
+                      onClick={() => setFilterOpen((open) => !open)}
+                      aria-label="Filter Conformity"
+                      aria-expanded={filterOpen}
+                      title="Filter by conformity"
+                      className={cn(
+                        "inline-flex items-center gap-0.5 px-1 py-0.5 text-[10px] hover:bg-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring transition-colors",
+                        conformityFilter.length > 0 ? "text-deep-foreground" : "text-deep-foreground/70",
+                      )}
+                    >
+                      <ListFilter className="h-3 w-3" aria-hidden="true" />
+                      {conformityFilter.length > 0 && <span>{conformityFilter.length}</span>}
+                    </button>
+                    {filterOpen && (
+                      <>
+                        <div className="fixed inset-0" onClick={() => setFilterOpen(false)} aria-hidden="true" />
+                        <div
+                          role="group"
+                          aria-label="Filter by conformity"
+                          onKeyDown={(e) => e.key === "Escape" && setFilterOpen(false)}
+                          className="absolute left-0 top-full z-10 mt-2 w-36 border border-border bg-card p-2 normal-case tracking-normal text-foreground shadow-md"
+                        >
+                          {CONFORMITY_VALUES.map((value) => (
+                            <label key={value} className="flex cursor-pointer items-center gap-2 py-0.5 text-xs font-normal">
+                              <input
+                                type="checkbox"
+                                checked={conformityFilter.includes(value)}
+                                onChange={() => toggleConformity(value)}
+                              />
+                              {value}
+                            </label>
+                          ))}
+                          <button
+                            type="button"
+                            onClick={() => setConformityFilter([])}
+                            disabled={conformityFilter.length === 0}
+                            className="mt-1.5 text-[11px] font-normal text-primary hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            Clear filter
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 ) : (
                   selectButton(i)
