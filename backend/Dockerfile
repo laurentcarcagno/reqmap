@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
 
+# The corporate proxy re-signs HTTPS with a self-signed cert; skip TLS verification for pip
+# at build time only (same as npm_config_strict_ssl=false in frontend/Dockerfile).
+ARG PIP_TRUSTED_HOST="pypi.org files.pythonhosted.org download.pytorch.org download-r2.pytorch.org"
+
 # Install Python deps first (layer cache)
 COPY backend/pyproject.toml .
 RUN pip install --no-cache-dir ".[dev]" && pip install --no-cache-dir uvicorn
