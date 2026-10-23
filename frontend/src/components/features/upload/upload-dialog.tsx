@@ -19,12 +19,27 @@ interface UploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onDocumentReady?: (doc: Document) => void;
+  /** Files dropped on the Upload button, already selected when the dialog opens. */
+  initialFiles?: File[];
 }
 
-export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDialogProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+/** Files sent and processed one after the other, all with the same customer plugin. */
+interface Batch {
+  files: File[];
+  index: number;
+  customer: string;
+  tables: TableMode;
+}
+
+function sameFile(a: File, b: File): boolean {
+  return a.name === b.name && a.size === b.size && a.lastModified === b.lastModified;
+}
+
+export function UploadDialog({ open, onOpenChange, onDocumentReady, initialFiles }: UploadDialogProps) {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>(initialFiles ?? []);
   const [selectedCustomer, setSelectedCustomer] = useState<string>("");
   const [tableMode, setTableMode] = useState<TableMode>("image");
+  const [batch, setBatch] = useState<Batch | null>(null);
   const [processingDocId, setProcessingDocId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
@@ -36,60 +51,92 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
 
   const customers = customersData?.data ?? [];
 
-  const { mutate: uploadFile, isPending } = useMutation({
-    mutationFn: () => api.documents.upload(selectedFile!, selectedCustomer, tableMode),
-    onSuccess: (doc) => {
-      queryClient.invalidateQueries({ queryKey: ["documents"] });
-      setSelectedFile(null);
-      setSelectedCustomer("");
-      onOpenChange(false);
-      setProcessingDocId(doc.id);
-    },
-    onError: (err: Error) => {
-      toast.error(err.message ?? "Upload failed");
-    },
+  const { mutateAsync: uploadFile, isPending } = useMutation({
+    mutationFn: ({ file, customer, tables }: { file: File; customer: string; tables: TableMode }) =>
+      api.documents.upload(file, customer, tables),
   });
 
   const onDrop = useCallback((accepted: File[]) => {
-    if (accepted[0]) setSelectedFile(accepted[0]);
+    setSelectedFiles((current) => [
+      ...current,
+      ...accepted.filter((file) => !current.some((c) => sameFile(c, file))),
+    ]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,
     accept: { "application/pdf": [".pdf"] },
-    maxFiles: 1,
     disabled: isPending,
   });
 
+  /** Upload the batch starting at its current file, skipping the files that fail to upload. */
+  async function uploadFrom(b: Batch) {
+    for (let index = b.index; index < b.files.length; index++) {
+      const file = b.files[index]!;
+      try {
+        const doc = await uploadFile({ file, customer: b.customer, tables: b.tables });
+        queryClient.invalidateQueries({ queryKey: ["documents"] });
+        setSelectedFiles([]);
+        setSelectedCustomer("");
+        onOpenChange(false);
+        setBatch({ ...b, index });
+        setProcessingDocId(doc.id);
+        return;
+      } catch (err) {
+        toast.error(`${file.name}: ${(err as Error).message ?? "Upload failed"}`);
+      }
+    }
+    setBatch(null);
+  }
+
+  function processNextFile() {
+    setProcessingDocId(null);
+    if (batch && batch.index + 1 < batch.files.length) {
+      void uploadFrom({ ...batch, index: batch.index + 1 });
+    } else {
+      setBatch(null);
+    }
+  }
+
+  function removeFile(file: File) {
+    setSelectedFiles((current) => current.filter((c) => c !== file));
+  }
+
   function handleClose() {
-    setSelectedFile(null);
+    setSelectedFiles([]);
     setSelectedCustomer("");
     onOpenChange(false);
   }
 
   function handleProcessingComplete(doc: Document) {
-    setProcessingDocId(null);
     queryClient.invalidateQueries({ queryKey: ["documents"] });
     toast.success(`"${doc.original_filename}" processed — ${doc.requirement_count} requirements extracted`);
     onDocumentReady?.(doc);
+    processNextFile();
   }
 
   function handleProcessingClose() {
-    setProcessingDocId(null);
     queryClient.invalidateQueries({ queryKey: ["documents"] });
+    processNextFile();
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selectedFile || !selectedCustomer) return;
-    uploadFile();
+    if (selectedFiles.length === 0 || !selectedCustomer) return;
+    void uploadFrom({ files: selectedFiles, index: 0, customer: selectedCustomer, tables: tableMode });
   }
+
+  const batchLabel =
+    batch && batch.files.length > 1
+      ? `File ${batch.index + 1} of ${batch.files.length} · ${batch.files[batch.index]!.name}`
+      : "";
 
   return (
     <>
     {processingDocId && (
       <ProcessingModal
         documentId={processingDocId}
+        {...(batchLabel ? { label: batchLabel } : {})}
         onComplete={handleProcessingComplete}
         onClose={handleProcessingClose}
       />
@@ -109,7 +156,7 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
       <div className="relative z-10 w-full max-w-md border border-deep bg-card">
         <div className="flex items-center justify-between bg-deep p-3.5 text-deep-foreground">
           <h2 id="upload-dialog-title" className="text-[15px] font-semibold uppercase tracking-[0.04em]">
-            Upload Document
+            Upload Documents
           </h2>
           <button
             onClick={handleClose}
@@ -125,7 +172,8 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
           <div
             {...getRootProps()}
             className={cn(
-              "flex flex-col items-center justify-center border-2 border-dashed p-8 text-center transition-colors cursor-pointer",
+              "flex flex-col items-center justify-center border-2 border-dashed text-center transition-colors cursor-pointer",
+              selectedFiles.length > 0 ? "p-4" : "p-8",
               isDragActive
                 ? "border-primary bg-accent"
                 : "border-border hover:border-deep hover:bg-accent",
@@ -134,28 +182,56 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
             aria-describedby="drop-zone-hint"
           >
             <input {...getInputProps()} aria-label="File input" />
-            {selectedFile ? (
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
-                <span className="font-medium truncate max-w-[280px]">{selectedFile.name}</span>
-              </div>
-            ) : (
-              <>
-                <Upload className="h-8 w-8 text-muted-foreground mb-2" aria-hidden="true" />
-                <p className="text-sm font-medium text-foreground">
-                  {isDragActive ? "Drop the file here" : "Drag & drop or click to select"}
-                </p>
-                <p id="drop-zone-hint" className="text-xs text-muted-foreground mt-1">
-                  PDF files only
-                </p>
-              </>
-            )}
+            <Upload className="h-8 w-8 text-muted-foreground mb-2" aria-hidden="true" />
+            <p className="text-sm font-medium text-foreground">
+              {isDragActive
+                ? "Drop the files here"
+                : selectedFiles.length > 0
+                  ? "Drop or click to add more files"
+                  : "Drag & drop or click to select"}
+            </p>
+            <p id="drop-zone-hint" className="text-xs text-muted-foreground mt-1">
+              PDF files only · several files allowed
+            </p>
           </div>
 
           {fileRejections.length > 0 && (
             <div className="flex items-center gap-2 border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
               <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
               <span>Only PDF files are accepted</span>
+            </div>
+          )}
+
+          {selectedFiles.length > 0 && (
+            <div className="space-y-1">
+              <ul
+                aria-label="Selected files"
+                className="max-h-40 divide-y divide-border overflow-y-auto border border-border"
+              >
+                {selectedFiles.map((file) => (
+                  <li
+                    key={`${file.name}-${file.size}-${file.lastModified}`}
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm text-foreground"
+                  >
+                    <FileText className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                    <span className="flex-1 truncate font-medium">{file.name}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeFile(file)}
+                      disabled={isPending}
+                      aria-label={`Remove ${file.name}`}
+                      className="flex h-5 w-5 shrink-0 items-center justify-center hover:bg-accent disabled:opacity-50"
+                    >
+                      <X className="h-3 w-3" aria-hidden="true" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              {selectedFiles.length > 1 && (
+                <p className="text-xs text-muted-foreground">
+                  Files are processed one after the other, all with the same customer.
+                </p>
+              )}
             </div>
           )}
 
@@ -223,10 +299,14 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
             </button>
             <button
               type="submit"
-              disabled={!selectedFile || !selectedCustomer || isPending}
+              disabled={selectedFiles.length === 0 || !selectedCustomer || isPending}
               className="hem-btn hem-btn-primary"
             >
-              {isPending ? "Uploading…" : "Upload"}
+              {isPending
+                ? "Uploading…"
+                : selectedFiles.length > 1
+                  ? `Upload ${selectedFiles.length} files`
+                  : "Upload"}
             </button>
           </div>
         </form>

@@ -7,6 +7,8 @@ import { api, type Document } from "@/lib/api";
 
 interface ProcessingModalProps {
   documentId: string | null;
+  /** Position in a multi-file upload, e.g. "File 2 of 5 · spec.pdf". */
+  label?: string;
   onComplete: (doc: Document) => void;
   onClose: () => void;
 }
@@ -34,7 +36,7 @@ function formatTime(seconds: number): string {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
-export function ProcessingModal({ documentId, onComplete, onClose }: ProcessingModalProps) {
+export function ProcessingModal({ documentId, label, onComplete, onClose }: ProcessingModalProps) {
   const [isDone, setIsDone] = useState(false);
 
   const { data: doc } = useQuery({
@@ -76,6 +78,9 @@ export function ProcessingModal({ documentId, onComplete, onClose }: ProcessingM
     >
       <div className="absolute inset-0 bg-[hsl(206_100%_7%/0.55)]" aria-hidden="true" />
       <div className="relative z-10 w-full max-w-sm border border-deep bg-card p-8 text-center">
+        {label && (
+          <p className="mb-4 truncate text-xs font-mono text-muted-foreground">{label}</p>
+        )}
         {isProcessing && (
           <>
             <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary mb-4" aria-hidden="true" />
