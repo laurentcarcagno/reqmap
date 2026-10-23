@@ -2,7 +2,7 @@
   "customers": {
     "airbus": {
       "label": "Airbus",
-      "req_id_pattern": "^(HAR\\s+SSOW-\\d+)\\s*/\\s*(.+)$",
+      "req_id_pattern": "^(HAR\\s+SSOW-\\d+(?=\\s*/\\s*\\S)|[A-Z0-9]+-[A-Z0-9]+-\\d+/[A-Z0-9-]*/(?:[A-Z]+(?:,[A-Z]+)*)?(?=\\s|$))\\s*/?\\s*(.*?)\\s*$",
       "title_pattern": null,
       "noise_patterns": [
         "^\\s*Airbus\\s+Amber\\s*$",
@@ -13,7 +13,15 @@
         "^\\s*\\*\\*Harness\\s+SOW\\*\\*\\s*$",
         "^\\s*\\*\\*==>.*?<==\\*\\*\\s*$",
         "^\\s*\\*\\*-{5}\\s+(?:Start|End)\\s+of\\s+picture\\s+text\\s+-{5}\\*\\*",
-        "^#+\\s+\\*?\\*?End\\s+of\\s+Document\\*?\\*?\\s*$"
+        "^#+\\s+\\*?\\*?End\\s+of\\s+Document\\*?\\*?\\s*$",
+        "^\\s*S2NG-SP-ADSF-SYS-\\s*$",
+        "^\\s*#{1,6}\\s+Thermal\\s+Hardware\\s+\\d+\\s*$",
+        "^\\s*Specification\\s+Issue\\s+\\d+",
+        "^\\s*End\\s+of\\s+Document\\s*$",
+        "^\\s*Airbus\\s+Defence\\s+and\\s+Space\\s+GmbH\\s+owns\\s+the\\s+copyright",
+        "^\\s*Requirement/Section\\s+Cross\\s+Reference",
+        "\\.{5,}",
+        "^\\s*(?:[A-Z0-9]+-[A-Z0-9]+-\\d+\\s*)+$"
       ]
     },
     "tas": {

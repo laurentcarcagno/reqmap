@@ -107,6 +107,93 @@ def test_noise_patterns_filter_lines():
 
 
 # ---------------------------------------------------------------------------
+# Shipped Airbus config: HAR SOW and THW (S2NG-THW-n//R) requirement IDs
+# ---------------------------------------------------------------------------
+
+def _airbus_kwargs() -> dict:
+    config = json.loads((_ROOT / "config" / "customers.json").read_text(encoding="utf-8"))
+    airbus = config["customers"]["airbus"]
+    return {
+        "req_id_pattern": airbus["req_id_pattern"],
+        "noise_patterns": airbus["noise_patterns"],
+    }
+
+
+_THW_MD = """
+## 4.1 General Functional Requirements
+
+S2NG-THW-2252//R
+
+The supplier shall propose and justify a general degradation factor for MLI blankets. This factor
+can be based on comparative tests from other projects.
+
+S2NG-THW-109//T,S
+
+The MLI shall withstand a general temperature range.
+
+Note: details to be agreed.
+
+S2NG-THW-2601/GDI-135/A,R Optional title
+
+Description under an ID that has a title.
+
+S2NG-THW-4341//
+
+ID whose verification letters were lost at extraction.
+
+## 4.2 MLI performance
+
+S2NG-THW-851//S
+
+Last requirement of the document.
+
+End of Document
+
+S2NG-THW-851 ....................... 4.2 S2NG-THW-2629
+
+S2NG-THW-109 ....................... 4.2 S2NG-THW-894 ....................... 4.3
+"""
+
+
+def test_airbus_config_extracts_thw_requirements():
+    result = parse_nodes(_THW_MD, source="thw.md", **_airbus_kwargs())
+    reqs = [n for n in result["nodes"] if n["type"] == "requirement"]
+
+    assert [r["req_id"] for r in reqs] == [
+        "S2NG-THW-2252//R",
+        "S2NG-THW-109//T,S",
+        "S2NG-THW-2601/GDI-135/A,R",
+        "S2NG-THW-4341//",
+        "S2NG-THW-851//S",
+    ]
+    assert reqs[0]["title"] == ""
+    assert reqs[0]["description"].startswith("The supplier shall propose and justify")
+    assert reqs[0]["description"].endswith("other projects.")
+    assert "Note: details to be agreed." in reqs[1]["description"]
+    assert reqs[2]["title"] == "Optional title"
+    assert reqs[2]["description"] == "Description under an ID that has a title."
+
+
+def test_airbus_config_thw_description_stops_at_next_title_and_drops_trailer():
+    result = parse_nodes(_THW_MD, source="thw.md", **_airbus_kwargs())
+    nodes = result["nodes"]
+
+    assert [n["section"] for n in nodes if n["type"] == "title"] == ["4.1", "4.2"]
+    assert nodes[-1]["description"] == "Last requirement of the document."
+
+
+def test_airbus_config_still_extracts_har_sow_requirements():
+    md = "HAR SSOW-7 / Electrical detail design\n\nSome description.\n\nHAR SSOW-8\n\nA reference.\n"
+    result = parse_nodes(md, source="har.md", **_airbus_kwargs())
+    reqs = [n for n in result["nodes"] if n["type"] == "requirement"]
+
+    assert len(reqs) == 1
+    assert reqs[0]["req_id"] == "HAR SSOW-7"
+    assert reqs[0]["title"] == "Electrical detail design"
+    assert "HAR SSOW-8" in reqs[0]["description"]
+
+
+# ---------------------------------------------------------------------------
 # Backward compatibility: no-arg call still works
 # ---------------------------------------------------------------------------
 
