@@ -352,3 +352,55 @@ async def test_node_description_and_comment_are_editable(client):
 
     too_long = await client.patch(f"/api/v1/nodes/{node_id}", json={"description": "x" * 200_001})
     assert too_long.status_code == 422
+
+
+def test_html_table_becomes_a_table_segment():
+    from app.services.markdown_cells import split_segments
+
+    html = (
+        "Intro\n\n<table border=\"1\">\n"
+        "<tr><td style=\"background-color:#d9d9d9\"><b>Name</b></td><td>Ref</td></tr>\n"
+        "<tr><td colspan=\"2\">A<br>B</td></tr>\n</table>\n\nAfter"
+    )
+    kinds = [(s.kind, s.rows) for s in split_segments(html)]
+    assert kinds == [
+        ("text", ()),
+        ("table", (("Name", "Ref"), ("A\nB", ""))),
+        ("text", ()),
+    ]
+
+
+def test_table_modes_map_to_pdf_options():
+    from types import SimpleNamespace
+
+    from app.services.processing_service import _table_options
+
+    server = SimpleNamespace(tables_as_images=1)
+    assert _table_options("html", server) == {"tables_html": True}
+    assert _table_options("image", server) == {"tables_as_images": 1}
+    assert _table_options("markdown", server) == {}
+    assert _table_options(None, server) == {"tables_as_images": 1}
+    assert _table_options(None, SimpleNamespace(tables_as_images=None)) == {}
+
+
+def test_html_table_keeps_cell_colours_and_boldness():
+    from app.services.markdown_cells import CellStyle, render_table, split_segments
+
+    html = (
+        '<table>\n<tr><td style="background-color:#ff0000"><b>Head</b></td>'
+        '<td colspan="2"><span style="color:#0000ff">Blue</span></td></tr>\n</table>'
+    )
+    (segment,) = split_segments(html)
+    assert segment.styles == ((
+        CellStyle(fill=(255, 0, 0), bold=True),
+        CellStyle(color=(0, 0, 255)),
+        CellStyle(merged=True),
+    ),)
+
+    from io import BytesIO
+
+    from PIL import Image
+
+    (picture,) = render_table(segment.rows, styles=segment.styles)
+    pixels = Image.open(BytesIO(picture.png)).convert("RGB")
+    assert pixels.getpixel((6, 6)) == (255, 0, 0)  # inside the red cell, away from the text

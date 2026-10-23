@@ -13,8 +13,9 @@ The repo has three layers: the `reqmap/` library (this README), a FastAPI `backe
 
 - **pdf2md** multi-pass conversion: per-page classification, then a fallback chain of engines
   (geometric/pdfplumber, OCR with Tesseract + RapidOCR, docling, marker, plain PyMuPDF)
-- **Tables as images** (`--tables-as-images`, enabled by default in the backend, see `TABLES_AS_IMAGES`) keep complex
-  tables exactly as laid out in the PDF; the web app displays them and the Excel export embeds them
+- **Table handling**, chosen in the upload dialog: *Image* (`--tables-as-images`, the default, see `TABLES_AS_IMAGES`) keeps
+  complex tables exactly as laid out in the PDF, *HTML* (`--tables-html`) keeps cell colours and text styles, *Markdown*
+  keeps plain text tables; the web app displays all three and the Excel export embeds them as pictures (HTML keeps cell backgrounds, text colour and bold)
 - **Requirement IDs drawn as pictures** are OCR'd by pdf2md into image alt text and turned back into text lines
   (`reqmap/pdf_source.py`)
 - Header/footer, table-of-contents and figure handling done by pdf2md
@@ -66,6 +67,9 @@ python -m reqmap path/to/document.pdf --customer tas --json
 
 # Keep tables as pictures of the PDF page (optionally: only tables of MIN_ROWS rows or more)
 python -m reqmap path/to/document.pdf --tables-as-images [MIN_ROWS]
+
+# Keep tables as HTML (cell colours, text styles)
+python -m reqmap path/to/document.pdf --tables-html
 
 # Verbose logging
 python -m reqmap path/to/document.pdf -v

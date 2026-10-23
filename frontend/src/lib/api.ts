@@ -67,6 +67,9 @@ export interface Document {
   updated_at: string;
 }
 
+/** How the PDF tables are kept: Markdown text, picture of the page area, or styled HTML. */
+export type TableMode = "markdown" | "image" | "html";
+
 export type ApplicabilityValue = "NA" | "A" | "A/M" | "TBC" | "T";
 export type ConformityValue = "NA" | "C" | "C TBC" | "PC" | "NC" | "TBC" | "T";
 
@@ -160,10 +163,11 @@ export const api = {
     delete: (id: string): Promise<void> =>
       request(`/documents/${id}`, { method: "DELETE" }),
 
-    upload: async (file: File, customer: string): Promise<Document> => {
+    upload: async (file: File, customer: string, tables: TableMode): Promise<Document> => {
       const form = new FormData();
       form.append("file", file);
       form.append("customer", customer);
+      form.append("tables", tables);
       const res = await fetch(`${BASE}/documents`, {
         method: "POST",
         body: form,

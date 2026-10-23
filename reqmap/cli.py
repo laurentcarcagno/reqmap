@@ -54,6 +54,10 @@ def main(argv=None):
              "saved in <stem>_assets/ and referenced from the markdown",
     )
     parser.add_argument(
+        "--tables-html", action="store_true",
+        help="Insert tables as HTML keeping cell colours and text styles (excludes --tables-as-images)",
+    )
+    parser.add_argument(
         "--customer", default=None, metavar="ID",
         help="Customer format of config/customers.json (requirement patterns and pdf2md "
              "post-processing plugins, e.g. 'tas' = Thales Alénia Space); default: Airbus patterns",
@@ -72,6 +76,8 @@ def main(argv=None):
     )
 
     args = parser.parse_args(argv)
+    if args.tables_html and args.tables_as_images is not None:
+        parser.error("--tables-html and --tables-as-images are mutually exclusive")
 
     # Logging setup
     level = logging.DEBUG if args.verbose else logging.INFO
@@ -103,6 +109,7 @@ def main(argv=None):
         images_dir=out_dir / assets_name if args.tables_as_images is not None else None,
         asset_url_prefix=assets_name,
         tables_as_images=args.tables_as_images,
+        tables_html=args.tables_html,
         post_process=customer.get("post_process"),
     )
 

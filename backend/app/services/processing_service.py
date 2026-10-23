@@ -28,6 +28,7 @@ async def process_document(
     document_id: str,
     file_path: str,
     customer_id: str,
+    tables_mode: str | None = None,
 ) -> None:
     """Run the full reqmap pipeline for a document and persist results.
 
@@ -45,7 +46,7 @@ async def process_document(
             return
 
     try:
-        parsed, node_rows = _run_reqmap(file_path, customer_id, document_id, settings)
+        parsed, node_rows = _run_reqmap(file_path, customer_id, document_id, settings, tables_mode)
     except Exception as exc:
         logger.exception("reqmap pipeline failed for document %s", document_id)
         async with AsyncSessionLocal() as db:
@@ -85,7 +86,21 @@ def assets_dir(document_id: str) -> Path:
     return get_settings().upload_dir / "assets" / document_id
 
 
-def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings) -> tuple[dict, list[dict]]:
+TABLE_MODES = ("markdown", "image", "html")
+
+
+def _table_options(tables_mode: str | None, settings) -> dict:
+    """pdf_to_markdown options for a table mode; None falls back to the server setting."""
+    if tables_mode is None:
+        tables_mode = "markdown" if settings.tables_as_images is None else "image"
+    if tables_mode == "html":
+        return {"tables_html": True}
+    if tables_mode == "image":
+        return {"tables_as_images": 1 if settings.tables_as_images is None else settings.tables_as_images}
+    return {}
+
+
+def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings, tables_mode: str | None = None) -> tuple[dict, list[dict]]:
     """Synchronous reqmap extraction — runs in the async background task."""
     from reqmap.node_parser import parse_nodes
     from reqmap.pdf_source import pdf_to_markdown
@@ -105,7 +120,7 @@ def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings) ->
         req_id_pattern,
         images_dir=assets_dir(document_id),
         asset_url_prefix=f"/api/v1/documents/{document_id}/assets",
-        tables_as_images=settings.tables_as_images,
+        **_table_options(tables_mode, settings),
         post_process=post_process,
     )
 

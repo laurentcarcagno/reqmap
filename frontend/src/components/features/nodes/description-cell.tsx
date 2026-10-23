@@ -2,6 +2,8 @@
 
 import { useCallback, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import { Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,6 +13,16 @@ interface DescriptionCellProps {
   expandAll: boolean;
   onSave: (text: string) => void;
 }
+
+// Tables kept as HTML (pdf2md --tables-html) carry colours in inline styles
+const sanitizeSchema = {
+  ...defaultSchema,
+  attributes: {
+    ...defaultSchema.attributes,
+    "*": [...(defaultSchema.attributes?.["*"] ?? []), "style"],
+    table: ["border", "cellSpacing", "cellPadding"],
+  },
+};
 
 export function DescriptionCell({ text, expandAll, onSave }: DescriptionCellProps) {
   const [localExpanded, setLocalExpanded] = useState(false);
@@ -91,7 +103,7 @@ export function DescriptionCell({ text, expandAll, onSave }: DescriptionCellProp
     <div className="group/desc relative">
       <div className="pr-6" onDoubleClick={() => setDraft(text)}>
         <div ref={measure} className={cn("hem-md text-xs text-muted-foreground", !expanded && "line-clamp-2")}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}>{text}</ReactMarkdown>
         </div>
       </div>
       {editButton}

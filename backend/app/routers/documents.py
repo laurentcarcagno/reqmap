@@ -26,7 +26,7 @@ from app.schemas.export import ExportSettings
 from app.services.customer_config import get_customer
 from app.services.document_service import save_upload, validate_upload
 from app.services.export_service import build_compliance_matrix, load_export_settings
-from app.services.processing_service import assets_dir, process_document
+from app.services.processing_service import TABLE_MODES, assets_dir, process_document
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -36,6 +36,7 @@ async def upload_document(
     background_tasks: BackgroundTasks,
     file: UploadFile,
     customer: str = Form(...),
+    tables: str | None = Form(None),
     db: AsyncSession = Depends(get_db),
 ) -> DocumentResponse:
     """Upload a document and trigger background processing."""
@@ -45,6 +46,9 @@ async def upload_document(
         validate_upload(file)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+    if tables is not None and tables not in TABLE_MODES:
+        raise HTTPException(status_code=422, detail=f"Unknown table mode: '{tables}'")
 
     if get_customer(str(settings.customers_config_path), customer) is None:
         raise HTTPException(status_code=422, detail=f"Unknown customer: '{customer}'")
@@ -71,6 +75,7 @@ async def upload_document(
         document_id=doc.id,
         file_path=file_path,
         customer_id=customer,
+        tables_mode=tables,
     )
 
     return DocumentResponse.model_validate(doc)

@@ -81,6 +81,7 @@ def pdf_to_markdown(
     images_dir: Optional[Path] = None,
     asset_url_prefix: Optional[str] = None,
     tables_as_images: Optional[int] = None,
+    tables_html: bool = False,
     post_process: Optional[Mapping[str, str]] = None,
 ) -> str:
     """Convert a PDF to markdown with pdf2md, ready for ``parse_nodes``.
@@ -90,15 +91,19 @@ def pdf_to_markdown(
     ``tables_as_images`` (pdf2md ``--tables-as-images``) renders the tables of at least that
     many rows as pictures of their page area instead of Markdown text; it needs ``images_dir``
     to be kept, otherwise those tables would vanish with the temporary directory.
+    ``tables_html`` (pdf2md ``--tables-html``) inserts them as HTML keeping colours and text styles;
+    it excludes ``tables_as_images``.
     ``post_process`` is applied to pdf2md's markdown before the images are post-processed
     (see :func:`apply_post_process`).
     """
     if tables_as_images is not None and images_dir is None:
         raise ValueError("tables_as_images needs images_dir")
+    if tables_html and tables_as_images is not None:
+        raise ValueError("tables_html and tables_as_images are mutually exclusive")
     from pdf2md.models import Settings
     from pdf2md.pipeline import convert_pdf
 
-    settings = Settings(ocr_enabled=enable_ocr, tables_as_images=tables_as_images)
+    settings = Settings(ocr_enabled=enable_ocr, tables_as_images=tables_as_images, tables_html=tables_html)
     # Figures must always be extracted: ID pictures only become text through their alt text.
     if images_dir is None:
         with tempfile.TemporaryDirectory(prefix="pdf2md_") as tmp:

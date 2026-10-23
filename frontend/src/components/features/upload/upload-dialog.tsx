@@ -5,9 +5,15 @@ import { useDropzone } from "react-dropzone";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Upload, X, FileText, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { api, type Document } from "@/lib/api";
+import { api, type Document, type TableMode } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { ProcessingModal } from "./processing-modal";
+
+const TABLE_MODES: { value: TableMode; label: string; hint: string }[] = [
+  { value: "image", label: "Image", hint: "Picture of the table in the PDF" },
+  { value: "html", label: "HTML", hint: "Table with cell colours and text styles" },
+  { value: "markdown", label: "Markdown", hint: "Plain text table, no formatting" },
+];
 
 interface UploadDialogProps {
   open: boolean;
@@ -18,6 +24,7 @@ interface UploadDialogProps {
 export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDialogProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<string>("");
+  const [tableMode, setTableMode] = useState<TableMode>("image");
   const [processingDocId, setProcessingDocId] = useState<string | null>(null);
   const queryClient = useQueryClient();
 
@@ -30,7 +37,7 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
   const customers = customersData?.data ?? [];
 
   const { mutate: uploadFile, isPending } = useMutation({
-    mutationFn: () => api.documents.upload(selectedFile!, selectedCustomer),
+    mutationFn: () => api.documents.upload(selectedFile!, selectedCustomer, tableMode),
     onSuccess: (doc) => {
       queryClient.invalidateQueries({ queryKey: ["documents"] });
       setSelectedFile(null);
@@ -173,6 +180,36 @@ export function UploadDialog({ open, onOpenChange, onDocumentReady }: UploadDial
               ))}
             </select>
           </div>
+
+          {/* Table handling */}
+          <fieldset className="space-y-1" disabled={isPending}>
+            <legend className="hem-label text-muted-foreground">Tables</legend>
+            <div className="grid grid-cols-3 gap-2">
+              {TABLE_MODES.map((mode) => (
+                <label
+                  key={mode.value}
+                  title={mode.hint}
+                  className={cn(
+                    "cursor-pointer border px-3 py-2 text-center text-sm transition-colors",
+                    tableMode === mode.value
+                      ? "border-deep bg-deep text-deep-foreground"
+                      : "border-border hover:border-deep hover:bg-accent",
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="table-mode"
+                    value={mode.value}
+                    checked={tableMode === mode.value}
+                    onChange={() => setTableMode(mode.value)}
+                    className="sr-only"
+                  />
+                  {mode.label}
+                </label>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">{TABLE_MODES.find((m) => m.value === tableMode)?.hint}</p>
+          </fieldset>
 
           {/* Actions */}
           <div className="flex justify-end gap-2 border-t border-border pt-3">

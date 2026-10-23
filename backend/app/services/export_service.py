@@ -139,7 +139,7 @@ def _fill_description(
         if seg.kind == "text":
             texts.append(_clean(seg.text))
         elif seg.kind == "table":
-            pictures.extend(render_table(seg.rows))
+            pictures.extend(render_table(seg.rows, styles=seg.styles))
         else:
             picture = load_picture(assets_dir / Path(seg.target).name) if assets_dir else None
             if picture:

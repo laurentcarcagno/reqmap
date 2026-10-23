@@ -87,8 +87,12 @@ The `parse_nodes()` function accepts these as keyword arguments, defaulting to A
 ### Applicability values: `NA`, `A`, `A/M`, `TBC`, `T`
 ### Conformity values: `NA`, `C`, `C TBC`, `PC`, `NC`, `TBC`, `T`
 
-### Tables as images
-PDF tables are kept as pictures of their page area (pdf2md `--tables-as-images`), stored with the document's other figures and referenced from the node descriptions. Backend setting `TABLES_AS_IMAGES` (default `1` = tables of at least 1 row; empty = keep tables as Markdown text). Existing documents must be re-imported to benefit.
+### Table handling (chosen in the upload dialog)
+- `image` (default): PDF tables are kept as pictures of their page area (pdf2md `--tables-as-images`), stored with the document's other figures. Backend setting `TABLES_AS_IMAGES` (default `1` = tables of at least 1 row; empty = default becomes `markdown`).
+- `html`: tables inserted as HTML with cell colours and text styles (pdf2md `--tables-html`); rendered in the UI, drawn as grid pictures in the Excel export keeping cell backgrounds, text colour and bold (other text styles dropped).
+- `markdown`: plain GFM tables.
+
+The form field `tables` of `POST /documents` selects the mode. Existing documents must be re-imported to benefit.
 
 ### Background Processing
 Document processing runs as a FastAPI `BackgroundTask`. It opens its own `AsyncSessionLocal` sessions — never shares the request-scoped session.
@@ -101,7 +105,7 @@ Document processing runs as a FastAPI `BackgroundTask`. It opens its own `AsyncS
 |--------|------|-------------|
 | `GET` | `/api/v1/health` | Health check |
 | `GET` | `/api/v1/customers` | List configured customers |
-| `POST` | `/api/v1/documents` | Upload document (multipart: `file` + `customer`) |
+| `POST` | `/api/v1/documents` | Upload document (multipart: `file`, `customer`, optional `tables` = `image`\|`html`\|`markdown`) |
 | `GET` | `/api/v1/documents` | List documents |
 | `GET` | `/api/v1/documents/{id}` | Get document by ID |
 | `GET` | `/api/v1/documents/{id}/nodes` | List nodes for a document |
