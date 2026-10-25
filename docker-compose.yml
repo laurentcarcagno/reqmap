@@ -10,9 +10,16 @@ services:
       CUSTOMERS_CONFIG_PATH: /app/config/customers.json
       CORS_ORIGINS: '["http://localhost:3000"]'
       DEBUG: "false"
+      PDF2MD_URL: ${PDF2MD_URL:-https://pdf2md.karka.lan}
+      PDF2MD_TOKEN: ${PDF2MD_TOKEN:-}
+      PDF2MD_CA_BUNDLE: /certs/ca.crt
     volumes:
       - backend_data:/app/data
       - backend_uploads:/app/uploads
+      - ${PDF2MD_CA_FILE:-/etc/ssl/certs/ca-certificates.crt}:/certs/ca.crt:ro
+    # a rootless container cannot reach the host through its LAN address: the server runs on this host
+    extra_hosts:
+      - "${PDF2MD_HOST:-pdf2md.karka.lan}:${PDF2MD_HOST_IP:-host-gateway}"
     ports:
       - "8090:8000"
     healthcheck:

@@ -103,6 +103,7 @@ def _table_options(tables_mode: str | None, settings) -> dict:
 def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings, tables_mode: str | None = None) -> tuple[dict, list[dict]]:
     """Synchronous reqmap extraction — runs in the async background task."""
     from reqmap.node_parser import parse_nodes
+    from reqmap.pdf2md_client import Pdf2mdServer
     from reqmap.pdf_source import pdf_to_markdown
 
     pdf_path = Path(file_path)
@@ -122,6 +123,9 @@ def _run_reqmap(file_path: str, customer_id: str, document_id: str, settings, ta
         asset_url_prefix=f"/api/v1/documents/{document_id}/assets",
         **_table_options(tables_mode, settings),
         post_process=post_process,
+        server=Pdf2mdServer(
+            settings.pdf2md_url, settings.pdf2md_token, settings.pdf2md_ca_bundle, settings.pdf2md_timeout
+        ),
     )
 
     parse_kwargs: dict = {"source": pdf_path.name}

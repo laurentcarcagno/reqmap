@@ -2,7 +2,7 @@
   "customers": {
     "airbus": {
       "label": "Airbus",
-      "req_id_pattern": "^(HAR\\s+SSOW-\\d+(?=\\s*/\\s*\\S)|[A-Z0-9]+-[A-Z0-9]+-\\d+/[A-Z0-9-]*/(?:[A-Z]+(?:,[A-Z]+)*)?(?=\\s|$))\\s*/?\\s*(.*?)\\s*$",
+      "req_id_pattern": "^(?:<a id=\"[^\"]*\"></a>\\*\\*)?(HAR\\s+SSOW-\\d+(?=\\s*/\\s*\\S)|[A-Z0-9]+-[A-Z0-9]+-\\d+/[A-Z0-9-]*/(?:[A-Z]+(?:,[A-Z]+)*)?(?=\\s|$))\\s*/?\\s*(.*?)\\s*(?:\\*\\*)?\\s*$",
       "title_pattern": null,
       "noise_patterns": [
         "^\\s*Airbus\\s+Amber\\s*$",
@@ -22,7 +22,10 @@
         "^\\s*Requirement/Section\\s+Cross\\s+Reference",
         "\\.{5,}",
         "^\\s*(?:[A-Z0-9]+-[A-Z0-9]+-\\d+\\s*)+$"
-      ]
+      ],
+      "post_process": {
+        "ADS": "config/plugins/ads.py"
+      }
     },
     "tas": {
       "label": "Thales Alénia Space",
@@ -32,7 +35,7 @@
         "^\\s*<!--\\s*end\\s+\\S+\\s*-->\\s*$"
       ],
       "post_process": {
-        "Thales Alénia Space": "pdf2md/examples/plugins/thales_alenia_space.py"
+        "Thales Alénia Space": "config/plugins/thales_alenia_space.py"
       }
     }
   }

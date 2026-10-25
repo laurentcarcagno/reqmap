@@ -51,9 +51,9 @@ Interactive API docs: `http://localhost:8000/api/docs` (or `:8090` in prod compo
 ## Architecture highlights
 
 ### The pipeline
-`PDF → pdf_to_markdown() (pdf2md) → md → parse_nodes(md) → [{order,type,section?,req_id?,title,description}, ...]`
+`PDF → pdf_to_markdown() (pdf2md server) → md → parse_nodes(md) → [{order,type,section?,req_id?,title,description}, ...]`
 
-- [reqmap/pdf_source.py](reqmap/pdf_source.py) wraps `pdf2md.convert_pdf` (git submodule in `pdf2md/`, package under `pdf2md/src`): page classification → engine fallback chain (geometric, OCR, docling, marker, pymupdf). Requirement IDs drawn as pictures come back as image alt text and are turned into text lines. Clone with `--recurse-submodules` (or `git submodule update --init`).
+- [reqmap/pdf_source.py](reqmap/pdf_source.py) converts the PDF on the **pdf2md server** (pdf2md-ui, REST API; `reqmap/pdf2md_client.py`: upload a job, poll it, download the zip) and keeps the figures the Markdown refers to. Configured by `PDF2MD_URL` / `PDF2MD_TOKEN` (personal access token) / `PDF2MD_CA_BUNDLE`. Post-processing plugins are versioned in `config/plugins/` and registered on the server (same name = replaced) before each conversion. Requirement IDs drawn as pictures come back as image alt text and are turned into text lines. There is no pdf2md submodule any more.
 - [reqmap/node_parser.py](reqmap/node_parser.py) walks the cleaned markdown and emits nodes. **Patterns are parameterized** (`req_id_pattern`, `title_pattern`, `noise_patterns`) and default to Airbus-specific values when not supplied.
 
 ### Customer-configurable extractors

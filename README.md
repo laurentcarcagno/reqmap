@@ -3,7 +3,7 @@
 **PDF → Markdown → Structured nodes** for requirement documents, with a web UI to review them.
 
 Takes a PDF as input and produces:
-1. A markdown file, converted by [pdf2md](https://github.com/laurentcarcagno/pdf2md) (git submodule in `pdf2md/`)
+1. A markdown file, converted by a [pdf2md](https://github.com/laurentcarcagno/pdf2md) server (pdf2md-ui, see *Installation*)
 2. Optionally, a structured JSON file of ordered title and requirement nodes — ready for traceability matrix tooling
 
 The repo has three layers: the `reqmap/` library (this README), a FastAPI `backend/` and a Next.js `frontend/`
@@ -11,8 +11,8 @@ The repo has three layers: the `reqmap/` library (this README), a FastAPI `backe
 
 ## Features
 
-- **pdf2md** multi-pass conversion: per-page classification, then a fallback chain of engines
-  (geometric/pdfplumber, OCR with Tesseract + RapidOCR, docling, marker, plain PyMuPDF)
+- **pdf2md** multi-pass conversion, done by the pdf2md server: per-page classification, then a fallback chain of engines
+  (geometric/pdfplumber, OCR, docling, marker, plain PyMuPDF). ReqMap embeds none of these engines
 - **Table handling**, chosen in the upload dialog: *Image* (`--tables-as-images`, the default, see `TABLES_AS_IMAGES`) keeps
   complex tables exactly as laid out in the PDF, *HTML* (`--tables-html`) keeps cell colours and text styles, *Markdown*
   keeps plain text tables; the web app displays all three and the Excel export embeds them as pictures (HTML keeps cell backgrounds, text colour and bold)
@@ -20,29 +20,38 @@ The repo has three layers: the `reqmap/` library (this README), a FastAPI `backe
   (`reqmap/pdf_source.py`)
 - Header/footer, table-of-contents and figure handling done by pdf2md
 - **Customer formats** — `config/customers.json` gives each customer its requirement patterns and, optionally, the
-  pdf2md post-processing plugins to run (`post_process`: plugin name → script). `tas` (Thales Alénia Space) runs the
-  pdf2md plugin `--post-process "Thales Alénia Space"`, which marks the `#ID Title … ##` requirements
+  pdf2md post-processing plugins to run (`post_process`: plugin name → script in `config/plugins/`). `tas` (Thales
+  Alénia Space) runs the plugin `Thales Alénia Space`, which marks the `#ID Title … ##` requirements. The scripts are
+  registered on the pdf2md server before each conversion, when they changed (see *pdf2md server*)
 - **JSON node extraction** — parses the markdown into an ordered list of `title` and `requirement` nodes,
   with customer-specific patterns (`config/customers.json`)
 
 ## Installation
 
 ```bash
-git clone --recurse-submodules https://github.com/laurentcarcagno/reqmap.git
-# already cloned?  git submodule update --init
+git clone https://github.com/laurentcarcagno/reqmap.git
 cd reqmap
-pip install -r requirements.txt                    # pdf2md core + OCR
-sudo apt install tesseract-ocr tesseract-ocr-fra tesseract-ocr-eng
+pip install -r requirements.txt        # httpx, pydantic, Pillow (the backend has its own requirements)
 ```
 
-Optional heavy engines (docling, marker; used on pages the geometric pass cannot handle):
+### pdf2md server
 
-```bash
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple
-pip install "docling>=2.140" "marker-pdf>=2.0"
-```
+PDFs are converted by a [pdf2md-ui](https://gitlab.karka.lan/tools/pdf2md-ui) server (REST API, `/api/v1/jobs`).
+Configure it with environment variables (or `backend/.env`, root `.env` for compose):
 
-The backend container image already includes them (CPU build of torch). For GPU builds see `pdf2md/README.md`.
+| Variable | |
+|---|---|
+| `PDF2MD_URL` | server address, e.g. `https://pdf2md.karka.lan` |
+| `PDF2MD_TOKEN` | personal access token `p2m_…` (page *Agents IA (MCP)* of the server) |
+| `PDF2MD_CA_BUNDLE` | root certificate of a private CA (backend: mounted from `PDF2MD_CA_FILE`, default the host bundle) |
+| `PDF2MD_TIMEOUT` | seconds to wait for a conversion (1800) |
+| `PDF2MD_HOST`, `PDF2MD_HOST_IP` | compose only: host name of the server and the address it is mapped to in the container (default `pdf2md.karka.lan` → `host-gateway`, for a server running on the same host: a rootless container cannot reach the host's LAN address) |
+
+**Plugins.** The server runs the post-processing plugins of the account the token belongs to. The plugins ReqMap
+needs are versioned here, in `config/plugins/`, and declared by customer in `config/customers.json`. Before each
+conversion ReqMap compares them with the server's copy and registers them when they differ (`POST /plugins`, same
+name = replaced), then asks for them with `post_process`. A plugin must pass the server's static check (text
+processing imports only). To add one: put the script in `config/plugins/` and add it to the customer.
 
 ## Usage
 
@@ -94,7 +103,7 @@ save_nodes(data, Path("document_nodes.json"))
 
 ### Markdown file
 
-`<stem>.md` — the pdf2md output (headers/footers and tables of contents removed, figure references dropped,
+`<stem>.md` — the pdf2md server's output (headers/footers and tables of contents removed, figure references dropped,
 requirement-ID pictures restored as text).
 
 ### JSON nodes (`--json`)
@@ -148,7 +157,7 @@ An ordered list of `title` and `requirement` nodes parsed from the clean markdow
 
 ```
 PDF
- └─► pdf2md.convert_pdf            (classify pages → engine fallback chain → markdown)
+ └─► pdf2md server (job: classify pages → engine fallback chain → plugins → markdown + images)
       └─► inline_id_images         (ID pictures → text lines, other figures dropped)
            ├─► <stem>.md
            └─► parse_nodes ──► <stem>_nodes.json   (--json)
@@ -158,19 +167,20 @@ PDF
 
 ```
 reqmap/
-├── pdf_source.py   # pdf_to_markdown — wraps the pdf2md submodule
+├── pdf_source.py   # pdf_to_markdown — conversion through the pdf2md server, ID pictures → text
+├── pdf2md_client.py # client of the server: jobs, plugin registration
 ├── node_parser.py  # parse_nodes — extract ordered title/req nodes
 └── cli.py          # CLI entry point
-pdf2md/             # git submodule: https://github.com/laurentcarcagno/pdf2md (package in pdf2md/src)
+config/
+├── customers.json  # customer formats
+└── plugins/        # pdf2md post-processing plugins (registered on the server)
 ```
 
 ## Dependencies
 
-Declared by pdf2md (see `pdf2md/README.md` for the rationale of each):
-
 | Package | Purpose |
 |---|---|
-| pymupdf, pdfplumber | Page classification, rendering, exact line boxes |
-| rapidocr, onnxruntime, opencv-python-headless, Tesseract | OCR of scanned pages and picture-drawn IDs |
-| ftfy, pydantic, tqdm | Text repair, settings, progress |
-| docling, marker-pdf, torch (optional) | Layout/table models for complex pages |
+| httpx | Client of the pdf2md server |
+| pydantic | Settings and schemas |
+| Pillow | Tables and figures of the Excel export |
+

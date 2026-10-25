@@ -1,18 +1,10 @@
-"""PDF to markdown, delegated to the pdf2md submodule.
-
-pdf2md lives in ``pdf2md/`` (git submodule, package under ``pdf2md/src``).
-"""
+"""PDF to markdown, delegated to the pdf2md server (see :mod:`reqmap.pdf2md_client`)."""
 
 import re
-import sys
-import tempfile
 from pathlib import Path
 from typing import Mapping, Optional
 
-_PROJECT_ROOT = Path(__file__).resolve().parents[1]
-_PDF2MD_SRC = _PROJECT_ROOT / "pdf2md" / "src"
-if str(_PDF2MD_SRC) not in sys.path:
-    sys.path.insert(0, str(_PDF2MD_SRC))
+from reqmap.pdf2md_client import Pdf2mdServer, convert
 
 _IMAGE_LINE_RE = re.compile(r"^!\[([^\]]*)\]\(([^)]*)\)\s*$")
 
@@ -47,33 +39,6 @@ def inline_id_images(
     return "\n".join(lines)
 
 
-def apply_post_process(
-    markdown: str, post_process: Mapping[str, str], source: Path, assets_dir: Optional[Path] = None
-) -> str:
-    """Run pdf2md post-processing plugins (``--post-process NAME``) on ``markdown``.
-
-    ``post_process`` maps a plugin name to its script, relative to the repository root; the
-    plugins run in the order given. They are registered in a throwaway plugin folder through
-    pdf2md's own API, so the user's registry is neither read nor modified.
-    """
-    from pdf2md.plugins import load_plugins, post_process_outputs, register_plugin
-
-    with tempfile.TemporaryDirectory(prefix="pdf2md_plugins_") as tmp:
-        plugin_dir = Path(tmp) / "plugins"
-        for name, script in post_process.items():
-            path = (_PROJECT_ROOT / script).resolve()
-            if not path.is_relative_to(_PROJECT_ROOT):
-                raise ValueError(f"plugin script outside the repository: {script}")
-            register_plugin(name, path, plugin_dir)
-        md_path = Path(tmp) / "document.md"
-        md_path.write_text(markdown, encoding="utf-8")
-        post_process_outputs(
-            load_plugins(list(post_process), plugin_dir), Path(source), md_path, None,
-            assets_dir or Path(tmp),
-        )
-        return md_path.read_text(encoding="utf-8")
-
-
 def pdf_to_markdown(
     pdf_path: Path,
     req_id_pattern: Optional[str] = None,
@@ -83,40 +48,37 @@ def pdf_to_markdown(
     tables_as_images: Optional[int] = None,
     tables_html: bool = False,
     post_process: Optional[Mapping[str, str]] = None,
+    server: Optional[Pdf2mdServer] = None,
 ) -> str:
-    """Convert a PDF to markdown with pdf2md, ready for ``parse_nodes``.
+    """Convert a PDF to markdown on the pdf2md server, ready for ``parse_nodes``.
 
     With ``images_dir`` the extracted figures are kept there and referenced under
-    ``asset_url_prefix``; without it they live in a temporary directory and are dropped.
+    ``asset_url_prefix``; without it they are dropped.
     ``tables_as_images`` (pdf2md ``--tables-as-images``) renders the tables of at least that
     many rows as pictures of their page area instead of Markdown text; it needs ``images_dir``
-    to be kept, otherwise those tables would vanish with the temporary directory.
+    to be kept, otherwise those tables would vanish.
     ``tables_html`` (pdf2md ``--tables-html``) inserts them as HTML keeping colours and text styles;
     it excludes ``tables_as_images``.
-    ``post_process`` is applied to pdf2md's markdown before the images are post-processed
-    (see :func:`apply_post_process`).
+    ``post_process`` maps the names of pdf2md post-processing plugins to their script (relative to
+    the repository root); the server runs them, in that order, on its Markdown.
+    ``server`` defaults to the one of the PDF2MD_* environment variables.
     """
     if tables_as_images is not None and images_dir is None:
         raise ValueError("tables_as_images needs images_dir")
     if tables_html and tables_as_images is not None:
         raise ValueError("tables_html and tables_as_images are mutually exclusive")
-    from pdf2md.models import Settings
-    from pdf2md.pipeline import convert_pdf
-
-    settings = Settings(ocr_enabled=enable_ocr, tables_as_images=tables_as_images, tables_html=tables_html)
-    # Figures must always be extracted: ID pictures only become text through their alt text.
+    markdown, files = convert(
+        server or Pdf2mdServer.from_env(),
+        Path(pdf_path),
+        ocr=enable_ocr,
+        tables="html" if tables_html else "images" if tables_as_images is not None else "markdown",
+        tables_min_rows=tables_as_images or 1,
+        post_process=post_process,
+    )
     if images_dir is None:
-        with tempfile.TemporaryDirectory(prefix="pdf2md_") as tmp:
-            result = convert_pdf(Path(pdf_path), settings, images_dir=Path(tmp))
-        markdown = _plugins(result.markdown, post_process, pdf_path, None)
         return inline_id_images(markdown, req_id_pattern)
     images_dir.mkdir(parents=True, exist_ok=True)
-    result = convert_pdf(Path(pdf_path), settings, images_dir=images_dir)
-    markdown = _plugins(result.markdown, post_process, pdf_path, images_dir)
+    for name, content in files.items():
+        if name in markdown:  # figures the Markdown refers to
+            (images_dir / name).write_bytes(content)
     return inline_id_images(markdown, req_id_pattern, images_dir, asset_url_prefix)
-
-
-def _plugins(
-    markdown: str, post_process: Optional[Mapping[str, str]], source: Path, assets_dir: Optional[Path]
-) -> str:
-    return apply_post_process(markdown, post_process, source, assets_dir) if post_process else markdown

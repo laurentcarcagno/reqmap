@@ -6,13 +6,19 @@ services:
     volumes:
       - ./backend/app:/app/app
       - ./reqmap:/app/reqmap
-      - ./pdf2md:/app/pdf2md
       - ./config:/app/config
+      - ${PDF2MD_CA_FILE:-/etc/ssl/certs/ca-certificates.crt}:/certs/ca.crt:ro
       - backend_data:/app/data
       - backend_uploads:/app/uploads
     environment:
       DEBUG: "true"
+      PDF2MD_URL: ${PDF2MD_URL:-https://pdf2md.karka.lan}
+      PDF2MD_TOKEN: ${PDF2MD_TOKEN:-}
+      PDF2MD_CA_BUNDLE: /certs/ca.crt
       RELOAD: "true"
+    # a rootless container cannot reach the host through its LAN address: the server runs on this host
+    extra_hosts:
+      - "${PDF2MD_HOST:-pdf2md.karka.lan}:${PDF2MD_HOST_IP:-host-gateway}"
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8008:8000"

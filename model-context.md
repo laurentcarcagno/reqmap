@@ -13,7 +13,7 @@ ReqMap is a full-stack web application that converts PDF requirement documents i
 | **Frontend** | Next.js 15, React 19, Tailwind CSS, TanStack Query, Sonner, react-dropzone |
 | **Backend** | FastAPI (Python 3.12), SQLAlchemy 2 async, aiosqlite, Pydantic v2, Uvicorn |
 | **Database** | SQLite (MVP) via `aiosqlite` |
-| **Extraction** | `pdf2md` (git submodule) for PDF → markdown, `reqmap.parse_nodes` for markdown → nodes |
+| **Extraction** | a `pdf2md` server (pdf2md-ui) for PDF → markdown, `reqmap.parse_nodes` for markdown → nodes |
 | **Containerization** | Docker + Docker Compose |
 
 ---
@@ -23,11 +23,11 @@ ReqMap is a full-stack web application that converts PDF requirement documents i
 ```
 ReqMap/
 ├── reqmap/                  # Python extraction tools (refactored for configurable patterns)
-│   ├── pdf_source.py        # pdf_to_markdown() — wraps the pdf2md submodule
+│   ├── pdf_source.py        # pdf_to_markdown() — conversion through the pdf2md server
+│   ├── pdf2md_client.py     # REST client: jobs, plugin registration
 │   ├── node_parser.py       # parse_nodes() — markdown → title/requirement nodes
 │   └── tests/
 │       └── test_node_parser.py
-├── pdf2md/                  # git submodule (laurentcarcagno/pdf2md) — PDF → markdown
 ├── backend/
 │   ├── app/
 │   │   ├── main.py          # FastAPI app entry + lifespan
@@ -56,6 +56,7 @@ ReqMap/
 │   ├── package.json
 │   └── Dockerfile
 ├── config/
+│   ├── plugins/             # pdf2md post-processing plugins, registered on the server
 │   └── customers.json       # Customer extractor config (id → label + regex patterns)
 ├── docker-compose.yml       # Production
 ├── docker-compose.dev.yml   # Development with hot reload
@@ -173,7 +174,7 @@ docker compose -f docker-compose.dev.yml up --build
 3. The customer appears in the upload dialog dropdown immediately.
 
 A customer can also run pdf2md post-processing plugins (the equivalent of `pdf2md --post-process NAME`) on the
-converted markdown, with `"post_process": {"Plugin name": "pdf2md/examples/plugins/script.py"}` (name → script path
+converted markdown, with `"post_process": {"Plugin name": "config/plugins/script.py"}` (name → script path
 relative to the repo root, run in order). `tas` (Thales Alénia Space) uses this to mark `#ID Title … ##` requirements.
 
 ---

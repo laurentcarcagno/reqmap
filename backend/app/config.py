@@ -33,6 +33,12 @@ class Settings(BaseSettings):
     # --tables-as-images); None keeps every table as Markdown text
     tables_as_images: int | None = 1
 
+    # pdf2md server (pdf2md-ui) that converts the PDFs; the token is a personal access token
+    pdf2md_url: str = ""
+    pdf2md_token: str = ""
+    pdf2md_ca_bundle: str | None = None  # root certificate of a private CA
+    pdf2md_timeout: float = 1800.0
+
     # Customer config
     customers_config_path: Path = Path("config/customers.json")
 
