@@ -9,6 +9,8 @@ export function Header() {
   return (
     <header className="flex h-16 shrink-0 items-center border-b border-border bg-card px-4 gap-3">
       <div className="flex items-stretch gap-3.5 py-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/hemeria/hemeria-logo-color.png" alt="Hemeria" className="h-10 w-auto self-center" />
         <div className="hem-stripe" aria-hidden="true">
           <span />
           <span />
