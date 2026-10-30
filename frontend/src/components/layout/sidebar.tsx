@@ -7,6 +7,7 @@ import { DocumentList } from "@/components/features/documents/document-list";
 import { UploadDialog } from "@/components/features/upload/upload-dialog";
 import type { Document } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { SidebarHandle, useSidebarWidth } from "./sidebar-resize";
 
 function isPdf(file: File): boolean {
   return file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
@@ -24,6 +25,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ selectedDocumentId, onSelectDocument, onDocumentDeleted, onDocumentReady }: SidebarProps) {
+  const [sidebarWidth, setSidebarWidth] = useSidebarWidth();
   const [uploadOpen, setUploadOpen] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   // A new drop remounts the dialog (via its key) so it starts from the dropped files.
@@ -53,7 +55,8 @@ export function Sidebar({ selectedDocumentId, onSelectDocument, onDocumentDelete
 
   return (
     <aside
-      className="flex w-72 shrink-0 flex-col border-r border-sidebar-border bg-sidebar overflow-hidden"
+      className="relative flex shrink-0 flex-col border-r border-sidebar-border bg-sidebar overflow-hidden"
+      style={{ width: sidebarWidth }}
       aria-label="Document list"
     >
       <div className="flex h-10 shrink-0 items-center justify-between border-b border-sidebar-border px-4">
@@ -89,6 +92,7 @@ export function Sidebar({ selectedDocumentId, onSelectDocument, onDocumentDelete
         initialFiles={dropped.files}
         {...(onDocumentReady ? { onDocumentReady } : {})}
       />
+      <SidebarHandle width={sidebarWidth} onChange={setSidebarWidth} />
     </aside>
   );
 }
